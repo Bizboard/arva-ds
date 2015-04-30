@@ -13,7 +13,6 @@
 
 import {DataSource}         from '../../core/DataSource';
 import ObjectHelper         from '../../utils/objectHelper';
-import Settings             from '../../utils/settings'
 
 export default
 class PrioritisedArray extends Array {
