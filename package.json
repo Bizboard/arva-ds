@@ -2,7 +2,7 @@
   "name": "arva-ds",
   "version": "1.0.0-pre-1",
   "description": "Using the latest ES6 standards creating a simple, compact DataSource library that enables plain object interaction in Javascript and automated synchronisation.",
-  "main": "main",
+  "main": false,
   "homepage": "https://github.com/Bizboard/arva-ds",
   "repository": {
     "type": "git",
