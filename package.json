@@ -13,7 +13,6 @@
   },
   "jspm": {
     "directories": {
-      "dist": "dist",
       "lib": "src"
     },
     "dependencies": {
