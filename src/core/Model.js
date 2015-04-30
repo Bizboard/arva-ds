@@ -13,6 +13,7 @@ import _                    from 'lodash'
 import PrioritisedObject    from './Model/prioritisedObject'
 import {DataSource}         from './DataSource';
 import ObjectHelper         from '../utils/objectHelper'
+import {Context}            from 'arva-context/Context'
 
 export default class Model extends PrioritisedObject {
 
@@ -36,7 +37,7 @@ export default class Model extends PrioritisedObject {
         //let dataSource = null;
 
         // retrieve dataSource from the DI context
-        let dataSource = window.FamonizedAppContext.get(DataSource);
+        let dataSource = Context.getContext().get(DataSource);
 
         /* If an id is present, use it to locate our model. */
         if(id){

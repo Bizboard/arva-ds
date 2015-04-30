@@ -9,6 +9,7 @@ System.config({
 
 System.config({
   "map": {
+    "arva-context": "github:Bizboard/arva-context@master",
     "di.js": "github:angular/di.js@master",
     "firebase": "github:firebase/firebase-bower@2.2.4",
     "lodash": "npm:lodash@3.7.0",

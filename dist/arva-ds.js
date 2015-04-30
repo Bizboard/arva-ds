@@ -688,6 +688,32 @@ System.register("core/Model/snapshot", [], function($__export) {
 
 
 
+System.register("github:Bizboard/arva-context@master/Context", [], function($__export) {
+  "use strict";
+  var __moduleName = "github:Bizboard/arva-context@master/Context";
+  var Context;
+  return {
+    setters: [],
+    execute: function() {
+      contextContainer = {};
+      Context = $__export("Context", {
+        getContext: function() {
+          var contextName = arguments[0] !== (void 0) ? arguments[0] : null;
+          if (contextName)
+            return contextContainer[contextName];
+          else
+            return contextContainer['Default'];
+        },
+        setContext: function(contextName, context) {
+          contextContainer[contextName] = context;
+        }
+      });
+    }
+  };
+});
+
+
+
 System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, function(__require, __exports, __module) {
   System.get("@@global-helpers").prepareGlobal(__module.id, []);
   (function() {
@@ -13703,13 +13729,14 @@ System.register("datasources/FirebaseDataSource", ["utils/objectHelper", "core/D
 
 
 
-System.register("core/Model", ["npm:lodash@3.7.0", "core/Model/prioritisedObject", "core/DataSource", "utils/objectHelper"], function($__export) {
+System.register("core/Model", ["npm:lodash@3.7.0", "core/Model/prioritisedObject", "core/DataSource", "utils/objectHelper", "github:Bizboard/arva-context@master/Context"], function($__export) {
   "use strict";
   var __moduleName = "core/Model";
   var _,
       PrioritisedObject,
       DataSource,
-      ObjectHelper;
+      ObjectHelper,
+      Context;
   return {
     setters: [function($__m) {
       _ = $__m.default;
@@ -13719,6 +13746,8 @@ System.register("core/Model", ["npm:lodash@3.7.0", "core/Model/prioritisedObject
       DataSource = $__m.DataSource;
     }, function($__m) {
       ObjectHelper = $__m.default;
+    }, function($__m) {
+      Context = $__m.Context;
     }],
     execute: function() {
       $__export('default', (function($__super) {
@@ -13727,7 +13756,7 @@ System.register("core/Model", ["npm:lodash@3.7.0", "core/Model/prioritisedObject
           var options = arguments[2] !== (void 0) ? arguments[2] : {};
           var modelName = Object.getPrototypeOf(this).constructor.name;
           var pathRoot = modelName + 's';
-          var dataSource = window.FamonizedAppContext.get(DataSource);
+          var dataSource = Context.getContext().get(DataSource);
           if (id) {
             if (options.dataSource)
               dataSource = options.dataSource;

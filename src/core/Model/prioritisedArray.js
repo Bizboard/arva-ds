@@ -13,6 +13,8 @@
 
 import {DataSource}         from '../../core/DataSource';
 import ObjectHelper         from '../../utils/objectHelper';
+import {Context}            from 'arva-context/Context';
+
 
 export default
 class PrioritisedArray extends Array {
@@ -60,7 +62,8 @@ class PrioritisedArray extends Array {
             let path = modelName; //+ 's';
 
             // retrieve dataSource from the DI context
-            dataSource = window.FamonizedAppContext.get(DataSource);
+            dataSource = Context.getContext().get(DataSource);
+
             dataSource = dataSource.child(path);
             this._dataSource = dataSource;
 
