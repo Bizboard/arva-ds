@@ -1,0 +1,27 @@
+{
+  "name": "arva-ds",
+  "version": "1.0.0-pre-1",
+  "description": "Using the latest ES6 standards creating a simple, compact DataSource library that enables plain object interaction in Javascript and automated synchronisation.",
+  "main": "main",
+  "homepage": "https://github.com/Bizboard/arva-ds",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Bizboard/arva-ds.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Bizboard/arva-ds/issues"
+  },
+  "jspm": {
+    "directories": {
+      "dist": "dist",
+      "lib": "src"
+    },
+    "dependencies": {
+      "di.js": "github:angular/di.js@master",
+      "firebase": "github:firebase/firebase-bower@^2.2.0",
+      "lodash": "npm:lodash@^3.2.0"
+    }
+  },
+  "author": "Tom Clement <tom.clement@bizboard.nl>, Hans van den Akker <hans@bizboard.nl>",
+  "license": "MIT"
+}
