@@ -691,7 +691,8 @@ System.register("core/Model/snapshot", [], function($__export) {
 System.register("github:Bizboard/arva-context@master/Context", [], function($__export) {
   "use strict";
   var __moduleName = "github:Bizboard/arva-context@master/Context";
-  var Context;
+  var contextContainer,
+      Context;
   return {
     setters: [],
     execute: function() {
