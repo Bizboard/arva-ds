@@ -14,6 +14,7 @@
 import {DataSource}         from '../../core/DataSource';
 import ObjectHelper         from '../../utils/objectHelper';
 import {Context}            from 'arva-context/Context';
+import EventEmitter         from 'eventemitter3';
 
 
 export default
@@ -44,6 +45,7 @@ class PrioritisedArray extends Array {
         this._dataType = dataType;
         this._dataSource = dataSource;
         this._isBeingReordered = false; /* Flag to determine when we're reordering so we don't listen to move updates */
+        this._eventEmitter = new EventEmitter();
 
         /* Bind all local methods to the current object instance, so we can refer to "this"
          * in the methods as expected, even when they're called from event handlers.        */
@@ -66,22 +68,41 @@ class PrioritisedArray extends Array {
 
             dataSource = dataSource.child(path);
             this._dataSource = dataSource;
-
-            // have passive dataSources communicate any changes to this array directly
-            if (this._dataSource.inheritable) {
-                this._dataSource.setChildAddedCallback(this._onChildAdded);
-                this._dataSource.setChildMovedCallback(this._onChildMoved);
-                this._dataSource.setChildChangedCallback(this._onChildChanged);
-                this._dataSource.setChildRemovedCallback(this._onChildRemoved);
-            }
         }
 
         /* If a snapshot is present use it, otherwise generate one by subscribing to the dataSource one time. */
         if (dataSnapshot) {
             this._buildFromSnapshot(dataSnapshot);
-            this._registerCallbacks(dataSource)
         } else {
             this._buildFromDataSource(dataSource);
+        }
+    }
+
+    /**
+     * Subscribes to events emitted by this PrioritisedArray.
+     * @param {String} event 'value', 'child_changed', 'child_moved', 'child_removed'
+     * @param {Function} fn Function to call when event is emitted.
+     * @param {Object} context Object to bind the given callback function to.
+     * @returns {*}
+     */
+    on(event, fn, context) {
+        return this._eventEmitter.on(event, fn, context);
+    }
+
+    /**
+     * Removes subscription to events emitted by this PrioritisedArray. If no fn or context is given, all handlers for
+     * the given event are removed. If no parameters are given at all, all event types will have their handlers removed.
+     * @param {String} event 'value', 'child_changed', 'child_moved', 'child_removed'
+     * @param {Function} fn Function to call when event is emitted.
+     * @param {Object} context Object to bind the given callback function to.
+     * @returns {*}
+     */
+    off(event, fn, context) {
+
+        if(event && (fn || context)) {
+            this._eventEmitter.removeListener(event, fn, context);
+        } else {
+            this._eventEmitter.removeAllListeners(event);
         }
     }
 
@@ -97,10 +118,8 @@ class PrioritisedArray extends Array {
                 this.push(model);
 
                 if (!model._inheritable) {
-                    model.setValueChangedCallback((modelData) => {
-                        if (this._valueChangedCallback) {
-                            this._valueChangedCallback(this);
-                        }
+                    model.on('value', (modelData) => {
+                        this._onChildChanged(modelData);
                     });
                 }
 
@@ -109,26 +128,16 @@ class PrioritisedArray extends Array {
                 console.log('Tried to append an object with the same ID as one already present.');
             }
         }
-        // lets try to parse the object using property reflection
+        /* Let's try to parse the object using property reflection */
         else if(model instanceof Object) {
             // retrieve dataSource from the DI context
             var options = { dataSource: this._dataSource};
             let newModel = new this._dataType(null, model, options);
-
-            //if (this._dataSource.inheritable)
-            //    this.push(newModel);
-
-            //if (this._dataSource.inheritable) {
-            //    if (this._valueChangedCallback) {
-            //        this._valueChangedCallback(this);
-            //    }
-            //}
-
-
+            this.add(newModel);
         }
         else {
             /* TODO: change to throw exception */
-            console.log('Tried to append an object that is not the same type as the PrioritisedArray was created with.');
+            console.log('Tried to append an object that is not the same type as the one this PrioritisedArray was created with.');
         }
 
         /* Return model so we can do this: let newModel = PrioArray.add(new Model()); newModel.someProperty = true; */
@@ -169,28 +178,11 @@ class PrioritisedArray extends Array {
 
     /**
      * Removes the model instance at the given position. Does not remove the model from the datasource, to do that
-     * call model.delete() directly, or PrioArray[index].delete().
+     * call model.remove() directly, or PrioArray[index].remove().
      * @param position
      */
     remove(position) {
         this.splice(position, 1);
-    }
-
-    /**
-     * Sets a callback that gets triggered whenever data is updated by
-     * the remote dataSource.
-     * @param callback
-     */
-    setValueChangedCallback(callback) {
-        this._valueChangedCallback = callback;
-    }
-
-    /**
-     * Remove callback that gets triggered whenever data is updated by
-     * the remote dataSource.
-     */
-    removeValueChangedCallback() {
-        this._valueChangedCallback = null;
     }
 
     /**
@@ -238,9 +230,10 @@ class PrioritisedArray extends Array {
 
         if (dataSnapshot.ref() instanceof DataSource &&
             dataSnapshot.ref().inheritable)
-            this._valueChangedCallback(this);
-    }
+            this._eventEmitter.emit('value', this);
 
+        this._registerCallbacks(this._dataSource);
+    }
 
 
     /**
@@ -276,11 +269,10 @@ class PrioritisedArray extends Array {
      */
     _onChildAdded(snapshot) {
         let id = snapshot.key();
-        this.add(new this._dataType(id, null, {dataSnapshot: snapshot}));
+        let model = this.add(new this._dataType(id, null, {dataSnapshot: snapshot}));
 
-        if(this._valueChangedCallback) {
-            this._valueChangedCallback(this);
-        }
+        this._eventEmitter.emit('child_added', model);
+        this._eventEmitter.emit('value', this);
     }
 
     /**
@@ -288,13 +280,12 @@ class PrioritisedArray extends Array {
      */
     _onChildChanged(snapshot) {
         let id = snapshot.key();
-        var itemIndex = this._findIndexById(id);
-        var changedModel = new this._dataType(id, null, {dataSnapshot: snapshot, dataSource: snapshot.ref() });
+        let itemIndex = this._findIndexById(id);
+        let changedModel = new this._dataType(id, null, {dataSnapshot: snapshot, dataSource: snapshot.ref() });
         this[itemIndex] = changedModel;
 
-        if(this._valueChangedCallback) {
-            this._valueChangedCallback(this);
-        }
+        this._eventEmitter.emit('child_changed', changedModel);
+        this._eventEmitter.emit('value', this);
     }
 
     /**
@@ -307,9 +298,12 @@ class PrioritisedArray extends Array {
         if (!this._isBeingReordered) {
             this._recalculatePriorities();
 
-            if(this._valueChangedCallback) {
-                this._valueChangedCallback(this);
-            }
+            let id = snapshot.key();
+            let position = this._findIndexById(id);
+            let model = this[position];
+
+            this._eventEmitter.emit('child_moved', model);
+            this._eventEmitter.emit('value', this);
         }
     }
 
@@ -322,18 +316,18 @@ class PrioritisedArray extends Array {
         /* TODO: figure out if we can use the snapshot's priority as our array index reliably, to avoid big loops. */
         let id = oldSnapshot.key();
         let position = this._findIndexById(id);
+        let model = this[position];
 
         if (position !== -1) {
             this.remove(position, false);
 
-            if(this._valueChangedCallback) {
-                this._valueChangedCallback(this);
-            }
+            this._eventEmitter.emit('child_removed', model);
+            this._eventEmitter.emit('value', this);
         }
     }
 
     /**
-     * Searches for the index in the PrioritisedArray of a model that has and id equal to the given id.
+     * Searches for the index in the PrioritisedArray of a model that has an id equal to the given id.
      * @param id Id field of the model we're looking for
      * @returns {Number} Zero-based index if found, -1 otherwise
      * @private
