@@ -465,7 +465,7 @@ System.register("npm:process@0.10.1/browser", [], true, function(require, export
 
 
 
-System.register("utils/objectHelper", ["npm:lodash@3.7.0"], function($__export) {
+System.register("utils/objectHelper", ["npm:lodash@3.8.0"], function($__export) {
   "use strict";
   var __moduleName = "utils/objectHelper";
   var _;
@@ -7375,9 +7375,9 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
 
 
 
-System.register("github:angular/di.js@master/util", [], function($__export) {
+System.register("github:Bizboard/di.js@master/util", [], function($__export) {
   "use strict";
-  var __moduleName = "github:angular/di.js@master/util";
+  var __moduleName = "github:Bizboard/di.js@master/util";
   var ownKeys;
   function isUpperCase(char) {
     return char.toUpperCase() === char;
@@ -7416,9 +7416,9 @@ System.register("github:angular/di.js@master/util", [], function($__export) {
 
 
 
-System.register("github:angular/di.js@master/profiler", ["github:angular/di.js@master/util"], function($__export) {
+System.register("github:Bizboard/di.js@master/profiler", ["github:Bizboard/di.js@master/util"], function($__export) {
   "use strict";
-  var __moduleName = "github:angular/di.js@master/profiler";
+  var __moduleName = "github:Bizboard/di.js@master/profiler";
   var toString,
       IS_DEBUG,
       _global,
@@ -7499,9 +7499,9 @@ System.register("github:angular/di.js@master/profiler", ["github:angular/di.js@m
 
 
 
-System.register("github:angular/di.js@master/providers", ["github:angular/di.js@master/annotations", "github:angular/di.js@master/util"], function($__export) {
+System.register("github:Bizboard/di.js@master/providers", ["github:Bizboard/di.js@master/annotations", "github:Bizboard/di.js@master/util"], function($__export) {
   "use strict";
-  var __moduleName = "github:angular/di.js@master/providers";
+  var __moduleName = "github:Bizboard/di.js@master/providers";
   var ClassProviderAnnotation,
       FactoryProviderAnnotation,
       SuperConstructorAnnotation,
@@ -8269,7 +8269,7 @@ System.register("npm:process@0.10.1", ["npm:process@0.10.1/browser"], true, func
 
 
 
-System.register("core/Model/prioritisedObject", ["utils/objectHelper", "core/Model/snapshot", "npm:lodash@3.7.0"], function($__export) {
+System.register("core/Model/prioritisedObject", ["utils/objectHelper", "core/Model/snapshot", "npm:lodash@3.8.0"], function($__export) {
   "use strict";
   var __moduleName = "core/Model/prioritisedObject";
   var ObjectHelper,
@@ -8401,9 +8401,9 @@ System.register("github:firebase/firebase-bower@2.2.4", ["github:firebase/fireba
 
 
 
-System.register("github:angular/di.js@master/annotations", ["github:angular/di.js@master/util"], function($__export) {
+System.register("github:Bizboard/di.js@master/annotations", ["github:Bizboard/di.js@master/util"], function($__export) {
   "use strict";
-  var __moduleName = "github:angular/di.js@master/annotations";
+  var __moduleName = "github:Bizboard/di.js@master/annotations";
   var isFunction,
       SuperConstructor,
       TransientScope,
@@ -8516,6 +8516,7 @@ System.register("github:angular/di.js@master/annotations", ["github:angular/di.j
           for (var tokens = [],
               $__5 = 0; $__5 < arguments.length; $__5++)
             tokens[$__5] = arguments[$__5];
+          $traceurRuntime.superConstructor(InjectPromise).call(this, tokens);
           this.tokens = tokens;
           this.isPromise = true;
           this.isLazy = false;
@@ -8527,6 +8528,7 @@ System.register("github:angular/di.js@master/annotations", ["github:angular/di.j
           for (var tokens = [],
               $__5 = 0; $__5 < arguments.length; $__5++)
             tokens[$__5] = arguments[$__5];
+          $traceurRuntime.superConstructor(InjectLazy).call(this, tokens);
           this.tokens = tokens;
           this.isPromise = false;
           this.isLazy = true;
@@ -8542,6 +8544,7 @@ System.register("github:angular/di.js@master/annotations", ["github:angular/di.j
       }());
       ProvidePromise = (function($__super) {
         var ProvidePromise = function ProvidePromise(token) {
+          $traceurRuntime.superConstructor(ProvidePromise).call(this, token);
           this.token = token;
           this.isPromise = true;
         };
@@ -8562,7 +8565,7 @@ System.register("github:angular/di.js@master/annotations", ["github:angular/di.j
 
 
 
-System.register("datasources/SharePoint/SoapClient", ["datasources/SharePoint/xml2js", "npm:lodash@3.7.0", "components/RequestClient", "utils/objectHelper", "components/XmlParser"], function($__export) {
+System.register("datasources/SharePoint/SoapClient", ["datasources/SharePoint/xml2js", "npm:lodash@3.8.0", "components/RequestClient", "utils/objectHelper", "components/XmlParser"], function($__export) {
   "use strict";
   var __moduleName = "datasources/SharePoint/SoapClient";
   var XML2JS,
@@ -8696,9 +8699,9 @@ System.register("github:jspm/nodelibs-process@0.1.1/index", ["npm:process@0.10.1
 
 
 
-System.register("github:angular/di.js@master/injector", ["github:angular/di.js@master/annotations", "github:angular/di.js@master/util", "github:angular/di.js@master/profiler", "github:angular/di.js@master/providers"], function($__export) {
+System.register("github:Bizboard/di.js@master/injector", ["github:Bizboard/di.js@master/annotations", "github:Bizboard/di.js@master/util", "github:Bizboard/di.js@master/profiler", "github:Bizboard/di.js@master/providers"], function($__export) {
   "use strict";
-  var __moduleName = "github:angular/di.js@master/injector";
+  var __moduleName = "github:Bizboard/di.js@master/injector";
   var annotate,
       readAnnotations,
       hasAnnotation,
@@ -8945,7 +8948,7 @@ System.register("github:angular/di.js@master/injector", ["github:angular/di.js@m
 
 
 
-System.register("datasources/SharePointSoapDataSource", ["utils/objectHelper", "core/DataSource", "github:firebase/firebase-bower@2.2.4", "github:angular/di.js@master", "datasources/SharePoint/SoapClient", "components/UrlParser", "datasources/SharePoint/SharePointSnapshot"], function($__export) {
+System.register("datasources/SharePointSoapDataSource", ["utils/objectHelper", "core/DataSource", "github:firebase/firebase-bower@2.2.4", "github:Bizboard/di.js@master", "datasources/SharePoint/SoapClient", "components/UrlParser", "datasources/SharePoint/SharePointSnapshot"], function($__export) {
   "use strict";
   var __moduleName = "datasources/SharePointSoapDataSource";
   var ObjectHelper,
@@ -9222,9 +9225,9 @@ System.register("github:jspm/nodelibs-process@0.1.1", ["github:jspm/nodelibs-pro
 
 
 
-System.register("github:angular/di.js@master/index", ["github:angular/di.js@master/injector", "github:angular/di.js@master/annotations"], function($__export) {
+System.register("github:Bizboard/di.js@master/index", ["github:Bizboard/di.js@master/injector", "github:Bizboard/di.js@master/annotations"], function($__export) {
   "use strict";
-  var __moduleName = "github:angular/di.js@master/index";
+  var __moduleName = "github:Bizboard/di.js@master/index";
   return {
     setters: [function($__m) {
       $__export("Injector", $__m.Injector);
@@ -9246,7 +9249,7 @@ System.register("github:angular/di.js@master/index", ["github:angular/di.js@mast
 
 
 
-System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"], true, function(require, exports, module) {
+System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -9255,7 +9258,7 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
     ;
     (function() {
       var undefined;
-      var VERSION = '3.7.0';
+      var VERSION = '3.8.0';
       var BIND_FLAG = 1,
           BIND_KEY_FLAG = 2,
           CURRY_BOUND_FLAG = 4,
@@ -9307,7 +9310,7 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
       var reEscape = /<%-([\s\S]+?)%>/g,
           reEvaluate = /<%([\s\S]+?)%>/g,
           reInterpolate = /<%=([\s\S]+?)%>/g;
-      var reIsDeepProp = /\.|\[(?:[^[\]]+|(["'])(?:(?!\1)[^\n\\]|\\.)*?)\1\]/,
+      var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\n\\]|\\.)*?\1)\]/,
           reIsPlainProp = /^\w*$/,
           rePropName = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\n\\]|\\.)*?)\2)\]/g;
       var reRegExpChars = /[.*+?^${}()|[\]\/\\]/g,
@@ -9617,7 +9620,7 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
             getOwnPropertySymbols = isNative(getOwnPropertySymbols = Object.getOwnPropertySymbols) && getOwnPropertySymbols,
             getPrototypeOf = isNative(getPrototypeOf = Object.getPrototypeOf) && getPrototypeOf,
             push = arrayProto.push,
-            preventExtensions = isNative(Object.preventExtensions = Object.preventExtensions) && preventExtensions,
+            preventExtensions = isNative(preventExtensions = Object.preventExtensions) && preventExtensions,
             propertyIsEnumerable = objectProto.propertyIsEnumerable,
             Set = isNative(Set = context.Set) && Set,
             setTimeout = context.setTimeout,
@@ -9632,12 +9635,19 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           return result;
         }());
         var nativeAssign = (function() {
-          var object = {'1': 0},
-              func = preventExtensions && isNative(func = Object.assign) && func;
+          var func = preventExtensions && isNative(func = Object.assign) && func;
           try {
-            func(preventExtensions(object), 'xo');
-          } catch (e) {}
-          return !object[1] && func;
+            if (func) {
+              var object = preventExtensions({'1': 0});
+              object[0] = 1;
+            }
+          } catch (e) {
+            try {
+              func(object, 'xo');
+            } catch (e) {}
+            return !object[1] && func;
+          }
+          return false;
         }());
         var nativeIsArray = isNative(nativeIsArray = Array.isArray) && nativeIsArray,
             nativeCreate = isNative(nativeCreate = Object.create) && nativeCreate,
@@ -9680,6 +9690,7 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           var Ctor = function() {
             this.x = x;
           },
+              args = arguments,
               object = {
                 '0': x,
                 'length': x
@@ -9702,7 +9713,7 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
             support.dom = false;
           }
           try {
-            support.nonEnumArgs = !propertyIsEnumerable.call(arguments, 1);
+            support.nonEnumArgs = !propertyIsEnumerable.call(args, 1);
           } catch (e) {
             support.nonEnumArgs = true;
           }
@@ -9992,8 +10003,9 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
         };
         function baseAt(collection, props) {
           var index = -1,
-              length = collection.length,
-              isArr = isLength(length),
+              isNil = collection == null,
+              isArr = !isNil && isArrayLike(collection),
+              length = isArr && collection.length,
               propsLength = props.length,
               result = Array(propsLength);
           while (++index < propsLength) {
@@ -10001,7 +10013,7 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
             if (isArr) {
               result[index] = isIndex(key, length) ? collection[key] : undefined;
             } else {
-              result[index] = collection[key];
+              result[index] = isNil ? undefined : collection[key];
             }
           }
           return result;
@@ -10177,13 +10189,12 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
               result = [];
           while (++index < length) {
             var value = array[index];
-            if (isObjectLike(value) && isLength(value.length) && (isArray(value) || isArguments(value))) {
+            if (isObjectLike(value) && isArrayLike(value) && (isStrict || isArray(value) || isArguments(value))) {
               if (isDeep) {
                 value = baseFlatten(value, isDeep, isStrict);
               }
               var valIndex = -1,
                   valLength = value.length;
-              result.length += valLength;
               while (++valIndex < valLength) {
                 result[++resIndex] = value[valIndex];
               }
@@ -10227,13 +10238,13 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           var index = -1,
               length = path.length;
           while (object != null && ++index < length) {
-            var result = object = object[path[index]];
+            object = object[path[index]];
           }
-          return result;
+          return (index && index == length) ? object : undefined;
         }
         function baseIsEqual(value, other, customizer, isLoose, stackA, stackB) {
           if (value === other) {
-            return value !== 0 || (1 / value == 1 / other);
+            return true;
           }
           var valType = typeof value,
               othType = typeof other;
@@ -10324,8 +10335,7 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
         }
         function baseMap(collection, iteratee) {
           var index = -1,
-              length = getLength(collection),
-              result = isLength(length) ? Array(length) : [];
+              result = isArrayLike(collection) ? Array(collection.length) : [];
           baseEach(collection, function(value, key, collection) {
             result[++index] = iteratee(value, key, collection);
           });
@@ -10386,7 +10396,7 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           if (!isObject(object)) {
             return object;
           }
-          var isSrcArr = isLength(source.length) && (isArray(source) || isTypedArray(source));
+          var isSrcArr = isArrayLike(source) && (isArray(source) || isTypedArray(source));
           if (!isSrcArr) {
             var props = keys(source);
             push.apply(props, getSymbols(source));
@@ -10428,8 +10438,8 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
               isCommon = result === undefined;
           if (isCommon) {
             result = srcValue;
-            if (isLength(srcValue.length) && (isArray(srcValue) || isTypedArray(srcValue))) {
-              result = isArray(value) ? value : (getLength(value) ? arrayCopy(value) : []);
+            if (isArrayLike(srcValue) && (isArray(srcValue) || isTypedArray(srcValue))) {
+              result = isArray(value) ? value : (isArrayLike(value) ? arrayCopy(value) : []);
             } else if (isPlainObject(srcValue) || isArguments(srcValue)) {
               result = isArguments(value) ? toPlainObject(value) : (isPlainObject(value) ? value : {});
             } else {
@@ -10457,7 +10467,7 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           };
         }
         function basePullAt(array, indexes) {
-          var length = indexes.length;
+          var length = array ? indexes.length : 0;
           while (length--) {
             var index = parseFloat(indexes[length]);
             if (index != previous && isIndex(index)) {
@@ -10730,12 +10740,12 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           while (++argsIndex < argsLength) {
             result[argsIndex] = args[argsIndex];
           }
-          var pad = argsIndex;
+          var offset = argsIndex;
           while (++rightIndex < rightLength) {
-            result[pad + rightIndex] = partials[rightIndex];
+            result[offset + rightIndex] = partials[rightIndex];
           }
           while (++holdersIndex < holdersLength) {
-            result[pad + holders[holdersIndex]] = args[argsIndex++];
+            result[offset + holders[holdersIndex]] = args[argsIndex++];
           }
           return result;
         }
@@ -10929,7 +10939,7 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
               func = funcs[index];
               funcName = getFuncName(func);
               var data = funcName == 'wrapper' ? getData(func) : null;
-              if (data && isLaziable(data[0])) {
+              if (data && isLaziable(data[0]) && data[1] == (ARY_FLAG | CURRY_FLAG | PARTIAL_FLAG | REARG_FLAG) && !data[4].length && data[9] == 1) {
                 wrapper = wrapper[getFuncName(data[0])].apply(wrapper, data[3]);
               } else {
                 wrapper = (func.length == 1 && isLaziable(func)) ? wrapper[funcName]() : wrapper.thru(func);
@@ -10970,10 +10980,23 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
             return objectFunc(object, iteratee);
           };
         }
+        function createObjectMapper(isMapKeys) {
+          return function(object, iteratee, thisArg) {
+            var result = {};
+            iteratee = getCallback(iteratee, thisArg, 3);
+            baseForOwn(object, function(value, key, object) {
+              var mapped = iteratee(value, key, object);
+              key = isMapKeys ? mapped : key;
+              value = isMapKeys ? value : mapped;
+              result[key] = value;
+            });
+            return result;
+          };
+        }
         function createPadDir(fromRight) {
           return function(string, length, chars) {
             string = baseToString(string);
-            return string && ((fromRight ? string : '') + createPadding(string, length, chars) + (fromRight ? '' : string));
+            return (fromRight ? string : '') + createPadding(string, length, chars) + (fromRight ? '' : string);
           };
         }
         function createPartial(flag) {
@@ -11161,7 +11184,7 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
             case errorTag:
               return object.name == other.name && object.message == other.message;
             case numberTag:
-              return (object != +object) ? other != +other : (object == 0 ? ((1 / object) == (1 / other)) : object == +other);
+              return (object != +object) ? other != +other : object == +other;
             case regexpTag:
             case stringTag:
               return object == (other + '');
@@ -11336,6 +11359,9 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           var func = object == null ? object : object[path];
           return func == null ? undefined : func.apply(object, args);
         }
+        function isArrayLike(value) {
+          return value != null && isLength(getLength(value));
+        }
         function isIndex(value, length) {
           value = +value;
           length = length == null ? MAX_SAFE_INTEGER : length;
@@ -11346,13 +11372,7 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
             return false;
           }
           var type = typeof index;
-          if (type == 'number') {
-            var length = getLength(object),
-                prereq = isLength(length) && isIndex(index, length);
-          } else {
-            prereq = type == 'string' && index in object;
-          }
-          if (prereq) {
+          if (type == 'number' ? (isArrayLike(object) && isIndex(index, object.length)) : (type == 'string' && index in object)) {
             var other = object[index];
             return value === value ? (value === other) : (other !== other);
           }
@@ -11377,7 +11397,7 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           return typeof value == 'number' && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
         }
         function isStrictComparable(value) {
-          return value === value && (value === 0 ? ((1 / value) > 0) : !isObject(value));
+          return value === value && !isObject(value);
         }
         function mergeData(data, source) {
           var bitmask = data[1],
@@ -11499,7 +11519,7 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           if (value == null) {
             return [];
           }
-          if (!isLength(getLength(value))) {
+          if (!isArrayLike(value)) {
             return values(value);
           }
           return isObject(value) ? value : Object(value);
@@ -11549,7 +11569,7 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           return result;
         }
         var difference = restParam(function(array, values) {
-          return (isArray(array) || isArguments(array)) ? baseDifference(array, baseFlatten(values, false, true)) : [];
+          return isArrayLike(array) ? baseDifference(array, baseFlatten(values, false, true)) : [];
         });
         function drop(array, n, guard) {
           var length = array ? array.length : 0;
@@ -11635,7 +11655,7 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
               result = [];
           while (++argsIndex < argsLength) {
             var value = arguments[argsIndex];
-            if (isArray(value) || isArguments(value)) {
+            if (isArrayLike(value)) {
               args.push(value);
               caches.push((isCommon && value.length >= 120) ? createCache(argsIndex && value) : null);
             }
@@ -11715,7 +11735,6 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           return array;
         }
         var pullAt = restParam(function(array, indexes) {
-          array || (array = []);
           indexes = baseFlatten(indexes);
           var result = baseAt(array, indexes);
           basePullAt(array, indexes.sort(baseCompareAscending));
@@ -11803,23 +11822,46 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           return (isSorted && getIndexOf() == baseIndexOf) ? sortedUniq(array, iteratee) : baseUniq(array, iteratee);
         }
         function unzip(array) {
+          if (!(array && array.length)) {
+            return [];
+          }
           var index = -1,
-              length = (array && array.length && arrayMax(arrayMap(array, getLength))) >>> 0,
-              result = Array(length);
+              length = 0;
+          array = arrayFilter(array, function(group) {
+            if (isArrayLike(group)) {
+              length = nativeMax(group.length, length);
+              return true;
+            }
+          });
+          var result = Array(length);
           while (++index < length) {
             result[index] = arrayMap(array, baseProperty(index));
           }
           return result;
         }
+        function unzipWith(array, iteratee, thisArg) {
+          var length = array ? array.length : 0;
+          if (!length) {
+            return [];
+          }
+          var result = unzip(array);
+          if (iteratee == null) {
+            return result;
+          }
+          iteratee = bindCallback(iteratee, thisArg, 4);
+          return arrayMap(result, function(group) {
+            return arrayReduce(group, iteratee, undefined, true);
+          });
+        }
         var without = restParam(function(array, values) {
-          return (isArray(array) || isArguments(array)) ? baseDifference(array, values) : [];
+          return isArrayLike(array) ? baseDifference(array, values) : [];
         });
         function xor() {
           var index = -1,
               length = arguments.length;
           while (++index < length) {
             var array = arguments[index];
-            if (isArray(array) || isArguments(array)) {
+            if (isArrayLike(array)) {
               var result = result ? baseDifference(result, array).concat(baseDifference(array, result)) : array;
             }
           }
@@ -11843,6 +11885,19 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           }
           return result;
         }
+        var zipWith = restParam(function(arrays) {
+          var length = arrays.length,
+              iteratee = arrays[length - 2],
+              thisArg = arrays[length - 1];
+          if (length > 2 && typeof iteratee == 'function') {
+            length -= 2;
+          } else {
+            iteratee = (length > 1 && typeof thisArg == 'function') ? (--length, thisArg) : undefined;
+            thisArg = undefined;
+          }
+          arrays.length = length;
+          return unzipWith(arrays, iteratee, thisArg);
+        });
         function chain(value) {
           var result = lodash(value);
           result.__chain__ = true;
@@ -11896,10 +11951,6 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           return baseWrapperValue(this.__wrapped__, this.__actions__);
         }
         var at = restParam(function(collection, props) {
-          var length = collection ? getLength(collection) : 0;
-          if (isLength(length)) {
-            collection = toIterable(collection);
-          }
           return baseAt(collection, baseFlatten(props));
         });
         var countBy = createAggregator(function(result, value, key) {
@@ -11957,8 +12008,7 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           var index = -1,
               isFunc = typeof path == 'function',
               isProp = isKey(path),
-              length = getLength(collection),
-              result = isLength(length) ? Array(length) : [];
+              result = isArrayLike(collection) ? Array(collection.length) : [];
           baseEach(collection, function(value) {
             var func = isFunc ? path : (isProp && value != null && value[path]);
             result[++index] = func ? func.apply(value, args) : invokePath(value, path, args);
@@ -12368,8 +12418,7 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           return baseClone(value, true, customizer);
         }
         function isArguments(value) {
-          var length = isObjectLike(value) ? value.length : undefined;
-          return isLength(length) && objToString.call(value) == argsTag;
+          return isObjectLike(value) && isArrayLike(value) && objToString.call(value) == argsTag;
         }
         var isArray = nativeIsArray || function(value) {
           return isObjectLike(value) && isLength(value.length) && objToString.call(value) == arrayTag;
@@ -12392,9 +12441,8 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           if (value == null) {
             return true;
           }
-          var length = getLength(value);
-          if (isLength(length) && (isArray(value) || isString(value) || isArguments(value) || (isObjectLike(value) && isFunction(value.splice)))) {
-            return !length;
+          if (isArrayLike(value) && (isArray(value) || isString(value) || isArguments(value) || (isObjectLike(value) && isFunction(value.splice)))) {
+            return !value.length;
           }
           return !keys(value).length;
         }
@@ -12472,7 +12520,7 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           return objProto ? (value == objProto || getPrototypeOf(value) == objProto) : shimIsPlainObject(value);
         };
         function isRegExp(value) {
-          return (isObjectLike(value) && objToString.call(value) == regexpTag) || false;
+          return isObjectLike(value) && objToString.call(value) == regexpTag;
         }
         function isString(value) {
           return typeof value == 'string' || (isObjectLike(value) && objToString.call(value) == stringTag);
@@ -12564,11 +12612,8 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           return result;
         }
         var keys = !nativeKeys ? shimKeys : function(object) {
-          if (object) {
-            var Ctor = object.constructor,
-                length = object.length;
-          }
-          if ((typeof Ctor == 'function' && Ctor.prototype === object) || (typeof object != 'function' && isLength(length))) {
+          var Ctor = object != null && object.constructor;
+          if ((typeof Ctor == 'function' && Ctor.prototype === object) || (typeof object != 'function' && isArrayLike(object))) {
             return shimKeys(object);
           }
           return isObject(object) ? nativeKeys(object) : [];
@@ -12597,14 +12642,8 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           }
           return result;
         }
-        function mapValues(object, iteratee, thisArg) {
-          var result = {};
-          iteratee = getCallback(iteratee, thisArg, 3);
-          baseForOwn(object, function(value, key, object) {
-            result[key] = iteratee(value, key, object);
-          });
-          return result;
-        }
+        var mapKeys = createObjectMapper(true);
+        var mapValues = createObjectMapper();
         var merge = createAssigner(baseMerge);
         var omit = restParam(function(object, props) {
           if (object == null) {
@@ -12984,7 +13023,7 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           if (guard && isIterateeCall(func, thisArg, guard)) {
             thisArg = null;
           }
-          return baseCallback(func, thisArg);
+          return isObjectLike(func) ? matches(func) : baseCallback(func, thisArg);
         }
         function constant(value) {
           return function() {
@@ -13193,6 +13232,7 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
         lodash.keys = keys;
         lodash.keysIn = keysIn;
         lodash.map = map;
+        lodash.mapKeys = mapKeys;
         lodash.mapValues = mapValues;
         lodash.matches = matches;
         lodash.matchesProperty = matchesProperty;
@@ -13241,6 +13281,7 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
         lodash.union = union;
         lodash.uniq = uniq;
         lodash.unzip = unzip;
+        lodash.unzipWith = unzipWith;
         lodash.values = values;
         lodash.valuesIn = valuesIn;
         lodash.where = where;
@@ -13249,6 +13290,7 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
         lodash.xor = xor;
         lodash.zip = zip;
         lodash.zipObject = zipObject;
+        lodash.zipWith = zipWith;
         lodash.backflow = flowRight;
         lodash.collect = map;
         lodash.compose = flowRight;
@@ -13450,7 +13492,12 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
         };
         LazyWrapper.prototype.slice = function(start, end) {
           start = start == null ? 0 : (+start || 0);
-          var result = start < 0 ? this.takeRight(-start) : this.drop(start);
+          var result = this;
+          if (start < 0) {
+            result = this.takeRight(-start);
+          } else if (start) {
+            result = this.drop(start);
+          }
           if (end !== undefined) {
             end = (+end || 0);
             result = end < 0 ? result.dropRight(-end) : result.take(end - start);
@@ -13469,7 +13516,6 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
               retUnwrapped = /^(?:first|last)$/.test(methodName);
           lodash.prototype[methodName] = function() {
             var args = arguments,
-                length = args.length,
                 chainAll = this.__chain__,
                 value = this.__wrapped__,
                 isHybrid = !!this.__actions__.length,
@@ -13571,9 +13617,9 @@ System.register("npm:lodash@3.7.0/index", ["github:jspm/nodelibs-process@0.1.1"]
 
 
 
-System.register("github:angular/di.js@master", ["github:angular/di.js@master/index"], function($__export) {
+System.register("github:Bizboard/di.js@master", ["github:Bizboard/di.js@master/index"], function($__export) {
   "use strict";
-  var __moduleName = "github:angular/di.js@master";
+  var __moduleName = "github:Bizboard/di.js@master";
   var $__exportNames = {};
   return {
     setters: [function($__m) {
@@ -13588,18 +13634,18 @@ System.register("github:angular/di.js@master", ["github:angular/di.js@master/ind
 
 
 
-System.register("npm:lodash@3.7.0", ["npm:lodash@3.7.0/index"], true, function(require, exports, module) {
+System.register("npm:lodash@3.8.0", ["npm:lodash@3.8.0/index"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
-  module.exports = require("npm:lodash@3.7.0/index");
+  module.exports = require("npm:lodash@3.8.0/index");
   global.define = __define;
   return module.exports;
 });
 
 
 
-System.register("datasources/FirebaseDataSource", ["utils/objectHelper", "core/DataSource", "github:firebase/firebase-bower@2.2.4", "github:angular/di.js@master"], function($__export) {
+System.register("datasources/FirebaseDataSource", ["utils/objectHelper", "core/DataSource", "github:firebase/firebase-bower@2.2.4", "github:Bizboard/di.js@master"], function($__export) {
   "use strict";
   var __moduleName = "datasources/FirebaseDataSource";
   var ObjectHelper,
@@ -13730,7 +13776,7 @@ System.register("datasources/FirebaseDataSource", ["utils/objectHelper", "core/D
 
 
 
-System.register("core/Model", ["npm:lodash@3.7.0", "core/Model/prioritisedObject", "core/DataSource", "utils/objectHelper", "github:Bizboard/arva-context@master/Context"], function($__export) {
+System.register("core/Model", ["npm:lodash@3.8.0", "core/Model/prioritisedObject", "core/DataSource", "utils/objectHelper", "github:Bizboard/arva-context@master/Context"], function($__export) {
   "use strict";
   var __moduleName = "core/Model";
   var _,
