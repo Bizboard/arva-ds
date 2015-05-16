@@ -17,7 +17,7 @@
     },
     "dependencies": {
       "arva-context": "github:Bizboard/arva-context@master",
-      "di.js": "github:angular/di.js@master",
+      "di.js": "github:Bizboard/arva-ds@master",
       "firebase": "github:firebase/firebase-bower@^2.2.0",
       "lodash": "npm:lodash@^3.2.0"
     }
