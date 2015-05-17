@@ -54,7 +54,7 @@ export default class Model extends PrioritisedObject {
                 id = dataSource.key();
             }
         }
-        
+
         /* Construct core PrioritisedObject */
         super(dataSource, options.dataSnapshot);
 

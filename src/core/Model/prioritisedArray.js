@@ -37,6 +37,7 @@ class PrioritisedArray extends Array {
      * @param {Snapshot} dataSnapshot
      */
     constructor(dataType, dataSource = null, dataSnapshot = null) {
+        super();
         /**** Callbacks ****/
         this._valueChangedCallback = null;
 
