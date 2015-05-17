@@ -30,11 +30,6 @@ export default class Model extends PrioritisedObject {
      *                          subscription to the dataSource to fetch initial data.
      */
     constructor(id, data = null, options = {}) {
-        /* Calculate path to model in dataSource */
-        let modelName = Object.getPrototypeOf(this).constructor.name;
-        let pathRoot = modelName + 's';
-
-        //let dataSource = null;
 
         // retrieve dataSource from the DI context
         let dataSource = Context.getContext().get(DataSource);
@@ -59,8 +54,15 @@ export default class Model extends PrioritisedObject {
                 id = dataSource.key();
             }
         }
+        
+        /* Construct core PrioritisedObject */
+        super(dataSource, options.dataSnapshot);
 
         this._id = id;
+
+        /* Calculate path to model in dataSource */
+        let modelName = Object.getPrototypeOf(this).constructor.name;
+        let pathRoot = modelName + 's';
 
         /* Hide the id field from enumeration, so we don't save it to the dataSource. */
         ObjectHelper.hidePropertyFromObject(Object.getPrototypeOf(this), 'id');
@@ -69,8 +71,7 @@ export default class Model extends PrioritisedObject {
          * This causes changes to be synched to and from the dataSource */
         this._replaceModelAccessorsWithDatabinding();
 
-        /* Construct core PrioritisedObject */
-        super(dataSource, options.dataSnapshot);
+
 
         /* Write local data to model, if any data is present */
         if(data) {
