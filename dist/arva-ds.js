@@ -15592,7 +15592,9 @@ System.register("core/DataSource", [], function($__export) {
           setChildMovedCallback: function(callback) {},
           removeChildMovedCallback: function() {},
           setChildRemovedCallback: function(callback) {},
-          removeChildRemovedCallback: function() {}
+          removeChildRemovedCallback: function() {},
+          setValueReadyCallback: function(callback) {},
+          removeValueReadyCallback: function() {}
         }, {});
       }());
       $__export("DataSource", DataSource);
@@ -16791,6 +16793,9 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.8.0", "npm:evente
           },
           on: function(event, fn, context) {
             switch (event) {
+              case 'ready':
+                this._dataSource.setValueReadyCallback(fn.bind(context));
+                break;
               case 'value':
                 this._dataSource.setValueChangedCallback(fn.bind(context));
                 break;
@@ -16808,6 +16813,9 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.8.0", "npm:evente
           },
           off: function(event, fn, context) {
             switch (event) {
+              case 'ready':
+                this._dataSource.removeValueReadyCallback();
+                break;
               case 'value':
                 this._dataSource.removeValueChangedCallback();
                 break;
@@ -17571,6 +17579,16 @@ System.register("datasources/FirebaseDataSource", ["utils/objectHelper", "core/D
             if (this._onValueCallback) {
               this._dataReference.off('value', this._onValueCallback);
               this._onValueCallback = null;
+            }
+          },
+          setValueReadyCallback: function(callback) {
+            this._onValueReadyCallback = callback;
+            this._dataReference.on('once', this._onValueReadyCallback);
+          },
+          removeValueReadyCallback: function(callback) {
+            if (this._onValueReadyCallback) {
+              this._dataReference.off('once', this._onValueReadyCallback);
+              this._onValueReadyCallback = null;
             }
           },
           setChildAddedCallback: function(callback) {

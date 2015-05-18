@@ -89,6 +89,9 @@ class PrioritisedObject extends EventEmitter {
 
     on(event, fn, context) {
         switch(event) {
+            case 'ready':
+                this._dataSource.setValueReadyCallback(fn.bind(context));
+                break;
             case 'value':
                 this._dataSource.setValueChangedCallback(fn.bind(context));
                 break;
@@ -108,6 +111,9 @@ class PrioritisedObject extends EventEmitter {
 
     off(event, fn, context) {
         switch(event) {
+            case 'ready':
+                this._dataSource.removeValueReadyCallback();
+                break;
             case 'value':
                 this._dataSource.removeValueChangedCallback();
                 break;

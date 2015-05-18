@@ -117,6 +117,18 @@ export class FirebaseDataSource extends DataSource {
         }
     }
 
+    setValueReadyCallback(callback) {
+        this._onValueReadyCallback = callback;
+        this._dataReference.on('once', this._onValueReadyCallback);
+    }
+
+    removeValueReadyCallback(callback) {
+        if (this._onValueReadyCallback) {
+            this._dataReference.off('once', this._onValueReadyCallback);
+            this._onValueReadyCallback = null;
+        }
+    }
+
     /** Set the callback triggered when dataSource adds a data element.
      * @param {Function} callback **/
     setChildAddedCallback(callback) {
