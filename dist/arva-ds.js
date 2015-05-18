@@ -17672,30 +17672,30 @@ System.register("core/Model", ["npm:lodash@3.8.0", "core/Model/prioritisedObject
           if (id) {
             this._id = id;
             if (options.dataSource) {
-              dataSource = options.dataSource;
+              this._dataSource = options.dataSource;
             } else if (options.path) {
-              dataSource = dataSource.child(options.path);
+              this._dataSource = dataSource.child(options.path);
             } else
-              dataSource = dataSource.child(pathRoot).child(id);
+              this._dataSource = dataSource.child(pathRoot).child(id);
           } else {
             if (options.dataSnapshot) {
               id = options.dataSnapshot.key();
-              dataSource = dataSource.child(pathRoot).child(id);
+              this._dataSource = dataSource.child(pathRoot).child(id);
             } else {
               if (options.dataSource)
-                dataSource = options.dataSource.push(data);
+                this._dataSource = options.dataSource.push(data);
               else if (options.path)
-                dataSource = dataSource.child(options.path).push(data);
+                this._dataSource = dataSource.child(options.path).push(data);
               else {
-                dataSource = dataSource.child(pathRoot).push(data);
+                this._dataSource = dataSource.child(pathRoot).push(data);
               }
-              id = dataSource.key();
+              this._id = this._dataSource.key();
             }
           }
           if (options.dataSnapshot)
             this._buildFromSnapshot(options.dataSnapshot);
           else
-            this._buildFromDataSource(dataSource);
+            this._buildFromDataSource(this._dataSource);
           if (data) {
             this._isBeingWrittenByDatasource = true;
             for (var name in data) {

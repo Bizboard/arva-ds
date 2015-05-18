@@ -61,33 +61,28 @@ export default class Model extends PrioritisedObject {
         /* If an id is present, use it to locate our model. */
         if(id){
             this._id = id;
-            if (options.dataSource) { dataSource = options.dataSource; }
-            else if (options.path) { dataSource = dataSource.child(options.path); }
-            else dataSource = dataSource.child(pathRoot).child(id);
+            if (options.dataSource) { this._dataSource = options.dataSource; }
+            else if (options.path) { this._dataSource = dataSource.child(options.path); }
+            else this._dataSource = dataSource.child(pathRoot).child(id);
         } else {
             /* No id is present, check if we have a dataSnapshot we can extract it from.
              * If we can't, generate a random one by pushing a new entry to the dataSource. */
             if(options.dataSnapshot) {
                 id = options.dataSnapshot.key();
-                dataSource = dataSource.child(pathRoot).child(id);
+                this._dataSource = dataSource.child(pathRoot).child(id);
             } else {
-                if (options.dataSource) dataSource = options.dataSource.push(data);
-                else if (options.path) dataSource = dataSource.child(options.path).push(data);
+                if (options.dataSource) this._dataSource = options.dataSource.push(data);
+                else if (options.path) this._dataSource = dataSource.child(options.path).push(data);
                 else {
-                    dataSource = dataSource.child(pathRoot).push(data);
+                    this._dataSource = dataSource.child(pathRoot).push(data);
                 }
-                id = dataSource.key();
+                this._id = this._dataSource.key();
             }
         }
 
         /* Construct core PrioritisedObject */
         if (options.dataSnapshot) this._buildFromSnapshot(options.dataSnapshot);
-        else this._buildFromDataSource(dataSource);
-
-
-
-
-
+        else this._buildFromDataSource(this._dataSource);
 
 
 
