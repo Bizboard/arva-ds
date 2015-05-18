@@ -45,10 +45,17 @@ export default class Model extends PrioritisedObject {
             super();
         }
 
+        /* Hide the id field from enumeration, so we don't save it to the dataSource. */
+        ObjectHelper.hidePropertyFromObject(Object.getPrototypeOf(this), 'id');
+
+        /* Replace all stub data fields of any subclass of Model with databinding accessors.
+         * This causes changes to be synched to and from the dataSource */
+        this._replaceModelAccessorsWithDatabinding();
+
+
         /* Calculate path to model in dataSource */
         let modelName = Object.getPrototypeOf(this).constructor.name;
         let pathRoot = modelName + 's';
-
 
 
         /* If an id is present, use it to locate our model. */
@@ -79,12 +86,9 @@ export default class Model extends PrioritisedObject {
         else this._buildFromDataSource(dataSource);
 
 
-        /* Hide the id field from enumeration, so we don't save it to the dataSource. */
-        ObjectHelper.hidePropertyFromObject(Object.getPrototypeOf(this), 'id');
 
-        /* Replace all stub data fields of any subclass of Model with databinding accessors.
-         * This causes changes to be synched to and from the dataSource */
-        this._replaceModelAccessorsWithDatabinding();
+
+
 
 
 

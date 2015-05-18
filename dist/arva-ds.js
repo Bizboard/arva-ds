@@ -17665,6 +17665,8 @@ System.register("core/Model", ["npm:lodash@3.8.0", "core/Model/prioritisedObject
           } else {
             $traceurRuntime.superConstructor(Model).call(this);
           }
+          ObjectHelper.hidePropertyFromObject(Object.getPrototypeOf(this), 'id');
+          this._replaceModelAccessorsWithDatabinding();
           var modelName = Object.getPrototypeOf(this).constructor.name;
           var pathRoot = modelName + 's';
           if (id) {
@@ -17694,8 +17696,6 @@ System.register("core/Model", ["npm:lodash@3.8.0", "core/Model/prioritisedObject
             this._buildFromSnapshot(options.dataSnapshot);
           else
             this._buildFromDataSource(dataSource);
-          ObjectHelper.hidePropertyFromObject(Object.getPrototypeOf(this), 'id');
-          this._replaceModelAccessorsWithDatabinding();
           if (data) {
             this._isBeingWrittenByDatasource = true;
             for (var name in data) {
