@@ -21,7 +21,7 @@ export default
 class PrioritisedObject extends EventEmitter {
 
     get id() { return this._id; }
-    set id(value) { }
+    set id(value) { this._id = value; }
 
     /** Priority (positioning) of the object in the dataSource */
     get priority() {

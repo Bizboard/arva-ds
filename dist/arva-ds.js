@@ -16767,7 +16767,9 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.8.0", "npm:evente
           get id() {
             return this._id;
           },
-          set id(value) {},
+          set id(value) {
+            this._id = value;
+          },
           get priority() {
             return this._priority;
           },
