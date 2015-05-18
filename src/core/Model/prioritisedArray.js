@@ -233,7 +233,7 @@ class PrioritisedArray extends Array {
             dataSnapshot.ref().inheritable)
             this._eventEmitter.emit('value', this);
 
-        this._registerCallbacks(this._dataSource);
+        //this._registerCallbacks(this._dataSource);
     }
 
 
@@ -245,6 +245,7 @@ class PrioritisedArray extends Array {
      */
     _buildFromDataSource(dataSource) {
 
+
         let path = dataSource.path();
         let DataSource = Object.getPrototypeOf(dataSource).constructor;
         let newSource = new DataSource(path);
@@ -253,6 +254,7 @@ class PrioritisedArray extends Array {
             this._buildFromSnapshot(dataSnapshot);
             this._registerCallbacks(newSource);
         });
+
     }
 
     _registerCallbacks(dataSource) {
