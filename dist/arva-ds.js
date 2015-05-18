@@ -16749,6 +16749,7 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.8.0", "npm:evente
           var dataSnapshot = arguments[1] !== (void 0) ? arguments[1] : null;
           $traceurRuntime.superConstructor(PrioritisedObject).call(this);
           this._valueChangedCallback = null;
+          this._id = 0;
           this._dataSource = dataSource;
           this._priority = 0;
           this._isBeingWrittenByDatasource = false;
@@ -17693,7 +17694,7 @@ System.register("core/Model", ["npm:lodash@3.8.0", "core/Model/prioritisedObject
           var modelName = Object.getPrototypeOf(this).constructor.name;
           var pathRoot = modelName + 's';
           if (id) {
-            this._id = id;
+            this.id = id;
             if (options.dataSource) {
               this._dataSource = options.dataSource;
             } else if (options.path) {
@@ -17712,7 +17713,7 @@ System.register("core/Model", ["npm:lodash@3.8.0", "core/Model/prioritisedObject
               else {
                 this._dataSource = dataSource.child(pathRoot).push(data);
               }
-              this._id = this._dataSource.key();
+              this.id = this._dataSource.key();
             }
           }
           if (options.dataSnapshot)

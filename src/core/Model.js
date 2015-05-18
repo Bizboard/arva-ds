@@ -60,7 +60,7 @@ export default class Model extends PrioritisedObject {
 
         /* If an id is present, use it to locate our model. */
         if(id){
-            this._id = id;
+            this.id = id;
             if (options.dataSource) { this._dataSource = options.dataSource; }
             else if (options.path) { this._dataSource = dataSource.child(options.path); }
             else this._dataSource = dataSource.child(pathRoot).child(id);
@@ -76,7 +76,7 @@ export default class Model extends PrioritisedObject {
                 else {
                     this._dataSource = dataSource.child(pathRoot).push(data);
                 }
-                this._id = this._dataSource.key();
+                this.id = this._dataSource.key();
             }
         }
 
