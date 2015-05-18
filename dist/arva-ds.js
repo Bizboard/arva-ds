@@ -16799,6 +16799,9 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.8.0", "npm:evente
           on: function(event, fn, context) {
             switch (event) {
               case 'ready':
+                if (this._dataSource && this._dataSource.ready) {
+                  fn.call(context, this);
+                }
                 break;
               case 'value':
                 this._dataSource.setValueChangedCallback(fn.bind(context));
@@ -16845,6 +16848,10 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.8.0", "npm:evente
             if (!this._id) {
               this._id = dataSnapshot.key();
             }
+            if (numChildren === 0) {
+              this._dataSource.ready = true;
+              this.emit('ready');
+            }
             dataSnapshot.forEach(function(child) {
               var ref = child.ref();
               var key = child.key();
@@ -16858,6 +16865,7 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.8.0", "npm:evente
                 }
               }
               if (currentChild++ == numChildren) {
+                this._dataSource.ready = true;
                 this.emit('ready');
               }
             }.bind(this));

@@ -97,6 +97,8 @@ class PrioritisedObject extends EventEmitter {
     on(event, fn, context) {
         switch(event) {
             case 'ready':
+                /* If we're already ready, fire immediately */
+                if(this._dataSource && this._dataSource.ready){ fn.call(context, this); }
                 break;
             case 'value':
                 this._dataSource.setValueChangedCallback(fn.bind(context));
@@ -156,6 +158,12 @@ class PrioritisedObject extends EventEmitter {
             this._id = dataSnapshot.key();
         }
 
+        /* If there is no data at this point yet, fire a ready event */
+        if (numChildren === 0) {
+            this._dataSource.ready = true;
+            this.emit('ready');
+        }
+
         /* For each primitive in the snapshot, define getter/setter.
          * For objects, add them as a PrioritisedObject.
          */
@@ -183,6 +191,7 @@ class PrioritisedObject extends EventEmitter {
 
                 /* If this is the last child, fire a ready event */
                 if(currentChild++ == numChildren){
+                    this._dataSource.ready = true;
                     this.emit('ready');
                 }
             }.bind(this));
