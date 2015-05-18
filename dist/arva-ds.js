@@ -17677,8 +17677,6 @@ System.register("core/Model", ["npm:lodash@3.8.0", "core/Model/prioritisedObject
               dataSource = dataSource.child(options.path);
             } else
               dataSource = dataSource.child(pathRoot).child(id);
-            if (data)
-              dataSource.set(data);
           } else {
             if (options.dataSnapshot) {
               id = options.dataSnapshot.key();
