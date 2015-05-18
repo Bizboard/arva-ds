@@ -16799,7 +16799,6 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.8.0", "npm:evente
           on: function(event, fn, context) {
             switch (event) {
               case 'ready':
-                this._dataSource.setValueReadyCallback(fn.bind(context));
                 break;
               case 'value':
                 this._dataSource.setValueChangedCallback(fn.bind(context));
