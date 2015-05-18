@@ -39,7 +39,7 @@ export default class Model extends PrioritisedObject {
         } else if (options.dataSource) {
             super(options.dataSource, options.dataSnapshot);
         } else if (options.dataSnapshot) {
-            super(dataSource.child(options.dataSnapshot.path.toString()), options.dataSnapshot);
+            super(dataSource.child(options.dataSnapshot.ref().path.toString()), options.dataSnapshot);
         }
         else {
             super();
