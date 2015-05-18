@@ -17654,11 +17654,18 @@ System.register("core/Model", ["npm:lodash@3.8.0", "core/Model/prioritisedObject
         function Model(id) {
           var data = arguments[1] !== (void 0) ? arguments[1] : null;
           var options = arguments[2] !== (void 0) ? arguments[2] : {};
-          $traceurRuntime.superConstructor(Model).call(this);
+          var dataSource = Context.getContext().get(DataSource);
+          if (options.path) {
+            $traceurRuntime.superConstructor(Model).call(this, dataSource.child(options.path), options.dataSnapshot);
+          } else if (options.dataSource) {
+            $traceurRuntime.superConstructor(Model).call(this, options.dataSource, options.dataSnapshot);
+          } else {
+            $traceurRuntime.superConstructor(Model).call(this);
+          }
           var modelName = Object.getPrototypeOf(this).constructor.name;
           var pathRoot = modelName + 's';
-          var dataSource = Context.getContext().get(DataSource);
           if (id) {
+            this._id = id;
             if (options.dataSource) {
               dataSource = options.dataSource;
             } else if (options.path) {
@@ -17686,7 +17693,6 @@ System.register("core/Model", ["npm:lodash@3.8.0", "core/Model/prioritisedObject
             this._buildFromSnapshot(options.dataSnapshot);
           else
             this._buildFromDataSource(dataSource);
-          this._id = id;
           ObjectHelper.hidePropertyFromObject(Object.getPrototypeOf(this), 'id');
           this._replaceModelAccessorsWithDatabinding();
           if (data) {

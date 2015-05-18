@@ -31,17 +31,26 @@ export default class Model extends PrioritisedObject {
      */
     constructor(id, data = null, options = {}) {
 
-        super();
+        /* Retrieve dataSource from the DI context */
+        let dataSource = Context.getContext().get(DataSource);
+
+        if (options.path) {
+            super(dataSource.child(options.path), options.dataSnapshot);
+        } else if (options.dataSource) {
+            super(options.dataSource, options.dataSnapshot);
+        } else {
+            super();
+        }
 
         /* Calculate path to model in dataSource */
         let modelName = Object.getPrototypeOf(this).constructor.name;
         let pathRoot = modelName + 's';
 
-        /* Retrieve dataSource from the DI context */
-        let dataSource = Context.getContext().get(DataSource);
+
 
         /* If an id is present, use it to locate our model. */
         if(id){
+            this._id = id;
             if (options.dataSource) { dataSource = options.dataSource; }
             else if (options.path) { dataSource = dataSource.child(options.path); }
             else dataSource = dataSource.child(pathRoot).child(id);
@@ -65,8 +74,6 @@ export default class Model extends PrioritisedObject {
         /* Construct core PrioritisedObject */
         if (options.dataSnapshot) this._buildFromSnapshot(options.dataSnapshot);
         else this._buildFromDataSource(dataSource);
-
-        this._id = id;
 
 
         /* Hide the id field from enumeration, so we don't save it to the dataSource. */
