@@ -31,7 +31,7 @@ export default class Model extends PrioritisedObject {
      */
     constructor(id, data = null, options = {}) {
         /* Calculate path to model in dataSource */
-        let modelName = Object.getPrototypeOf(this).constructor.name;
+        let modelName = Object.getPrototypeOf(Model).constructor.name;
         let pathRoot = modelName + 's';
 
         //let dataSource = null;
@@ -60,17 +60,14 @@ export default class Model extends PrioritisedObject {
             }
         }
 
-        this._id = id;
+        /* Construct core PrioritisedObject */
+        super(dataSource, options.dataSnapshot);
 
-        /* Hide the id field from enumeration, so we don't save it to the dataSource. */
-        ObjectHelper.hidePropertyFromObject(Object.getPrototypeOf(this), 'id');
+        this._id = id;
 
         /* Replace all stub data fields of any subclass of Model with databinding accessors.
          * This causes changes to be synched to and from the dataSource */
         this._replaceModelAccessorsWithDatabinding();
-
-        /* Construct core PrioritisedObject */
-        super(dataSource, options.dataSnapshot);
 
         /* Write local data to model, if any data is present */
         if(data) {
@@ -110,4 +107,3 @@ export default class Model extends PrioritisedObject {
         }
     }
 }
-

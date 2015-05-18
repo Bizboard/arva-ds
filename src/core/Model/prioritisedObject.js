@@ -45,6 +45,8 @@ class PrioritisedObject extends EventEmitter {
      * @param {Snapshot} dataSnapshot
      */
     constructor(dataSource, dataSnapshot = null) {
+        super();
+
         /**** Callbacks ****/
         this._valueChangedCallback = null;
 
