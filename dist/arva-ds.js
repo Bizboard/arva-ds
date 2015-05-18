@@ -17659,8 +17659,10 @@ System.register("core/Model", ["npm:lodash@3.8.0", "core/Model/prioritisedObject
             $traceurRuntime.superConstructor(Model).call(this, dataSource.child(options.path), options.dataSnapshot);
           } else if (options.dataSource) {
             $traceurRuntime.superConstructor(Model).call(this, options.dataSource, options.dataSnapshot);
+          } else if (options.dataSnapshot) {
+            $traceurRuntime.superConstructor(Model).call(this, dataSource.child(options.dataSnapshot.path.toString()), options.dataSnapshot);
           } else {
-            $traceurRuntime.superConstructor(Model).call(this, null, options.dataSnapshot);
+            $traceurRuntime.superConstructor(Model).call(this);
           }
           var modelName = Object.getPrototypeOf(this).constructor.name;
           var pathRoot = modelName + 's';

@@ -272,8 +272,7 @@ class PrioritisedArray extends Array {
      */
     _onChildAdded(snapshot) {
         let id = snapshot.key();
-
-        let model = this.add(new this._dataType(id, snapshot.ref(), {dataSnapshot: snapshot}));
+        let model = this.add(new this._dataType(id, null, {dataSnapshot: snapshot}));
 
         this._eventEmitter.emit('child_added', model);
         this._eventEmitter.emit('value', this);
