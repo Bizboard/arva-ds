@@ -16828,25 +16828,24 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.8.0", "npm:evente
             }
           },
           _buildFromSnapshot: function(dataSnapshot) {
-            var $__0 = this;
             this._priority = dataSnapshot.getPriority();
             var numChidren = dataSnapshot.numChildren();
             if (!this._id) {
               this._id = dataSnapshot.key();
             }
-            dataSnapshot.forEach((function(child) {
+            dataSnapshot.forEach(function(child) {
               var ref = child.ref();
               var key = child.key();
               var val = child.val();
               if (typeof val === 'object' && val !== null) {
                 val = new PrioritisedObject(ref, child);
-                ObjectHelper.addPropertyToObject($__0, key, val, true, true);
+                ObjectHelper.addPropertyToObject(this, key, val, true, true);
               } else {
-                if (Object.getOwnPropertyDescriptor($__0, key)) {
-                  ObjectHelper.addPropertyToObject($__0, key, val, true, true, $__0._onSetterTriggered);
+                if (Object.getOwnPropertyDescriptor(this, key)) {
+                  ObjectHelper.addPropertyToObject(this, key, val, true, true, this._onSetterTriggered);
                 }
               }
-            }));
+            }.bind(this));
           },
           _buildFromDataSource: function(dataSource) {
             var $__0 = this;

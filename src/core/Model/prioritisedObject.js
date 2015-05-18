@@ -149,7 +149,7 @@ class PrioritisedObject extends EventEmitter {
          */
         dataSnapshot.forEach(
             /** @param {Snapshot} child **/
-            (child) => {
+            function(child) {
                 let ref = child.ref();
                 let key = child.key();
                 let val = child.val();
@@ -168,7 +168,7 @@ class PrioritisedObject extends EventEmitter {
                         ObjectHelper.addPropertyToObject(this, key, val, true, true, this._onSetterTriggered);
                     }
                 }
-            });
+            }.bind(this));
     }
 
     /**
