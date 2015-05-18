@@ -17739,7 +17739,7 @@ System.register("core/Model", ["npm:lodash@3.8.0", "core/Model/prioritisedObject
             var $__0 = this;
             var prototype = Object.getPrototypeOf(this);
             while (prototype.constructor.name !== 'Model') {
-              var propNames = Object.getOwnPropertyNames(prototype);
+              var propNames = _.difference(Object.getOwnPropertyNames(prototype), ['constructor', 'id']);
               var $__5 = true;
               var $__6 = false;
               var $__7 = undefined;

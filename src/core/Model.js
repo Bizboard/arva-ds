@@ -109,7 +109,8 @@ export default class Model extends PrioritisedObject {
         let prototype = Object.getPrototypeOf(this);
 
         while(prototype.constructor.name !== 'Model') {
-            let propNames = Object.getOwnPropertyNames(prototype);
+            /* Get all properties except the id and constructor of this model */
+            let propNames = _.difference(Object.getOwnPropertyNames(prototype), ['constructor', 'id']);
 
             for(let name of propNames) {
                 let descriptor = Object.getOwnPropertyDescriptor(prototype, name);
