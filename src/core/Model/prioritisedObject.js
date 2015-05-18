@@ -177,6 +177,7 @@ class PrioritisedObject extends EventEmitter {
      * @private
      */
     _buildFromDataSource(dataSource) {
+        if (!dataSource) return;
         let path = dataSource.path();
         let DataSource = Object.getPrototypeOf(dataSource).constructor;
         let newSource = new DataSource(path);

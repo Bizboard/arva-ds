@@ -8,7 +8,6 @@
  @copyright Bizboard, 2015
 
  */
-
 import ObjectHelper                 from '../utils/objectHelper'
 import {DataSource}                 from '../core/DataSource'
 import Firebase                     from 'firebase'
@@ -38,7 +37,7 @@ export class FirebaseDataSource extends DataSource {
          * in the methods as expected, even when they're called from event handlers.        */
         ObjectHelper.bindAllMethods(this, this);
     }
-
+    
 
     /**
      * Returns a datasource reference to the given child branch of the current datasource.

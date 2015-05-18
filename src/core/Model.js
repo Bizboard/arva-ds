@@ -30,6 +30,13 @@ export default class Model extends PrioritisedObject {
      *                          subscription to the dataSource to fetch initial data.
      */
     constructor(id, data = null, options = {}) {
+
+        super();
+
+        /* Calculate path to model in dataSource */
+        let modelName = Object.getPrototypeOf(this).constructor.name;
+        let pathRoot = modelName + 's';
+
         /* Retrieve dataSource from the DI context */
         let dataSource = Context.getContext().get(DataSource);
 
@@ -54,13 +61,11 @@ export default class Model extends PrioritisedObject {
         }
 
         /* Construct core PrioritisedObject */
-        super(dataSource, options.dataSnapshot);
+        if (options.dataSnapshot) this._buildFromSnapshot(options.dataSnapshot);
+        else this._buildFromDataSource(dataSource);
 
         this._id = id;
 
-        /* Calculate path to model in dataSource */
-        let modelName = Object.getPrototypeOf(this).constructor.name;
-        let pathRoot = modelName + 's';
 
         /* Hide the id field from enumeration, so we don't save it to the dataSource. */
         ObjectHelper.hidePropertyFromObject(Object.getPrototypeOf(this), 'id');

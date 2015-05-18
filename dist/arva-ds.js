@@ -16848,6 +16848,8 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.8.0", "npm:evente
           },
           _buildFromDataSource: function(dataSource) {
             var $__0 = this;
+            if (!dataSource)
+              return ;
             var path = dataSource.path();
             var DataSource = Object.getPrototypeOf(dataSource).constructor;
             var newSource = new DataSource(path);
@@ -17652,6 +17654,9 @@ System.register("core/Model", ["npm:lodash@3.8.0", "core/Model/prioritisedObject
         function Model(id) {
           var data = arguments[1] !== (void 0) ? arguments[1] : null;
           var options = arguments[2] !== (void 0) ? arguments[2] : {};
+          $traceurRuntime.superConstructor(Model).call(this);
+          var modelName = Object.getPrototypeOf(this).constructor.name;
+          var pathRoot = modelName + 's';
           var dataSource = Context.getContext().get(DataSource);
           if (id) {
             if (options.dataSource) {
@@ -17674,10 +17679,11 @@ System.register("core/Model", ["npm:lodash@3.8.0", "core/Model/prioritisedObject
               id = dataSource.key();
             }
           }
-          $traceurRuntime.superConstructor(Model).call(this, dataSource, options.dataSnapshot);
+          if (options.dataSnapshot)
+            this._buildFromSnapshot(options.dataSnapshot);
+          else
+            this._buildFromDataSource(dataSource);
           this._id = id;
-          var modelName = Object.getPrototypeOf(this).constructor.name;
-          var pathRoot = modelName + 's';
           ObjectHelper.hidePropertyFromObject(Object.getPrototypeOf(this), 'id');
           this._replaceModelAccessorsWithDatabinding();
           if (data) {
