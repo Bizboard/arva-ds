@@ -37,7 +37,7 @@ export class FirebaseDataSource extends DataSource {
          * in the methods as expected, even when they're called from event handlers.        */
         ObjectHelper.bindAllMethods(this, this);
     }
-    
+
 
     /**
      * Returns a datasource reference to the given child branch of the current datasource.
