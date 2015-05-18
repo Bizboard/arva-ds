@@ -141,6 +141,9 @@ class PrioritisedObject extends EventEmitter {
         this._priority = dataSnapshot.getPriority();
         let numChidren = dataSnapshot.numChildren();
 
+        if (!this._id) {
+            this._id = dataSnapshot.key();
+        }
         /* For each primitive in the snapshot, define getter/setter.
          * For objects, add them as a PrioritisedObject.
          */
@@ -150,8 +153,6 @@ class PrioritisedObject extends EventEmitter {
                 let ref = child.ref();
                 let key = child.key();
                 let val = child.val();
-
-                this._id = key;
 
                 if (typeof val === 'object' && val !== null) {
                     /* If child is an object, put it in its own PrioritisedObject. We're not interested
