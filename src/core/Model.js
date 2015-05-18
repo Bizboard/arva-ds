@@ -39,7 +39,7 @@ export default class Model extends PrioritisedObject {
         } else if (options.dataSource) {
             super(options.dataSource, options.dataSnapshot);
         } else {
-            super();
+            super(null, options.dataSnapshot);
         }
 
         /* Calculate path to model in dataSource */

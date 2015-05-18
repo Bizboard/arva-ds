@@ -17660,7 +17660,7 @@ System.register("core/Model", ["npm:lodash@3.8.0", "core/Model/prioritisedObject
           } else if (options.dataSource) {
             $traceurRuntime.superConstructor(Model).call(this, options.dataSource, options.dataSnapshot);
           } else {
-            $traceurRuntime.superConstructor(Model).call(this);
+            $traceurRuntime.superConstructor(Model).call(this, null, options.dataSnapshot);
           }
           var modelName = Object.getPrototypeOf(this).constructor.name;
           var pathRoot = modelName + 's';
