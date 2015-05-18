@@ -15592,9 +15592,7 @@ System.register("core/DataSource", [], function($__export) {
           setChildMovedCallback: function(callback) {},
           removeChildMovedCallback: function() {},
           setChildRemovedCallback: function(callback) {},
-          removeChildRemovedCallback: function() {},
-          setValueReadyCallback: function(callback) {},
-          removeValueReadyCallback: function() {}
+          removeChildRemovedCallback: function() {}
         }, {});
       }());
       $__export("DataSource", DataSource);
@@ -16791,6 +16789,13 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.8.0", "npm:evente
               this._dataSource.remove();
             delete this;
           },
+          once: function(event, fn) {
+            var context = arguments[2] !== (void 0) ? arguments[2] : this;
+            return on(event, function() {
+              fn.call(context, arguments);
+              this.off(event, fn, context);
+            }, this);
+          },
           on: function(event, fn, context) {
             switch (event) {
               case 'ready':
@@ -16814,7 +16819,6 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.8.0", "npm:evente
           off: function(event, fn, context) {
             switch (event) {
               case 'ready':
-                this._dataSource.removeValueReadyCallback();
                 break;
               case 'value':
                 this._dataSource.removeValueChangedCallback();
@@ -16837,7 +16841,8 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.8.0", "npm:evente
           },
           _buildFromSnapshot: function(dataSnapshot) {
             this._priority = dataSnapshot.getPriority();
-            var numChidren = dataSnapshot.numChildren();
+            var numChildren = dataSnapshot.numChildren(),
+                currentChild = 1;
             if (!this._id) {
               this._id = dataSnapshot.key();
             }
@@ -16852,6 +16857,9 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.8.0", "npm:evente
                 if (Object.getOwnPropertyDescriptor(this, key)) {
                   ObjectHelper.addPropertyToObject(this, key, val, true, true, this._onSetterTriggered);
                 }
+              }
+              if (currentChild++ == numChildren) {
+                this.emit('ready');
               }
             }.bind(this));
           },
@@ -17579,16 +17587,6 @@ System.register("datasources/FirebaseDataSource", ["utils/objectHelper", "core/D
             if (this._onValueCallback) {
               this._dataReference.off('value', this._onValueCallback);
               this._onValueCallback = null;
-            }
-          },
-          setValueReadyCallback: function(callback) {
-            this._onValueReadyCallback = callback;
-            this._dataReference.on('once', this._onValueReadyCallback);
-          },
-          removeValueReadyCallback: function(callback) {
-            if (this._onValueReadyCallback) {
-              this._dataReference.off('once', this._onValueReadyCallback);
-              this._onValueReadyCallback = null;
             }
           },
           setChildAddedCallback: function(callback) {

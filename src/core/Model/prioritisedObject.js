@@ -87,6 +87,13 @@ class PrioritisedObject extends EventEmitter {
         delete this;
     }
 
+    once(event, fn, context = this) {
+        return on(event, function(){
+            fn.call(context, arguments);
+            this.off(event, fn, context);
+        }, this);
+    }
+
     on(event, fn, context) {
         switch(event) {
             case 'ready':
@@ -112,7 +119,6 @@ class PrioritisedObject extends EventEmitter {
     off(event, fn, context) {
         switch(event) {
             case 'ready':
-                this._dataSource.removeValueReadyCallback();
                 break;
             case 'value':
                 this._dataSource.removeValueChangedCallback();
@@ -145,11 +151,12 @@ class PrioritisedObject extends EventEmitter {
     _buildFromSnapshot(dataSnapshot) {
         /* Set root object _priority */
         this._priority = dataSnapshot.getPriority();
-        let numChidren = dataSnapshot.numChildren();
+        let numChildren = dataSnapshot.numChildren(), currentChild = 1;
 
         if (!this._id) {
             this._id = dataSnapshot.key();
         }
+
         /* For each primitive in the snapshot, define getter/setter.
          * For objects, add them as a PrioritisedObject.
          */
@@ -173,6 +180,11 @@ class PrioritisedObject extends EventEmitter {
                         /* If child is a primitive, listen to changes so we can synch with Firebase */
                         ObjectHelper.addPropertyToObject(this, key, val, true, true, this._onSetterTriggered);
                     }
+                }
+
+                /* If this is the last child, fire a ready event */
+                if(currentChild++ == numChildren){
+                    this.emit('ready');
                 }
             }.bind(this));
     }

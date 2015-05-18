@@ -108,8 +108,4 @@ export class DataSource {
     /** Removes the callback set to trigger when dataSource adds a data element. **/
     removeChildRemovedCallback() { }
 
-    setValueReadyCallback(callback) {}
-
-    removeValueReadyCallback() {}
-
 }
