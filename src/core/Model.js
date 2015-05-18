@@ -57,7 +57,7 @@ export default class Model extends PrioritisedObject {
             if (options.dataSource) { dataSource = options.dataSource; }
             else if (options.path) { dataSource = dataSource.child(options.path); }
             else dataSource = dataSource.child(pathRoot).child(id);
-            if (data) dataSource.set(data);
+            //if (data) dataSource.set(data);
         } else {
             /* No id is present, check if we have a dataSnapshot we can extract it from.
              * If we can't, generate a random one by pushing a new entry to the dataSource. */
