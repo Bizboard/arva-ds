@@ -43,7 +43,7 @@ export default class Model extends PrioritisedObject {
         /* If an id is present, use it to locate our model. */
         if(id){
             if (options.dataSource) { dataSource = options.dataSource; }
-            else if (options.path) { dataSource = dataSource.child(options.path).child(id); }
+            else if (options.path) { dataSource = dataSource.child(options.path); }
             else dataSource = dataSource.child(pathRoot).child(id);
             if (data) dataSource.set(data);
         } else {

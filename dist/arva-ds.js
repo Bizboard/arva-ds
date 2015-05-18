@@ -17662,7 +17662,7 @@ System.register("core/Model", ["npm:lodash@3.8.0", "core/Model/prioritisedObject
             if (options.dataSource) {
               dataSource = options.dataSource;
             } else if (options.path) {
-              dataSource = dataSource.child(options.path).child(id);
+              dataSource = dataSource.child(options.path);
             } else
               dataSource = dataSource.child(pathRoot).child(id);
             if (data)
