@@ -30,18 +30,16 @@ export default class Model extends PrioritisedObject {
      *                          subscription to the dataSource to fetch initial data.
      */
     constructor(id, data = null, options = {}) {
-
-        // retrieve dataSource from the DI context
+        /* Retrieve dataSource from the DI context */
         let dataSource = Context.getContext().get(DataSource);
 
         /* If an id is present, use it to locate our model. */
         if(id){
-            if (options.dataSource) dataSource = options.dataSource;
-            else if (options.path) dataSource = dataSource.child(options.path);
-            //else dataSource = dataSource.child(pathRoot).child(id);
+            if (options.dataSource) { dataSource = options.dataSource; }
+            else if (options.path) { dataSource = dataSource.child(options.path); }
         } else {
             /* No id is present, check if we have a dataSnapshot we can extract it from.
-             * If not, generate a random one by pushing a new entry to the dataSource. */
+             * If we can't, generate a random one by pushing a new entry to the dataSource. */
             if(options.dataSnapshot) {
                 id = options.dataSnapshot.key();
                 dataSource = dataSource.child(pathRoot).child(id);

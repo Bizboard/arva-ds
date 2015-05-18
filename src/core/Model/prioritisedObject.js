@@ -12,12 +12,13 @@
 
 'use strict';
 
+import _ from 'lodash';
+import EventEmitter from 'eventemitter3';
 import ObjectHelper from '../../utils/objectHelper';
 import Snapshot from './snapshot';
-import _ from 'lodash';
 
 export default
-class PrioritisedObject {
+class PrioritisedObject extends EventEmitter {
 
     get id() { return this._id; }
     set id(value) { }
@@ -44,6 +45,8 @@ class PrioritisedObject {
      * @param {Snapshot} dataSnapshot
      */
     constructor(dataSource, dataSnapshot = null) {
+        super();
+
         /**** Callbacks ****/
         this._valueChangedCallback = null;
 
@@ -76,31 +79,54 @@ class PrioritisedObject {
     /**
      *  Deletes the current object from the dataSource, and clears itself to free memory.
      */
-    delete() {
-        this.removeValueChangedCallback()
+    remove() {
+        this.off();
         if (this._dataSource.inheritable)
             this._dataSource.remove(this);
         else this._dataSource.remove();
         delete this;
     }
 
-    /**
-     * Sets a callback that gets triggered whenever data is updated by
-     * the remote dataSource.
-     * @param callback
-     */
-    setValueChangedCallback(callback) {
-        this._valueChangedCallback = callback;
-        this._dataSource.setValueChangedCallback(this._onDataSourceValue.bind(this));
+    on(event, fn, context) {
+        switch(event) {
+            case 'value':
+                this._dataSource.setValueChangedCallback(fn.bind(context));
+                break;
+            case 'added':
+                this._dataSource.setChildAddedCallback(fn.bind(context));
+                break;
+            case 'moved':
+                this._dataSource.setChildMovedCallback(fn.bind(context));
+                break;
+            case 'removed':
+                this._dataSource.setChildRemovedCallback(fn.bind(context));
+                break;
+        }
+
+        super.on(event, fn, context);
     }
 
-    /**
-     * Remove callback that gets triggered whenever data is updated by
-     * the remote dataSource.
-     */
-    removeValueChangedCallback() {
-        this._dataSource.removeValueChangedCallback();
-        this._valueChangedCallback = null;
+    off(event, fn, context) {
+        switch(event) {
+            case 'value':
+                this._dataSource.removeValueChangedCallback();
+                break;
+            case 'added':
+                this._dataSource.removeChildAddedCallback();
+                break;
+            case 'moved':
+                this._dataSource.removeChildMovedCallback();
+                break;
+            case 'removed':
+                this._dataSource.removeChildRemovedCallback();
+                break;
+        }
+
+        if(event && (fn || context)) {
+            super.removeListener(event, fn, context);
+        } else {
+            super.removeAllListeners(event);
+        }
     }
 
     /**
@@ -192,9 +218,6 @@ class PrioritisedObject {
         this._buildFromSnapshot(dataSnapshot);
         this._isBeingWrittenByDatasource = false;
 
-        /* If an update callback is present, trigger it */
-        if (this._valueChangedCallback) {
-            this._valueChangedCallback(this);
-        }
+        this.emit('value', this);
     }
 }

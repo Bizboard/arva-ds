@@ -1,3 +1,6 @@
+/* */ 
+"format global";
+"exports $traceurRuntime";
 (function(global) {
   'use strict';
   if (global.$traceurRuntime) {
@@ -3879,6 +3882,168 @@ System.register("npm:process@0.10.1/browser", [], true, function(require, export
   process.umask = function() {
     return 0;
   };
+  global.define = __define;
+  return module.exports;
+});
+
+System.register("npm:eventemitter3@1.1.0/index", [], true, function(require, exports, module) {
+  var global = System.global,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var prefix = typeof Object.create !== 'function' ? '~' : false;
+  function EE(fn, context, once) {
+    this.fn = fn;
+    this.context = context;
+    this.once = once || false;
+  }
+  function EventEmitter() {}
+  EventEmitter.prototype._events = undefined;
+  EventEmitter.prototype.listeners = function listeners(event, exists) {
+    var evt = prefix ? prefix + event : event,
+        available = this._events && this._events[evt];
+    if (exists)
+      return !!available;
+    if (!available)
+      return [];
+    if (this._events[evt].fn)
+      return [this._events[evt].fn];
+    for (var i = 0,
+        l = this._events[evt].length,
+        ee = new Array(l); i < l; i++) {
+      ee[i] = this._events[evt][i].fn;
+    }
+    return ee;
+  };
+  EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
+    var evt = prefix ? prefix + event : event;
+    if (!this._events || !this._events[evt])
+      return false;
+    var listeners = this._events[evt],
+        len = arguments.length,
+        args,
+        i;
+    if ('function' === typeof listeners.fn) {
+      if (listeners.once)
+        this.removeListener(event, listeners.fn, undefined, true);
+      switch (len) {
+        case 1:
+          return listeners.fn.call(listeners.context), true;
+        case 2:
+          return listeners.fn.call(listeners.context, a1), true;
+        case 3:
+          return listeners.fn.call(listeners.context, a1, a2), true;
+        case 4:
+          return listeners.fn.call(listeners.context, a1, a2, a3), true;
+        case 5:
+          return listeners.fn.call(listeners.context, a1, a2, a3, a4), true;
+        case 6:
+          return listeners.fn.call(listeners.context, a1, a2, a3, a4, a5), true;
+      }
+      for (i = 1, args = new Array(len - 1); i < len; i++) {
+        args[i - 1] = arguments[i];
+      }
+      listeners.fn.apply(listeners.context, args);
+    } else {
+      var length = listeners.length,
+          j;
+      for (i = 0; i < length; i++) {
+        if (listeners[i].once)
+          this.removeListener(event, listeners[i].fn, undefined, true);
+        switch (len) {
+          case 1:
+            listeners[i].fn.call(listeners[i].context);
+            break;
+          case 2:
+            listeners[i].fn.call(listeners[i].context, a1);
+            break;
+          case 3:
+            listeners[i].fn.call(listeners[i].context, a1, a2);
+            break;
+          default:
+            if (!args)
+              for (j = 1, args = new Array(len - 1); j < len; j++) {
+                args[j - 1] = arguments[j];
+              }
+            listeners[i].fn.apply(listeners[i].context, args);
+        }
+      }
+    }
+    return true;
+  };
+  EventEmitter.prototype.on = function on(event, fn, context) {
+    var listener = new EE(fn, context || this),
+        evt = prefix ? prefix + event : event;
+    if (!this._events)
+      this._events = prefix ? {} : Object.create(null);
+    if (!this._events[evt])
+      this._events[evt] = listener;
+    else {
+      if (!this._events[evt].fn)
+        this._events[evt].push(listener);
+      else
+        this._events[evt] = [this._events[evt], listener];
+    }
+    return this;
+  };
+  EventEmitter.prototype.once = function once(event, fn, context) {
+    var listener = new EE(fn, context || this, true),
+        evt = prefix ? prefix + event : event;
+    if (!this._events)
+      this._events = prefix ? {} : Object.create(null);
+    if (!this._events[evt])
+      this._events[evt] = listener;
+    else {
+      if (!this._events[evt].fn)
+        this._events[evt].push(listener);
+      else
+        this._events[evt] = [this._events[evt], listener];
+    }
+    return this;
+  };
+  EventEmitter.prototype.removeListener = function removeListener(event, fn, context, once) {
+    var evt = prefix ? prefix + event : event;
+    if (!this._events || !this._events[evt])
+      return this;
+    var listeners = this._events[evt],
+        events = [];
+    if (fn) {
+      if (listeners.fn) {
+        if (listeners.fn !== fn || (once && !listeners.once) || (context && listeners.context !== context)) {
+          events.push(listeners);
+        }
+      } else {
+        for (var i = 0,
+            length = listeners.length; i < length; i++) {
+          if (listeners[i].fn !== fn || (once && !listeners[i].once) || (context && listeners[i].context !== context)) {
+            events.push(listeners[i]);
+          }
+        }
+      }
+    }
+    if (events.length) {
+      this._events[evt] = events.length === 1 ? events[0] : events;
+    } else {
+      delete this._events[evt];
+    }
+    return this;
+  };
+  EventEmitter.prototype.removeAllListeners = function removeAllListeners(event) {
+    if (!this._events)
+      return this;
+    if (event)
+      delete this._events[prefix ? prefix + event : event];
+    else
+      this._events = prefix ? {} : Object.create(null);
+    return this;
+  };
+  EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
+  EventEmitter.prototype.addListener = EventEmitter.prototype.on;
+  EventEmitter.prototype.setMaxListeners = function setMaxListeners() {
+    return this;
+  };
+  EventEmitter.prefixed = prefix;
+  module.exports = EventEmitter;
   global.define = __define;
   return module.exports;
 });
@@ -10983,6 +11148,15 @@ System.register("npm:process@0.10.1", ["npm:process@0.10.1/browser"], true, func
   return module.exports;
 });
 
+System.register("npm:eventemitter3@1.1.0", ["npm:eventemitter3@1.1.0/index"], true, function(require, exports, module) {
+  var global = System.global,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = require("npm:eventemitter3@1.1.0/index");
+  global.define = __define;
+  return module.exports;
+});
+
 System.register("github:firebase/firebase-bower@2.2.4", ["github:firebase/firebase-bower@2.2.4/firebase"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
@@ -16213,125 +16387,6 @@ System.register("datasources/SharePoint/SharePointSnapshot", ["utils/objectHelpe
   };
 });
 
-System.register("core/Model/prioritisedObject", ["utils/objectHelper", "core/Model/snapshot", "npm:lodash@3.8.0"], function($__export) {
-  "use strict";
-  var __moduleName = "core/Model/prioritisedObject";
-  var ObjectHelper,
-      Snapshot,
-      _;
-  return {
-    setters: [function($__m) {
-      ObjectHelper = $__m.default;
-    }, function($__m) {
-      Snapshot = $__m.default;
-    }, function($__m) {
-      _ = $__m.default;
-    }],
-    execute: function() {
-      'use strict';
-      $__export('default', (function() {
-        function PrioritisedObject(dataSource) {
-          var dataSnapshot = arguments[1] !== (void 0) ? arguments[1] : null;
-          this._valueChangedCallback = null;
-          this._dataSource = dataSource;
-          this._priority = 0;
-          this._isBeingWrittenByDatasource = false;
-          ObjectHelper.bindAllMethods(this, this);
-          ObjectHelper.hideMethodsAndPrivatePropertiesFromObject(this);
-          ObjectHelper.hidePropertyFromObject(this, 'id');
-          ObjectHelper.hidePropertyFromObject(this, 'priority');
-          if (dataSnapshot) {
-            this._buildFromSnapshot(dataSnapshot);
-          } else {
-            this._buildFromDataSource(dataSource);
-          }
-        }
-        return ($traceurRuntime.createClass)(PrioritisedObject, {
-          get id() {
-            return this._id;
-          },
-          set id(value) {},
-          get priority() {
-            return this._priority;
-          },
-          set priority(value) {
-            if (this._priority !== value) {
-              this._priority = value;
-              this._dataSource.setPriority(value);
-            }
-          },
-          get _inheritable() {
-            if (!this._dataSource)
-              return false;
-            return this._dataSource.inheritable;
-          },
-          delete: function() {
-            this.removeValueChangedCallback();
-            if (this._dataSource.inheritable)
-              this._dataSource.remove(this);
-            else
-              this._dataSource.remove();
-            delete this;
-          },
-          setValueChangedCallback: function(callback) {
-            this._valueChangedCallback = callback;
-            this._dataSource.setValueChangedCallback(this._onDataSourceValue.bind(this));
-          },
-          removeValueChangedCallback: function() {
-            this._dataSource.removeValueChangedCallback();
-            this._valueChangedCallback = null;
-          },
-          _buildFromSnapshot: function(dataSnapshot) {
-            var $__0 = this;
-            this._priority = dataSnapshot.getPriority();
-            var numChidren = dataSnapshot.numChildren();
-            dataSnapshot.forEach((function(child) {
-              var ref = child.ref();
-              var key = child.key();
-              var val = child.val();
-              $__0._id = key;
-              if (typeof val === 'object' && val !== null) {
-                val = new PrioritisedObject(ref, child);
-                ObjectHelper.addPropertyToObject($__0, key, val, true, true);
-              } else {
-                if (Object.getOwnPropertyDescriptor($__0, key)) {
-                  ObjectHelper.addPropertyToObject($__0, key, val, true, true, $__0._onSetterTriggered);
-                }
-              }
-            }));
-          },
-          _buildFromDataSource: function(dataSource) {
-            var $__0 = this;
-            var path = dataSource.path();
-            var DataSource = Object.getPrototypeOf(dataSource).constructor;
-            var newSource = new DataSource(path);
-            newSource.setValueChangedCallback((function(dataSnapshot) {
-              newSource.removeValueChangedCallback();
-              $__0._buildFromSnapshot(dataSnapshot);
-            }));
-          },
-          _onSetterTriggered: function() {
-            if (!this._isBeingWrittenByDatasource) {
-              this._dataSource.setWithPriority(ObjectHelper.getEnumerableProperties(this), this._priority);
-            }
-          },
-          _onDataSourceValue: function(dataSnapshot) {
-            if (_.isEqual(this, dataSnapshot)) {
-              return ;
-            }
-            this._isBeingWrittenByDatasource = true;
-            this._buildFromSnapshot(dataSnapshot);
-            this._isBeingWrittenByDatasource = false;
-            if (this._valueChangedCallback) {
-              this._valueChangedCallback(this);
-            }
-          }
-        }, {});
-      }()));
-    }
-  };
-});
-
 System.register("github:Bizboard/di.js@master/annotations", ["github:Bizboard/di.js@master/util"], function($__export) {
   "use strict";
   var __moduleName = "github:Bizboard/di.js@master/annotations";
@@ -16666,6 +16721,157 @@ System.register("datasources/SharePoint/SoapClient", ["datasources/SharePoint/xm
         }, {});
       }());
       $__export("SoapClient", SoapClient);
+    }
+  };
+});
+
+System.register("core/Model/prioritisedObject", ["npm:lodash@3.8.0", "npm:eventemitter3@1.1.0", "utils/objectHelper", "core/Model/snapshot"], function($__export) {
+  "use strict";
+  var __moduleName = "core/Model/prioritisedObject";
+  var _,
+      EventEmitter,
+      ObjectHelper,
+      Snapshot;
+  return {
+    setters: [function($__m) {
+      _ = $__m.default;
+    }, function($__m) {
+      EventEmitter = $__m.default;
+    }, function($__m) {
+      ObjectHelper = $__m.default;
+    }, function($__m) {
+      Snapshot = $__m.default;
+    }],
+    execute: function() {
+      'use strict';
+      $__export('default', (function($__super) {
+        function PrioritisedObject(dataSource) {
+          var dataSnapshot = arguments[1] !== (void 0) ? arguments[1] : null;
+          $traceurRuntime.superConstructor(PrioritisedObject).call(this);
+          this._valueChangedCallback = null;
+          this._dataSource = dataSource;
+          this._priority = 0;
+          this._isBeingWrittenByDatasource = false;
+          ObjectHelper.bindAllMethods(this, this);
+          ObjectHelper.hideMethodsAndPrivatePropertiesFromObject(this);
+          ObjectHelper.hidePropertyFromObject(this, 'id');
+          ObjectHelper.hidePropertyFromObject(this, 'priority');
+          if (dataSnapshot) {
+            this._buildFromSnapshot(dataSnapshot);
+          } else {
+            this._buildFromDataSource(dataSource);
+          }
+        }
+        return ($traceurRuntime.createClass)(PrioritisedObject, {
+          get id() {
+            return this._id;
+          },
+          set id(value) {},
+          get priority() {
+            return this._priority;
+          },
+          set priority(value) {
+            if (this._priority !== value) {
+              this._priority = value;
+              this._dataSource.setPriority(value);
+            }
+          },
+          get _inheritable() {
+            if (!this._dataSource)
+              return false;
+            return this._dataSource.inheritable;
+          },
+          remove: function() {
+            this.off();
+            if (this._dataSource.inheritable)
+              this._dataSource.remove(this);
+            else
+              this._dataSource.remove();
+            delete this;
+          },
+          on: function(event, fn, context) {
+            switch (event) {
+              case 'value':
+                this._dataSource.setValueChangedCallback(fn.bind(context));
+                break;
+              case 'added':
+                this._dataSource.setChildAddedCallback(fn.bind(context));
+                break;
+              case 'moved':
+                this._dataSource.setChildMovedCallback(fn.bind(context));
+                break;
+              case 'removed':
+                this._dataSource.setChildRemovedCallback(fn.bind(context));
+                break;
+            }
+            $traceurRuntime.superGet(this, PrioritisedObject.prototype, "on").call(this, event, fn, context);
+          },
+          off: function(event, fn, context) {
+            switch (event) {
+              case 'value':
+                this._dataSource.removeValueChangedCallback();
+                break;
+              case 'added':
+                this._dataSource.removeChildAddedCallback();
+                break;
+              case 'moved':
+                this._dataSource.removeChildMovedCallback();
+                break;
+              case 'removed':
+                this._dataSource.removeChildRemovedCallback();
+                break;
+            }
+            if (event && (fn || context)) {
+              $traceurRuntime.superGet(this, PrioritisedObject.prototype, "removeListener").call(this, event, fn, context);
+            } else {
+              $traceurRuntime.superGet(this, PrioritisedObject.prototype, "removeAllListeners").call(this, event);
+            }
+          },
+          _buildFromSnapshot: function(dataSnapshot) {
+            var $__0 = this;
+            this._priority = dataSnapshot.getPriority();
+            var numChidren = dataSnapshot.numChildren();
+            dataSnapshot.forEach((function(child) {
+              var ref = child.ref();
+              var key = child.key();
+              var val = child.val();
+              $__0._id = key;
+              if (typeof val === 'object' && val !== null) {
+                val = new PrioritisedObject(ref, child);
+                ObjectHelper.addPropertyToObject($__0, key, val, true, true);
+              } else {
+                if (Object.getOwnPropertyDescriptor($__0, key)) {
+                  ObjectHelper.addPropertyToObject($__0, key, val, true, true, $__0._onSetterTriggered);
+                }
+              }
+            }));
+          },
+          _buildFromDataSource: function(dataSource) {
+            var $__0 = this;
+            var path = dataSource.path();
+            var DataSource = Object.getPrototypeOf(dataSource).constructor;
+            var newSource = new DataSource(path);
+            newSource.setValueChangedCallback((function(dataSnapshot) {
+              newSource.removeValueChangedCallback();
+              $__0._buildFromSnapshot(dataSnapshot);
+            }));
+          },
+          _onSetterTriggered: function() {
+            if (!this._isBeingWrittenByDatasource) {
+              this._dataSource.setWithPriority(ObjectHelper.getEnumerableProperties(this), this._priority);
+            }
+          },
+          _onDataSourceValue: function(dataSnapshot) {
+            if (_.isEqual(this, dataSnapshot)) {
+              return ;
+            }
+            this._isBeingWrittenByDatasource = true;
+            this._buildFromSnapshot(dataSnapshot);
+            this._isBeingWrittenByDatasource = false;
+            this.emit('value', this);
+          }
+        }, {}, $__super);
+      }(EventEmitter)));
     }
   };
 });
@@ -17448,10 +17654,11 @@ System.register("core/Model", ["npm:lodash@3.8.0", "core/Model/prioritisedObject
           var options = arguments[2] !== (void 0) ? arguments[2] : {};
           var dataSource = Context.getContext().get(DataSource);
           if (id) {
-            if (options.dataSource)
+            if (options.dataSource) {
               dataSource = options.dataSource;
-            else if (options.path)
+            } else if (options.path) {
               dataSource = dataSource.child(options.path);
+            }
           } else {
             if (options.dataSnapshot) {
               id = options.dataSnapshot.key();
