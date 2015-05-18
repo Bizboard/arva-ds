@@ -88,7 +88,7 @@ class PrioritisedObject extends EventEmitter {
     }
 
     once(event, fn, context = this) {
-        return on(event, function(){
+        return this.on(event, function(){
             fn.call(context, arguments);
             this.off(event, fn, context);
         }, this);

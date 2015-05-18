@@ -16791,7 +16791,7 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.8.0", "npm:evente
           },
           once: function(event, fn) {
             var context = arguments[2] !== (void 0) ? arguments[2] : this;
-            return on(event, function() {
+            return this.on(event, function() {
               fn.call(context, arguments);
               this.off(event, fn, context);
             }, this);
