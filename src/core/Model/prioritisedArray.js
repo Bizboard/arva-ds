@@ -115,7 +115,7 @@ class PrioritisedArray extends Array {
     add(model) {
         if (model instanceof this._dataType) {
             if (this._findIndexById(model.id) < 0) {
-                //model.priority = this.length;
+                model.priority = this.length;
                 this.push(model);
 
                 if (!model._inheritable) {
@@ -285,10 +285,13 @@ class PrioritisedArray extends Array {
         let id = snapshot.key();
         let itemIndex = this._findIndexById(id);
         let changedModel = new this._dataType(id, null, {dataSnapshot: snapshot, dataSource: snapshot.ref() });
-        this[itemIndex] = changedModel;
 
-        this._eventEmitter.emit('child_changed', changedModel);
-        this._eventEmitter.emit('value', this);
+        if (!JSON.stringify(this[itemIndex])===JSON.stringify(changedModel)) {
+            this[itemIndex] = changedModel;
+
+            this._eventEmitter.emit('child_changed', changedModel);
+            this._eventEmitter.emit('value', this);
+        }
     }
 
     /**

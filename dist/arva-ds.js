@@ -4048,7 +4048,7 @@ System.register("npm:eventemitter3@1.1.0/index", [], true, function(require, exp
   return module.exports;
 });
 
-System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, function(__require, __exports, __module) {
+System.register("github:firebase/firebase-bower@2.2.5/firebase", [], false, function(__require, __exports, __module) {
   System.get("@@global-helpers").prepareGlobal(__module.id, []);
   (function() {
     (function() {
@@ -5135,14 +5135,14 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
       ;
       function K(a, b) {
         if (1 == arguments.length) {
-          this.o = a.split("/");
+          this.n = a.split("/");
           for (var c = 0,
-              d = 0; d < this.o.length; d++)
-            0 < this.o[d].length && (this.o[c] = this.o[d], c++);
-          this.o.length = c;
+              d = 0; d < this.n.length; d++)
+            0 < this.n[d].length && (this.n[c] = this.n[d], c++);
+          this.n.length = c;
           this.Y = 0;
         } else
-          this.o = a, this.Y = b;
+          this.n = a, this.Y = b;
       }
       function N(a, b) {
         var c = O(a);
@@ -5153,58 +5153,58 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
         throw Error("INTERNAL ERROR: innerPath (" + b + ") is not within outerPath (" + a + ")");
       }
       function O(a) {
-        return a.Y >= a.o.length ? null : a.o[a.Y];
+        return a.Y >= a.n.length ? null : a.n[a.Y];
       }
       function uc(a) {
-        return a.o.length - a.Y;
+        return a.n.length - a.Y;
       }
       function G(a) {
         var b = a.Y;
-        b < a.o.length && b++;
-        return new K(a.o, b);
+        b < a.n.length && b++;
+        return new K(a.n, b);
       }
       function vc(a) {
-        return a.Y < a.o.length ? a.o[a.o.length - 1] : null;
+        return a.Y < a.n.length ? a.n[a.n.length - 1] : null;
       }
       h = K.prototype;
       h.toString = function() {
         for (var a = "",
-            b = this.Y; b < this.o.length; b++)
-          "" !== this.o[b] && (a += "/" + this.o[b]);
+            b = this.Y; b < this.n.length; b++)
+          "" !== this.n[b] && (a += "/" + this.n[b]);
         return a || "/";
       };
       h.slice = function(a) {
-        return this.o.slice(this.Y + (a || 0));
+        return this.n.slice(this.Y + (a || 0));
       };
       h.parent = function() {
-        if (this.Y >= this.o.length)
+        if (this.Y >= this.n.length)
           return null;
         for (var a = [],
-            b = this.Y; b < this.o.length - 1; b++)
-          a.push(this.o[b]);
+            b = this.Y; b < this.n.length - 1; b++)
+          a.push(this.n[b]);
         return new K(a, 0);
       };
       h.w = function(a) {
         for (var b = [],
-            c = this.Y; c < this.o.length; c++)
-          b.push(this.o[c]);
+            c = this.Y; c < this.n.length; c++)
+          b.push(this.n[c]);
         if (a instanceof K)
-          for (c = a.Y; c < a.o.length; c++)
-            b.push(a.o[c]);
+          for (c = a.Y; c < a.n.length; c++)
+            b.push(a.n[c]);
         else
           for (a = a.split("/"), c = 0; c < a.length; c++)
             0 < a[c].length && b.push(a[c]);
         return new K(b, 0);
       };
       h.e = function() {
-        return this.Y >= this.o.length;
+        return this.Y >= this.n.length;
       };
       h.Z = function(a) {
         if (uc(this) !== uc(a))
           return !1;
         for (var b = this.Y,
-            c = a.Y; b <= this.o.length; b++, c++)
-          if (this.o[b] !== a.o[c])
+            c = a.Y; b <= this.n.length; b++, c++)
+          if (this.n[b] !== a.n[c])
             return !1;
         return !0;
       };
@@ -5213,8 +5213,8 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
             c = a.Y;
         if (uc(this) > uc(a))
           return !1;
-        for (; b < this.o.length; ) {
-          if (this.o[b] !== a.o[c])
+        for (; b < this.n.length; ) {
+          if (this.n[b] !== a.n[c])
             return !1;
           ++b;
           ++c;
@@ -5324,7 +5324,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
           throw Hc(b);
       }
       function Hc(a) {
-        return Error("Firebase (2.2.4) INTERNAL ASSERT FAILED: " + a);
+        return Error("Firebase (2.2.5) INTERNAL ASSERT FAILED: " + a);
       }
       function Ic(a) {
         try {
@@ -5607,7 +5607,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
       ;
       function dd(a) {
         this.V = a;
-        this.g = a.n.g;
+        this.g = a.o.g;
       }
       function ed(a, b, c, d) {
         var e = [],
@@ -5680,7 +5680,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
         return "value" === a;
       };
       h.createEvent = function(a, b) {
-        var c = b.n.g;
+        var c = b.o.g;
         return new Fb("value", this, new S(a.Ja, b.lc(), c));
       };
       h.Ub = function(a) {
@@ -5722,7 +5722,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
       h.createEvent = function(a, b) {
         J(null != a.Ya, "Child events should have a childName.");
         var c = b.lc().w(a.Ya);
-        return new Fb(a.type, this, new S(a.Ja, c, b.n.g), a.Nd);
+        return new Fb(a.type, this, new S(a.Ja, c, b.o.g), a.Nd);
       };
       h.Ub = function(a) {
         var b = this.sb;
@@ -6308,7 +6308,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
         if (de(a) && a.g == M)
           return b;
         var c;
-        a.g === M ? c = "$priority" : a.g === Yd ? c = "$value" : (J(a.g instanceof Rd, "Unrecognized index type!"), c = a.g.toString());
+        a.g === M ? c = "$priority" : a.g === Yd ? c = "$value" : a.g === Vd ? c = "$key" : (J(a.g instanceof Rd, "Unrecognized index type!"), c = a.g.toString());
         b.orderBy = B(c);
         a.la && (b.startAt = B(a.dc), a.Lb && (b.startAt += "," + B(a.xb)));
         a.na && (b.endAt = B(a.ac), a.Rb && (b.endAt += "," + B(a.vb)));
@@ -6790,7 +6790,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
       ;
       function te(a, b) {
         this.V = a;
-        var c = a.n,
+        var c = a.o,
             d = new ld(c.g),
             c = de(c) ? new ld(c.g) : c.ia ? new rd(c) : new md(c);
         this.Gf = new zd(c);
@@ -6811,7 +6811,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
       };
       h.hb = function(a) {
         var b = tb(this.Ka);
-        return b && (de(this.V.n) || !a.e() && !b.M(O(a)).e()) ? b.oa(a) : null;
+        return b && (de(this.V.o) || !a.e() && !b.M(O(a)).e()) ? b.oa(a) : null;
       };
       h.e = function() {
         return 0 === this.Za.length;
@@ -6910,7 +6910,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
       function Be(a, b) {
         if (n(b))
           return "tag$" + b;
-        var c = a.n;
+        var c = a.o;
         J(de(c) && c.g == M, "should have a tag if it's not a default query.");
         return a.path.toString();
       }
@@ -6921,7 +6921,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
         var f = Be(a, c),
             g = {};
         this.aa[f] = g;
-        a = ee(a.n);
+        a = ee(a.o);
         var k = this;
         Ce(this, e + ".json", a, function(a, b) {
           var v = b;
@@ -7383,11 +7383,11 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
           var k = this;
           r(this.ya, function(a, d) {
             f = f.concat(a.kb(b, c));
-            a.e() && (delete k.ya[d], de(a.V.n) || e.push(a.V));
+            a.e() && (delete k.ya[d], de(a.V.o) || e.push(a.V));
           });
         } else {
           var l = w(this.ya, d);
-          l && (f = f.concat(l.kb(b, c)), l.e() && (delete this.ya[d], de(l.V.n) || e.push(l.V)));
+          l && (f = f.concat(l.kb(b, c)), l.e() && (delete this.ya[d], de(l.V.o) || e.push(l.V)));
         }
         g && null == df(this) && e.push(new U(a.k, a.path));
         return {
@@ -7397,7 +7397,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
       };
       function ef(a) {
         return Pa(ra(a.ya), function(a) {
-          return !de(a.V.n);
+          return !de(a.V.o);
         });
       }
       h.hb = function(a) {
@@ -7408,14 +7408,14 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
         return b;
       };
       function ff(a, b) {
-        if (de(b.n))
+        if (de(b.o))
           return df(a);
         var c = b.wa();
         return w(a.ya, c);
       }
       function df(a) {
         return va(a.ya, function(a) {
-          return de(a.V.n);
+          return de(a.V.o);
         }) || null;
       }
       ;
@@ -7506,7 +7506,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
           c && (d = d.Q(a, c));
         }));
         var k = null != ff(f, a);
-        if (!k && !de(a.n)) {
+        if (!k && !de(a.o)) {
           var l = sf(a);
           J(!(l in this.kc), "View does not exist, but we have a tag");
           var m = tf++;
@@ -7527,7 +7527,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
           e = f.Hg;
           f = f.jg;
           b = -1 !== Ua(e, function(a) {
-            return de(a.n);
+            return de(a.o);
           });
           var g = Ke(this.sa, d, function(a, b) {
             return null != df(b);
@@ -7579,7 +7579,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
       function yf(a, b) {
         for (var c = 0; c < b.length; ++c) {
           var d = b[c];
-          if (!de(d.n)) {
+          if (!de(d.o)) {
             var d = sf(d),
                 e = a.kc[d];
             delete a.kc[d];
@@ -8619,7 +8619,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
         });
         0 === b.length ? setTimeout(function() {
           R(e, yg("TRANSPORT_UNAVAILABLE"));
-        }, 0) : (b = new (b.shift())(d.ce), d = ib(d.ab), d.v = "js-2.2.4", d.transport = b.Bc(), d.suppress_status_codes = !0, a = sg() + "/" + a.H.Cb + c, b.open(a, d, function(a, b) {
+        }, 0) : (b = new (b.shift())(d.ce), d = ib(d.ab), d.v = "js-2.2.5", d.transport = b.Bc(), d.suppress_status_codes = !0, a = sg() + "/" + a.H.Cb + c, b.open(a, d, function(a, b) {
           if (a)
             R(e, a);
           else if (b && b.error) {
@@ -8756,7 +8756,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
         document.body.appendChild(this.fc);
       };
       Ug.isAvailable = function() {
-        return !Wg && !("object" === typeof window && window.chrome && window.chrome.extension && !/^chrome/.test(window.location.href)) && !("object" === typeof Windows && "object" === typeof Windows.Ug) && (Vg || !0);
+        return Vg || !Wg && "undefined" !== typeof document && !("object" === typeof window && window.chrome && window.chrome.extension && !/^chrome/.test(window.location.href)) && !("object" === typeof Windows && "object" === typeof Windows.Ug);
       };
       h = Ug.prototype;
       h.Bd = function() {};
@@ -9252,14 +9252,14 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
             e = c.wa();
         a.f("Listen on " + d + " for " + e);
         var f = {p: d};
-        b.tag && (f.q = ce(c.n), f.t = b.tag);
+        b.tag && (f.q = ce(c.o), f.t = b.tag);
         f.h = b.ud();
         a.Da("q", f, function(f) {
           var k = f.d,
               l = f.s;
           if (k && "object" === typeof k && u(k, "w")) {
             var m = w(k, "w");
-            ea(m) && 0 <= Na(m, "no_index") && Q("Using an unspecified index. Consider adding " + ('".indexOn": "' + c.n.g.toString() + '"') + " at " + c.path.toString() + " to your security rules for better performance");
+            ea(m) && 0 <= Na(m, "no_index") && Q("Using an unspecified index. Consider adding " + ('".indexOn": "' + c.o.g.toString() + '"') + " at " + c.path.toString() + " to your security rules for better performance");
           }
           (a.aa[d] && a.aa[d][e]) === b && (a.f("listen response", f), "ok" !== l && Bh(a, d, e), b.J && b.J(l, k));
         });
@@ -9296,7 +9296,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
             d = a.wa();
         this.f("Unlisten called for " + c + " " + d);
         if (Bh(this, c, d) && this.ma) {
-          var e = ce(a.n);
+          var e = ce(a.o);
           this.f("Unlisten on " + c + " for " + d);
           c = {p: c};
           b && (c.q = e, c.t = b);
@@ -9395,7 +9395,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
         this.ma = !0;
         this.Kc = (new Date).getTime();
         this.Ne({serverTimeOffset: a - (new Date).getTime()});
-        this.mf && (a = {}, a["sdk.js." + "2.2.4".replace(/\./g, "-")] = 1, kg() && (a["framework.cordova"] = 1), this.Te(a));
+        this.mf && (a = {}, a["sdk.js." + "2.2.5".replace(/\./g, "-")] = 1, kg() && (a["framework.cordova"] = 1), this.Te(a));
         Hh(this);
         this.mf = !1;
         this.Tc(!0);
@@ -10126,7 +10126,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
       function Y(a, b, c, d) {
         this.k = a;
         this.path = b;
-        this.n = c;
+        this.o = c;
         this.jc = d;
       }
       function ei(a) {
@@ -10215,9 +10215,9 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
         x("Query.limit", 1, 1, arguments.length);
         if (!ga(a) || Math.floor(a) !== a || 0 >= a)
           throw Error("Query.limit: First argument must be a positive integer.");
-        if (this.n.ia)
+        if (this.o.ia)
           throw Error("Query.limit: Limit was already set (by another call to limit, limitToFirst, orlimitToLast.");
-        var b = this.n.Ge(a);
+        var b = this.o.Ge(a);
         fi(b);
         return new Y(this.k, this.path, b, this.jc);
       };
@@ -10226,18 +10226,18 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
         x("Query.limitToFirst", 1, 1, arguments.length);
         if (!ga(a) || Math.floor(a) !== a || 0 >= a)
           throw Error("Query.limitToFirst: First argument must be a positive integer.");
-        if (this.n.ia)
+        if (this.o.ia)
           throw Error("Query.limitToFirst: Limit was already set (by another call to limit, limitToFirst, or limitToLast).");
-        return new Y(this.k, this.path, this.n.He(a), this.jc);
+        return new Y(this.k, this.path, this.o.He(a), this.jc);
       };
       Y.prototype.limitToFirst = Y.prototype.He;
       Y.prototype.Ie = function(a) {
         x("Query.limitToLast", 1, 1, arguments.length);
         if (!ga(a) || Math.floor(a) !== a || 0 >= a)
           throw Error("Query.limitToLast: First argument must be a positive integer.");
-        if (this.n.ia)
+        if (this.o.ia)
           throw Error("Query.limitToLast: Limit was already set (by another call to limit, limitToFirst, or limitToLast).");
-        return new Y(this.k, this.path, this.n.Ie(a), this.jc);
+        return new Y(this.k, this.path, this.o.Ie(a), this.jc);
       };
       Y.prototype.limitToLast = Y.prototype.Ie;
       Y.prototype.Bg = function(a) {
@@ -10250,7 +10250,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
           throw Error('Query.orderByChild: "$value" is invalid.  Use Query.orderByValue() instead.');
         Wf("Query.orderByChild", 1, a, !1);
         gi(this, "Query.orderByChild");
-        var b = be(this.n, new Rd(a));
+        var b = be(this.o, new Rd(a));
         ei(b);
         return new Y(this.k, this.path, b, !0);
       };
@@ -10258,7 +10258,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
       Y.prototype.Cg = function() {
         x("Query.orderByKey", 0, 0, arguments.length);
         gi(this, "Query.orderByKey");
-        var a = be(this.n, Vd);
+        var a = be(this.o, Vd);
         ei(a);
         return new Y(this.k, this.path, a, !0);
       };
@@ -10266,7 +10266,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
       Y.prototype.Dg = function() {
         x("Query.orderByPriority", 0, 0, arguments.length);
         gi(this, "Query.orderByPriority");
-        var a = be(this.n, M);
+        var a = be(this.o, M);
         ei(a);
         return new Y(this.k, this.path, a, !0);
       };
@@ -10274,7 +10274,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
       Y.prototype.Eg = function() {
         x("Query.orderByValue", 0, 0, arguments.length);
         gi(this, "Query.orderByValue");
-        var a = be(this.n, Yd);
+        var a = be(this.o, Yd);
         ei(a);
         return new Y(this.k, this.path, a, !0);
       };
@@ -10283,10 +10283,10 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
         x("Query.startAt", 0, 2, arguments.length);
         Rf("Query.startAt", a, this.path, !0);
         Wf("Query.startAt", 2, b, !0);
-        var c = this.n.Xd(a, b);
+        var c = this.o.Xd(a, b);
         fi(c);
         ei(c);
-        if (this.n.la)
+        if (this.o.la)
           throw Error("Query.startAt: Starting point was already set (by another call to startAt or equalTo).");
         n(a) || (b = a = null);
         return new Y(this.k, this.path, c, this.jc);
@@ -10296,10 +10296,10 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
         x("Query.endAt", 0, 2, arguments.length);
         Rf("Query.endAt", a, this.path, !0);
         Wf("Query.endAt", 2, b, !0);
-        var c = this.n.qd(a, b);
+        var c = this.o.qd(a, b);
         fi(c);
         ei(c);
-        if (this.n.na)
+        if (this.o.na)
           throw Error("Query.endAt: Ending point was already set (by another call to endAt or equalTo).");
         return new Y(this.k, this.path, c, this.jc);
       };
@@ -10308,9 +10308,9 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
         x("Query.equalTo", 1, 2, arguments.length);
         Rf("Query.equalTo", a, this.path, !1);
         Wf("Query.equalTo", 2, b, !0);
-        if (this.n.la)
+        if (this.o.la)
           throw Error("Query.equalTo: Starting point was already set (by another call to endAt or equalTo).");
-        if (this.n.na)
+        if (this.o.na)
           throw Error("Query.equalTo: Ending point was already set (by another call to endAt or equalTo).");
         return this.Xd(a, b).qd(a, b);
       };
@@ -10319,15 +10319,13 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
         x("Query.toString", 0, 0, arguments.length);
         for (var a = this.path,
             b = "",
-            c = a.Y; c < a.o.length; c++)
-          "" !== a.o[c] && (b += "/" + encodeURIComponent(String(a.o[c])));
-        a = this.k.toString() + (b || "/");
-        b = jb(ee(this.n));
-        return a += b.replace(/^&/, "");
+            c = a.Y; c < a.n.length; c++)
+          "" !== a.n[c] && (b += "/" + encodeURIComponent(String(a.n[c])));
+        return this.k.toString() + (b || "/");
       };
       Y.prototype.toString = Y.prototype.toString;
       Y.prototype.wa = function() {
-        var a = Wc(ce(this.n));
+        var a = Wc(ce(this.o));
         return "{}" === a ? "default" : a;
       };
       function hi(a, b, c) {
@@ -10697,7 +10695,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
       }
       U.enableLogging = Nc;
       U.ServerValue = {TIMESTAMP: {".sv": "timestamp"}};
-      U.SDK_VERSION = "2.2.4";
+      U.SDK_VERSION = "2.2.5";
       U.INTERNAL = V;
       U.Context = W;
       U.TEST_ACCESS = Z;
@@ -11157,11 +11155,11 @@ System.register("npm:eventemitter3@1.1.0", ["npm:eventemitter3@1.1.0/index"], tr
   return module.exports;
 });
 
-System.register("github:firebase/firebase-bower@2.2.4", ["github:firebase/firebase-bower@2.2.4/firebase"], true, function(require, exports, module) {
+System.register("github:firebase/firebase-bower@2.2.5", ["github:firebase/firebase-bower@2.2.5/firebase"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
-  module.exports = require("github:firebase/firebase-bower@2.2.4/firebase");
+  module.exports = require("github:firebase/firebase-bower@2.2.5/firebase");
   global.define = __define;
   return module.exports;
 });
@@ -17208,7 +17206,7 @@ System.register("github:Bizboard/di.js@master/injector", ["github:Bizboard/di.js
   };
 });
 
-System.register("datasources/SharePointSoapDataSource", ["utils/objectHelper", "core/DataSource", "github:firebase/firebase-bower@2.2.4", "github:Bizboard/di.js@master", "datasources/SharePoint/SoapClient", "components/UrlParser", "datasources/SharePoint/SharePointSnapshot"], function($__export) {
+System.register("datasources/SharePointSoapDataSource", ["utils/objectHelper", "core/DataSource", "github:firebase/firebase-bower@2.2.5", "github:Bizboard/di.js@master", "datasources/SharePoint/SoapClient", "components/UrlParser", "datasources/SharePoint/SharePointSnapshot"], function($__export) {
   "use strict";
   var __moduleName = "datasources/SharePointSoapDataSource";
   var ObjectHelper,
@@ -17528,7 +17526,7 @@ System.register("github:Bizboard/di.js@master", ["github:Bizboard/di.js@master/i
   };
 });
 
-System.register("datasources/FirebaseDataSource", ["utils/objectHelper", "core/DataSource", "github:firebase/firebase-bower@2.2.4", "github:Bizboard/di.js@master"], function($__export) {
+System.register("datasources/FirebaseDataSource", ["utils/objectHelper", "core/DataSource", "github:firebase/firebase-bower@2.2.5", "github:Bizboard/di.js@master"], function($__export) {
   "use strict";
   var __moduleName = "datasources/FirebaseDataSource";
   var ObjectHelper,
