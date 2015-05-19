@@ -17629,7 +17629,7 @@ System.register("datasources/FirebaseDataSource", ["utils/objectHelper", "core/D
             var $__0 = this;
             this._onMoveCallback = callback;
             this._dataReference.on('child_moved', (function(newChildSnapshot, prevChildName) {
-              $__0._onMoveCallback(newChildSnapshot);
+              $__0._onMoveCallback(newChildSnapshot, prevChildName);
             }));
           },
           removeChildMovedCallback: function() {
