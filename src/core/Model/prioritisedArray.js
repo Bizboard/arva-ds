@@ -301,10 +301,10 @@ class PrioritisedArray extends Array {
     _onChildMoved(snapshot) {
         /* Ignore priority updates whilst we're reordering to avoid floods */
         if (!this._isBeingReordered) {
+            let id = snapshot.key();
             let previousPosition = this._findIndexById(id);
             this._recalculatePriorities();
 
-            let id = snapshot.key();
             let position = this._findIndexById(id);
             let model = this[position];
 
