@@ -15822,7 +15822,8 @@ System.register("utils/objectHelper", ["npm:lodash@3.8.0"], function($__export) 
               }
             }
             var superPrototype = Object.getPrototypeOf(prototype);
-            if (superPrototype.constructor.name !== 'Object' && superPrototype.constructor.name !== 'Array') {
+            var ignorableTypes = ['Object', 'Array', 'EventEmitter'];
+            if (ignorableTypes.indexOf(superPrototype.constructor.name) === -1) {
               var prototypeEnumerables = ObjectHelper.getPrototypeEnumerableProperties(rootObject, superPrototype);
               _.merge(result, prototypeEnumerables);
             }

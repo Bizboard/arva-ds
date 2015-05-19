@@ -228,7 +228,8 @@ class ObjectHelper {
 
         /* Collect all enumerable properties in the prototype's prototype as well */
         let superPrototype = Object.getPrototypeOf(prototype);
-        if (superPrototype.constructor.name !== 'Object' && superPrototype.constructor.name !== 'Array') {
+        let ignorableTypes = ['Object', 'Array', 'EventEmitter'];
+        if (ignorableTypes.indexOf(superPrototype.constructor.name) === -1) {
             let prototypeEnumerables = ObjectHelper.getPrototypeEnumerableProperties(rootObject, superPrototype);
             _.merge(result, prototypeEnumerables);
         }
