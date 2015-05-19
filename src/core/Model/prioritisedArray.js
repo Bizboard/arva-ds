@@ -298,15 +298,21 @@ class PrioritisedArray extends Array {
      * @param {Snapshot} snapshot
      * @private
      */
-    _onChildMoved(snapshot) {
+    _onChildMoved(snapshot, upper) {
         /* Ignore priority updates whilst we're reordering to avoid floods */
         if (!this._isBeingReordered) {
+
             let id = snapshot.key();
             let previousPosition = this._findIndexById(id);
+            let tempModel = this[previousPosition];
+            this.remove(previousPosition);
+
+            let newPosition = this._findIndexById(upper)+1;
+            this.insertAt(tempModel, newPosition);
+
             this._recalculatePriorities();
 
-            let position = this._findIndexById(id);
-            let model = this[position];
+            let model = this[newPosition];
 
             this._eventEmitter.emit('child_moved', model, previousPosition);
             this._eventEmitter.emit('value', this);
