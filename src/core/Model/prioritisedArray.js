@@ -119,7 +119,7 @@ class PrioritisedArray extends Array {
                 this.push(model);
 
                 if (!model._inheritable) {
-                    model.on('value', (modelData) => {
+                    model.on('child_changed', (modelData) => {
                         this._onChildChanged(modelData);
                     });
                 }
