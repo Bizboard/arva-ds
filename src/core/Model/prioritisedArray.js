@@ -10,7 +10,6 @@
 
  */
 
-
 import {DataSource}         from '../../core/DataSource';
 import ObjectHelper         from '../../utils/objectHelper';
 import {Context}            from 'arva-context/Context';
@@ -302,13 +301,14 @@ class PrioritisedArray extends Array {
     _onChildMoved(snapshot) {
         /* Ignore priority updates whilst we're reordering to avoid floods */
         if (!this._isBeingReordered) {
+            let previousPosition = this._findIndexById(id);
             this._recalculatePriorities();
 
             let id = snapshot.key();
             let position = this._findIndexById(id);
             let model = this[position];
 
-            this._eventEmitter.emit('child_moved', model);
+            this._eventEmitter.emit('child_moved', model, previousPosition);
             this._eventEmitter.emit('value', this);
         }
     }
