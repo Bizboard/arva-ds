@@ -45,9 +45,6 @@ export default class Model extends PrioritisedObject {
             super();
         }
 
-        /* Hide the id field from enumeration, so we don't save it to the dataSource. */
-        ObjectHelper.hidePropertyFromObject(Object.getPrototypeOf(this), 'id');
-
         /* Replace all stub data fields of any subclass of Model with databinding accessors.
          * This causes changes to be synched to and from the dataSource */
         this._replaceModelAccessorsWithDatabinding();
@@ -63,7 +60,7 @@ export default class Model extends PrioritisedObject {
             this.id = id;
             if (options.dataSource) { this._dataSource = options.dataSource; }
             else if (options.path) { this._dataSource = dataSource.child(options.path); }
-            else this._dataSource = dataSource.child(pathRoot).child(id);
+            else { this._dataSource = dataSource.child(pathRoot).child(id); }
         } else {
             /* No id is present, check if we have a dataSnapshot we can extract it from.
              * If we can't, generate a random one by pushing a new entry to the dataSource. */

@@ -16750,6 +16750,7 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.8.0", "npm:evente
           $traceurRuntime.superConstructor(PrioritisedObject).call(this);
           this._valueChangedCallback = null;
           this._id = 0;
+          this._events = this._events || [];
           this._dataSource = dataSource;
           this._priority = 0;
           this._isBeingWrittenByDatasource = false;
@@ -17691,7 +17692,6 @@ System.register("core/Model", ["npm:lodash@3.8.0", "core/Model/prioritisedObject
           } else {
             $traceurRuntime.superConstructor(Model).call(this);
           }
-          ObjectHelper.hidePropertyFromObject(Object.getPrototypeOf(this), 'id');
           this._replaceModelAccessorsWithDatabinding();
           var modelName = Object.getPrototypeOf(this).constructor.name;
           var pathRoot = modelName + 's';
@@ -17701,8 +17701,9 @@ System.register("core/Model", ["npm:lodash@3.8.0", "core/Model/prioritisedObject
               this._dataSource = options.dataSource;
             } else if (options.path) {
               this._dataSource = dataSource.child(options.path);
-            } else
+            } else {
               this._dataSource = dataSource.child(pathRoot).child(id);
+            }
           } else {
             if (options.dataSnapshot) {
               id = options.dataSnapshot.key();

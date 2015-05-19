@@ -52,6 +52,7 @@ class PrioritisedObject extends EventEmitter {
 
         /**** Private properties ****/
         this._id = 0;
+        this._events = this._events || [];
         this._dataSource = dataSource;
         this._priority = 0; // Priority of this object on remote dataSource
         this._isBeingWrittenByDatasource = false; // Flag to determine when dataSource is updating object
