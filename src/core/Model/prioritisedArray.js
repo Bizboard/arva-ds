@@ -286,7 +286,7 @@ class PrioritisedArray extends Array {
         let itemIndex = this._findIndexById(id);
         let changedModel = new this._dataType(id, null, {dataSnapshot: snapshot, dataSource: snapshot.ref() });
 
-        if (!JSON.stringify(this[itemIndex])===JSON.stringify(changedModel)) {
+        if (!(JSON.stringify(this[itemIndex])===JSON.stringify(changedModel))) {
             this[itemIndex] = changedModel;
 
             this._eventEmitter.emit('child_changed', changedModel);
