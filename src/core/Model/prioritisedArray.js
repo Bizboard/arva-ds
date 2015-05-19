@@ -115,7 +115,7 @@ class PrioritisedArray extends Array {
         if (model instanceof this._dataType) {
             if (this._findIndexById(model.id) < 0) {
                 //model.priority = this.length;
-                this.add(model);
+                this.push(model);
 
                 if (!model._inheritable) {
                     model.on('value', (modelData) => {
