@@ -229,7 +229,7 @@ class PrioritisedArray extends Array {
         /* If there is no data at this point yet, fire a ready event */
         if (numChildren === 0) {
             this._dataSource.ready = true;
-            this.emit('ready');
+            this._eventEmitter.emit('ready');
         }
 
         dataSnapshot.forEach(
@@ -255,7 +255,7 @@ class PrioritisedArray extends Array {
                 /* If this is the last child, fire a ready event */
                 if(currentChild++ == numChildren){
                     this._dataSource.ready = true;
-                    this.emit('ready');
+                    this._eventEmitter.emit('ready');
                 }
 
             }.bind(this));
