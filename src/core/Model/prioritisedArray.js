@@ -79,6 +79,20 @@ class PrioritisedArray extends Array {
     }
 
     /**
+     *
+     * @param event
+     * @param fn
+     * @param context
+     * @returns {*}
+     */
+    once(event, fn, context = this) {
+        return this.on(event, function(){
+            fn.call(context, arguments);
+            this.off(event, fn, context);
+        }, this);
+    }
+
+    /**
      * Subscribes to events emitted by this PrioritisedArray.
      * @param {String} event 'value', 'child_changed', 'child_moved', 'child_removed'
      * @param {Function} fn Function to call when event is emitted.
@@ -86,6 +100,9 @@ class PrioritisedArray extends Array {
      * @returns {*}
      */
     on(event, fn, context) {
+        /* If we're already ready, fire immediately */
+        if(event === 'ready' && this._dataSource && this._dataSource.ready) { fn.call(context, this); }
+
         return this._eventEmitter.on(event, fn, context);
     }
 
@@ -206,6 +223,15 @@ class PrioritisedArray extends Array {
      * @private
      */
     _buildFromSnapshot(dataSnapshot) {
+
+        let numChildren = dataSnapshot.numChildren(), currentChild = 1;
+
+        /* If there is no data at this point yet, fire a ready event */
+        if (numChildren === 0) {
+            this._dataSource.ready = true;
+            this.emit('ready');
+        }
+
         dataSnapshot.forEach(
             /** @param {Snapshot} child **/
             function(child){
@@ -225,6 +251,12 @@ class PrioritisedArray extends Array {
 
                 let newModel = new this._dataType(child.key(), child.val(), options);
                 this.add(newModel);
+
+                /* If this is the last child, fire a ready event */
+                if(currentChild++ == numChildren){
+                    this._dataSource.ready = true;
+                    this.emit('ready');
+                }
 
             }.bind(this));
 
@@ -298,7 +330,7 @@ class PrioritisedArray extends Array {
      * @param {Snapshot} snapshot
      * @private
      */
-    _onChildMoved(snapshot, upper) {
+    _onChildMoved(snapshot, prevSiblingId) {
         /* Ignore priority updates whilst we're reordering to avoid floods */
         if (!this._isBeingReordered) {
 
@@ -307,7 +339,7 @@ class PrioritisedArray extends Array {
             let tempModel = this[previousPosition];
             this.remove(previousPosition);
 
-            let newPosition = this._findIndexById(upper)+1;
+            let newPosition = this._findIndexById(prevSiblingId)+1;
             this.insertAt(tempModel, newPosition);
 
             this._recalculatePriorities();
