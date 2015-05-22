@@ -303,7 +303,7 @@ class PrioritisedArray extends Array {
      */
     _onChildAdded(snapshot) {
         let id = snapshot.key();
-        let model = this.add(new this._dataType(id, null, {dataSnapshot: snapshot, dataSource: snapshot.ref() }));
+        let model = this.add(new this._dataType(id, null, {dataSnapshot: snapshot, path: snapshot.ref().toString() }));
 
         this._eventEmitter.emit('child_added', model);
         this._eventEmitter.emit('value', this);
