@@ -364,7 +364,7 @@ class PrioritisedArray extends Array {
         let model = this[position];
 
         if (position !== -1) {
-            this.remove(position, false);
+            this.remove(position);
 
             this._eventEmitter.emit('child_removed', model);
             this._eventEmitter.emit('value', this);
