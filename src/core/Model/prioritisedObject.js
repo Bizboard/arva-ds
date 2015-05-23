@@ -97,13 +97,21 @@ class PrioritisedObject extends EventEmitter {
     }
 
     on(event, fn, context) {
+
+        let objectContext = this;
+
         switch(event) {
             case 'ready':
                 /* If we're already ready, fire immediately */
                 if(this._dataSource && this._dataSource.ready){ fn.call(context, this); }
                 break;
             case 'value':
-                this._dataSource.setValueChangedCallback(fn.bind(context));
+                let wrapper = function(dataSnapshot) {
+                    objectContext._buildFromSnapshot(dataSnapshot);
+                    fn.call(context);
+                }.bind(context);
+
+                this._dataSource.setValueChangedCallback(wrapper);
                 break;
             case 'added':
                 this._dataSource.setChildAddedCallback(fn.bind(context));
