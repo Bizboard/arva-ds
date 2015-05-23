@@ -177,10 +177,17 @@ class PrioritisedObject extends EventEmitter {
                 let val = child.val();
 
                 if (typeof val === 'object' && val !== null) {
-                    /* If child is an object, put it in its own PrioritisedObject. We're not interested
-                     * in updates from this object, since it will have its own change listener */
-                    val = new PrioritisedObject(ref, child);
-                    ObjectHelper.addPropertyToObject(this, key, val, true, true);
+                    // if there is a property descriptor for the object. consider it's value
+                    // complex and map it.
+                    if (Object.getOwnPropertyDescriptor(this, key)) {
+                        ObjectHelper.addPropertyToObject(this, key, val, true, true, this._onSetterTriggered);
+                    }
+                    else {
+                        /* If child is an object, put it in its own PrioritisedObject. We're not interested
+                         * in updates from this object, since it will have its own change listener */
+                        val = new PrioritisedObject(ref, child);
+                        ObjectHelper.addPropertyToObject(this, key, val, true, true);
+                    }
                 }
                 else {
 
