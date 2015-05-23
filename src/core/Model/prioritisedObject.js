@@ -108,7 +108,7 @@ class PrioritisedObject extends EventEmitter {
             case 'value':
                 let wrapper = function(dataSnapshot) {
                     objectContext._buildFromSnapshot(dataSnapshot);
-                    fn.call(context);
+                    fn.call(context, dataSnapshot);
                 }.bind(context);
 
                 this._dataSource.setValueChangedCallback(wrapper);
