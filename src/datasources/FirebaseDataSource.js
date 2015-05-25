@@ -8,9 +8,9 @@
  @copyright Bizboard, 2015
 
  */
-import ObjectHelper                 from '../utils/objectHelper'
-import {DataSource}                 from '../core/DataSource'
-import Firebase                     from 'firebase'
+import {ObjectHelper}               from '../utils/objectHelper';
+import {DataSource}                 from '../core/DataSource';
+import Firebase                     from 'firebase';
 import {Provide, annotate}          from 'di.js';
 
 export class FirebaseDataSource extends DataSource {

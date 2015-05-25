@@ -9,12 +9,12 @@
 
  */
 
-import {PostRequest}        from '../../components/RequestClient'
-import XML2JS               from './xml2js'
-import ObjectHelper         from '../../utils/objectHelper'
-import _                    from 'lodash'
-import {UrlParser}          from 'components/UrlParser'
-import {ParseStringToXml}   from 'components/XmlParser'
+import _                    from 'lodash';
+import XML2JS               from './xml2js';
+import {PostRequest}        from '../../components/RequestClient';
+import {ObjectHelper}       from '../../utils/objectHelper';
+import {UrlParser}          from 'components/UrlParser';
+import {ParseStringToXml}   from 'components/XmlParser';
 
 
 export class DataModelGenerator {

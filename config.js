@@ -1,6 +1,10 @@
 System.config({
   "baseURL": "/",
   "transpiler": "traceur",
+  "traceurOptions": {
+    "annotations": true,
+    "asyncFunctions": true
+  },
   "paths": {
     "*": "src/*.js",
     "github:*": "jspm_packages/github/*.js",

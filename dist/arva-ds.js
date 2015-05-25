@@ -16565,7 +16565,7 @@ System.register("datasources/SharePoint/SoapClient", ["datasources/SharePoint/xm
     }, function($__m) {
       PostRequest = $__m.PostRequest;
     }, function($__m) {
-      ObjectHelper = $__m.default;
+      ObjectHelper = $__m.ObjectHelper;
     }, function($__m) {
       ParseStringToXml = $__m.ParseStringToXml;
     }],
@@ -17163,26 +17163,26 @@ System.register("github:Bizboard/di.js@master/injector", ["github:Bizboard/di.js
   };
 });
 
-System.register("datasources/SharePointSoapDataSource", ["utils/objectHelper", "core/DataSource", "github:firebase/firebase-bower@2.2.5", "github:Bizboard/di.js@master", "datasources/SharePoint/SoapClient", "components/UrlParser", "datasources/SharePoint/SharePointSnapshot"], function($__export) {
+System.register("datasources/SharePointSoapDataSource", ["github:firebase/firebase-bower@2.2.5", "github:Bizboard/di.js@master", "utils/objectHelper", "core/DataSource", "datasources/SharePoint/SoapClient", "components/UrlParser", "datasources/SharePoint/SharePointSnapshot"], function($__export) {
   "use strict";
   var __moduleName = "datasources/SharePointSoapDataSource";
-  var ObjectHelper,
-      DataSource,
-      Firebase,
+  var Firebase,
       Provide,
+      ObjectHelper,
+      DataSource,
       SoapClient,
       UrlParser,
       SharePointSnapshot,
       SharePointSoapDataSource;
   return {
     setters: [function($__m) {
-      ObjectHelper = $__m.default;
-    }, function($__m) {
-      DataSource = $__m.DataSource;
-    }, function($__m) {
       Firebase = $__m.default;
     }, function($__m) {
       Provide = $__m.Provide;
+    }, function($__m) {
+      ObjectHelper = $__m.ObjectHelper;
+    }, function($__m) {
+      DataSource = $__m.DataSource;
     }, function($__m) {
       SoapClient = $__m.SoapClient;
     }, function($__m) {
@@ -17440,6 +17440,9 @@ System.register("datasources/SharePointSoapDataSource", ["utils/objectHelper", "
         }, {}, $__super);
       }(DataSource));
       $__export("SharePointSoapDataSource", SharePointSoapDataSource);
+      Object.defineProperty(SharePointSoapDataSource, "annotations", {get: function() {
+          return [new Provide(DataSource)];
+        }});
     }
   };
 });
@@ -17492,7 +17495,7 @@ System.register("datasources/FirebaseDataSource", ["utils/objectHelper", "core/D
       FirebaseDataSource;
   return {
     setters: [function($__m) {
-      ObjectHelper = $__m.default;
+      ObjectHelper = $__m.ObjectHelper;
     }, function($__m) {
       DataSource = $__m.DataSource;
     }, function($__m) {
@@ -17633,7 +17636,7 @@ System.register("core/Model", ["npm:lodash@3.9.1", "core/Model/prioritisedObject
     setters: [function($__m) {
       _ = $__m.default;
     }, function($__m) {
-      PrioritisedObject = $__m.default;
+      PrioritisedObject = $__m.PrioritisedObject;
     }, function($__m) {
       DataSource = $__m.DataSource;
     }, function($__m) {

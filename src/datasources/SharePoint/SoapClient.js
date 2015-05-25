@@ -12,7 +12,7 @@
 import XML2JS               from './xml2js'
 import _                    from 'lodash'
 import {PostRequest}        from '../../components/RequestClient'
-import ObjectHelper         from '../../utils/objectHelper'
+import {ObjectHelper}       from '../../utils/objectHelper'
 import {ParseStringToXml}   from '../../components/XmlParser'
 
 
