@@ -73,6 +73,34 @@ export class DataSource {
      */
     setPriority(newPriority) { }
 
+    /**
+     * Authenticates all instances of this DataSource with the given OAuth provider and credentials.
+     * @param {String} provider google, facebook, github, or twitter
+     * @param {String|Object} credentials Access token string, or object with key/value pairs with e.g. OAuth 1.1 credentials.
+     * @param {Function} onComplete Callback, executed when login is completed either successfully or erroneously.
+     * On error, first argument is error message.
+     * On success, the first argument is null, and the second argument is an object containing the fields uid, provider, auth, and expires.
+     * @param {Object} options Optional, additional client arguments, such as configuring session persistence.
+     */
+    authWithOAuthToken(provider, credentials, onComplete, options) { }
+
+    /**
+     * Authenticates all instances of this DataSource with the given email/password credentials.
+     * @param {String|Object} credentials Object with key/value pairs {email: "value", password:"value"}.
+     * @param {Function} onComplete Callback, executed when login is completed either successfully or erroneously.
+     * On error, first argument is error message.
+     * On success, the first argument is null, and the second argument is an object containing the fields uid, provider, auth, and expires.
+     * @param {Object} options Optional, additional client arguments, such as configuring session persistence.
+     */
+    authWithPassword(credentials, onComplete, options) { }
+
+    /**
+     * Fetches the current user's authentication state.
+     * If the user is authenticated, returns an object containing at least the fields uid, provider, auth, and expires.
+     * If the user is not authenticated, returns null.
+     */
+    getAuth() { }
+
     /** Sets the callback triggered when dataSource updates the data.
      *  @param {Function} callback **/
     setValueChangedCallback(callback){ }
