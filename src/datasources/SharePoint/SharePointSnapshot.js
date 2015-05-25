@@ -9,10 +9,10 @@
 
  */
 
-import ObjectHelper                 from '../../utils/objectHelper'
-import Snapshot                     from '../../core/Model/snapshot';
+import {ObjectHelper}                 from '../../utils/objectHelper';
+import {Snapshot}                     from '../../core/Model/snapshot';
 
-export default class SharePointSnapshot extends Snapshot {
+export class SharePointSnapshot extends Snapshot {
 
     constructor(dataSnapshot, dataSource = null, kvpair = null) {
         super();
@@ -47,7 +47,7 @@ export default class SharePointSnapshot extends Snapshot {
     }
 
     getPriority() { /* Not implemented for SharePoint */
-        //TODO: have priority be part of list schema. and makes ordering supereasy
+        //TODO: have priority be part of list schema. and makes ordering super easy
     }
 
 

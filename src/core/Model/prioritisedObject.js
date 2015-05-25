@@ -12,13 +12,12 @@
 
 'use strict';
 
-import _ from 'lodash';
-import EventEmitter from 'eventemitter3';
-import ObjectHelper from '../../utils/objectHelper';
-import Snapshot from './snapshot';
+import _                from 'lodash';
+import EventEmitter     from 'eventemitter3';
+import {ObjectHelper}   from '../../utils/objectHelper';
+import {Snapshot}       from './snapshot';
 
-export default
-class PrioritisedObject extends EventEmitter {
+export class PrioritisedObject extends EventEmitter {
 
     get id() { return this._id; }
     set id(value) { this._id = value; }

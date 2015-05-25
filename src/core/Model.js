@@ -10,12 +10,12 @@
  */
 
 import _                    from 'lodash'
-import PrioritisedObject    from './Model/prioritisedObject'
+import {PrioritisedObject}  from './Model/prioritisedObject'
 import {DataSource}         from './DataSource';
-import ObjectHelper         from '../utils/objectHelper'
+import {ObjectHelper}       from '../utils/objectHelper'
 import {Context}            from 'arva-context/Context'
 
-export default class Model extends PrioritisedObject {
+export class Model extends PrioritisedObject {
 
     /**
      * Creates a new instance of a model.

@@ -15541,13 +15541,14 @@ System.register("core/DataSource", [], function($__export) {
 System.register("utils/objectHelper", ["npm:lodash@3.9.1"], function($__export) {
   "use strict";
   var __moduleName = "utils/objectHelper";
-  var _;
+  var _,
+      ObjectHelper;
   return {
     setters: [function($__m) {
       _ = $__m.default;
     }],
     execute: function() {
-      $__export('default', (function() {
+      ObjectHelper = (function() {
         function ObjectHelper() {}
         return ($traceurRuntime.createClass)(ObjectHelper, {}, {
           hideMethodsAndPrivatePropertiesFromObject: function(object) {
@@ -15768,7 +15769,8 @@ System.register("utils/objectHelper", ["npm:lodash@3.9.1"], function($__export) 
             return result;
           }
         });
-      }()));
+      }());
+      $__export("ObjectHelper", ObjectHelper);
     }
   };
 });
@@ -15776,10 +15778,11 @@ System.register("utils/objectHelper", ["npm:lodash@3.9.1"], function($__export) 
 System.register("core/Model/snapshot", [], function($__export) {
   "use strict";
   var __moduleName = "core/Model/snapshot";
+  var Snapshot;
   return {
     setters: [],
     execute: function() {
-      $__export('default', (function() {
+      Snapshot = (function() {
         function Snapshot(dataSnapshot) {}
         return ($traceurRuntime.createClass)(Snapshot, {
           key: function() {},
@@ -15789,7 +15792,8 @@ System.register("core/Model/snapshot", [], function($__export) {
           forEach: function() {},
           numChildren: function() {}
         }, {});
-      }()));
+      }());
+      $__export("Snapshot", Snapshot);
     }
   };
 });
@@ -16241,15 +16245,16 @@ System.register("datasources/SharePoint/SharePointSnapshot", ["utils/objectHelpe
   "use strict";
   var __moduleName = "datasources/SharePoint/SharePointSnapshot";
   var ObjectHelper,
-      Snapshot;
+      Snapshot,
+      SharePointSnapshot;
   return {
     setters: [function($__m) {
-      ObjectHelper = $__m.default;
+      ObjectHelper = $__m.ObjectHelper;
     }, function($__m) {
-      Snapshot = $__m.default;
+      Snapshot = $__m.Snapshot;
     }],
     execute: function() {
-      $__export('default', (function($__super) {
+      SharePointSnapshot = (function($__super) {
         function SharePointSnapshot(dataSnapshot) {
           var dataSource = arguments[1] !== (void 0) ? arguments[1] : null;
           var kvpair = arguments[2] !== (void 0) ? arguments[2] : null;
@@ -16321,7 +16326,8 @@ System.register("datasources/SharePoint/SharePointSnapshot", ["utils/objectHelpe
               return 1;
           }
         }, {}, $__super);
-      }(Snapshot)));
+      }(Snapshot));
+      $__export("SharePointSnapshot", SharePointSnapshot);
     }
   };
 });
@@ -16670,20 +16676,21 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.9.1", "npm:evente
   var _,
       EventEmitter,
       ObjectHelper,
-      Snapshot;
+      Snapshot,
+      PrioritisedObject;
   return {
     setters: [function($__m) {
       _ = $__m.default;
     }, function($__m) {
       EventEmitter = $__m.default;
     }, function($__m) {
-      ObjectHelper = $__m.default;
+      ObjectHelper = $__m.ObjectHelper;
     }, function($__m) {
-      Snapshot = $__m.default;
+      Snapshot = $__m.Snapshot;
     }],
     execute: function() {
       'use strict';
-      $__export('default', (function($__super) {
+      PrioritisedObject = (function($__super) {
         function PrioritisedObject(dataSource) {
           var dataSnapshot = arguments[1] !== (void 0) ? arguments[1] : null;
           $traceurRuntime.superConstructor(PrioritisedObject).call(this);
@@ -16849,7 +16856,8 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.9.1", "npm:evente
             this.emit('value', this);
           }
         }, {}, $__super);
-      }(EventEmitter)));
+      }(EventEmitter));
+      $__export("PrioritisedObject", PrioritisedObject);
     }
   };
 });
@@ -17162,7 +17170,6 @@ System.register("datasources/SharePointSoapDataSource", ["utils/objectHelper", "
       DataSource,
       Firebase,
       Provide,
-      annotate,
       SoapClient,
       UrlParser,
       SharePointSnapshot,
@@ -17176,13 +17183,12 @@ System.register("datasources/SharePointSoapDataSource", ["utils/objectHelper", "
       Firebase = $__m.default;
     }, function($__m) {
       Provide = $__m.Provide;
-      annotate = $__m.annotate;
     }, function($__m) {
       SoapClient = $__m.SoapClient;
     }, function($__m) {
       UrlParser = $__m.UrlParser;
     }, function($__m) {
-      SharePointSnapshot = $__m.default;
+      SharePointSnapshot = $__m.SharePointSnapshot;
     }],
     execute: function() {
       SharePointSoapDataSource = (function($__super) {
@@ -17621,7 +17627,8 @@ System.register("core/Model", ["npm:lodash@3.9.1", "core/Model/prioritisedObject
       PrioritisedObject,
       DataSource,
       ObjectHelper,
-      Context;
+      Context,
+      Model;
   return {
     setters: [function($__m) {
       _ = $__m.default;
@@ -17630,12 +17637,12 @@ System.register("core/Model", ["npm:lodash@3.9.1", "core/Model/prioritisedObject
     }, function($__m) {
       DataSource = $__m.DataSource;
     }, function($__m) {
-      ObjectHelper = $__m.default;
+      ObjectHelper = $__m.ObjectHelper;
     }, function($__m) {
       Context = $__m.Context;
     }],
     execute: function() {
-      $__export('default', (function($__super) {
+      Model = (function($__super) {
         function Model(id) {
           var data = arguments[1] !== (void 0) ? arguments[1] : null;
           var options = arguments[2] !== (void 0) ? arguments[2] : {};
@@ -17733,7 +17740,8 @@ System.register("core/Model", ["npm:lodash@3.9.1", "core/Model/prioritisedObject
               prototype = Object.getPrototypeOf(prototype);
             }
           }}, {}, $__super);
-      }(PrioritisedObject)));
+      }(PrioritisedObject));
+      $__export("Model", Model);
     }
   };
 });

@@ -9,8 +9,6 @@
 
  */
 
-
-
 export function ParseStringToXml (text) {
     try {
         var xml = null;

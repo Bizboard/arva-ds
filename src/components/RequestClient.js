@@ -9,7 +9,6 @@
 
  */
 
-
 export function GetRequest(url) {
 
     // Return a new promise.

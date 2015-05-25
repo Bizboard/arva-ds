@@ -10,7 +10,7 @@
 
  */
 
-export default class Snapshot{
+export class Snapshot{
     constructor(dataSnapshot){}
 
     key(){}

@@ -9,17 +9,16 @@
 
  */
 
-import ObjectHelper                 from '../utils/objectHelper'
-import {DataSource}                 from '../core/DataSource'
 import Firebase                     from 'firebase'
-import {Provide, annotate}          from 'di.js'
+import {Provide}                    from 'di.js'
+import {ObjectHelper}               from '../utils/objectHelper'
+import {DataSource}                 from '../core/DataSource'
 import {SoapClient}                 from './SharePoint/SoapClient'
 import {UrlParser}                  from '../components/UrlParser'
-import SharePointSnapshot           from './SharePoint/SharePointSnapshot'
+import {SharePointSnapshot}         from './SharePoint/SharePointSnapshot'
 
-
+@Provide(DataSource)
 export class SharePointSoapDataSource extends DataSource {
-
 
     /** @param {String} path **/
     constructor(path, credentials) {

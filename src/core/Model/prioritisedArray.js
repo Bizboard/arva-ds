@@ -10,14 +10,13 @@
 
  */
 
-import {DataSource}         from '../../core/DataSource';
-import ObjectHelper         from '../../utils/objectHelper';
-import {Context}            from 'arva-context/Context';
 import EventEmitter         from 'eventemitter3';
+import {DataSource}         from '../../core/DataSource';
+import {ObjectHelper}       from '../../utils/objectHelper';
+import {Context}            from 'arva-context/Context';
 
 
-export default
-class PrioritisedArray extends Array {
+export class PrioritisedArray extends Array {
 
     /* Extending Array does not work fluently yet. The length property always returns 0,
      * regardless of how many entries are in the array. We'll override the length prop to determine
