@@ -4048,7 +4048,7 @@ System.register("npm:eventemitter3@1.1.0/index", [], true, function(require, exp
   return module.exports;
 });
 
-System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, function(__require, __exports, __module) {
+System.register("github:firebase/firebase-bower@2.2.5/firebase", [], false, function(__require, __exports, __module) {
   System.get("@@global-helpers").prepareGlobal(__module.id, []);
   (function() {
     (function() {
@@ -5135,14 +5135,14 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
       ;
       function K(a, b) {
         if (1 == arguments.length) {
-          this.o = a.split("/");
+          this.n = a.split("/");
           for (var c = 0,
-              d = 0; d < this.o.length; d++)
-            0 < this.o[d].length && (this.o[c] = this.o[d], c++);
-          this.o.length = c;
+              d = 0; d < this.n.length; d++)
+            0 < this.n[d].length && (this.n[c] = this.n[d], c++);
+          this.n.length = c;
           this.Y = 0;
         } else
-          this.o = a, this.Y = b;
+          this.n = a, this.Y = b;
       }
       function N(a, b) {
         var c = O(a);
@@ -5153,58 +5153,58 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
         throw Error("INTERNAL ERROR: innerPath (" + b + ") is not within outerPath (" + a + ")");
       }
       function O(a) {
-        return a.Y >= a.o.length ? null : a.o[a.Y];
+        return a.Y >= a.n.length ? null : a.n[a.Y];
       }
       function uc(a) {
-        return a.o.length - a.Y;
+        return a.n.length - a.Y;
       }
       function G(a) {
         var b = a.Y;
-        b < a.o.length && b++;
-        return new K(a.o, b);
+        b < a.n.length && b++;
+        return new K(a.n, b);
       }
       function vc(a) {
-        return a.Y < a.o.length ? a.o[a.o.length - 1] : null;
+        return a.Y < a.n.length ? a.n[a.n.length - 1] : null;
       }
       h = K.prototype;
       h.toString = function() {
         for (var a = "",
-            b = this.Y; b < this.o.length; b++)
-          "" !== this.o[b] && (a += "/" + this.o[b]);
+            b = this.Y; b < this.n.length; b++)
+          "" !== this.n[b] && (a += "/" + this.n[b]);
         return a || "/";
       };
       h.slice = function(a) {
-        return this.o.slice(this.Y + (a || 0));
+        return this.n.slice(this.Y + (a || 0));
       };
       h.parent = function() {
-        if (this.Y >= this.o.length)
+        if (this.Y >= this.n.length)
           return null;
         for (var a = [],
-            b = this.Y; b < this.o.length - 1; b++)
-          a.push(this.o[b]);
+            b = this.Y; b < this.n.length - 1; b++)
+          a.push(this.n[b]);
         return new K(a, 0);
       };
       h.w = function(a) {
         for (var b = [],
-            c = this.Y; c < this.o.length; c++)
-          b.push(this.o[c]);
+            c = this.Y; c < this.n.length; c++)
+          b.push(this.n[c]);
         if (a instanceof K)
-          for (c = a.Y; c < a.o.length; c++)
-            b.push(a.o[c]);
+          for (c = a.Y; c < a.n.length; c++)
+            b.push(a.n[c]);
         else
           for (a = a.split("/"), c = 0; c < a.length; c++)
             0 < a[c].length && b.push(a[c]);
         return new K(b, 0);
       };
       h.e = function() {
-        return this.Y >= this.o.length;
+        return this.Y >= this.n.length;
       };
       h.Z = function(a) {
         if (uc(this) !== uc(a))
           return !1;
         for (var b = this.Y,
-            c = a.Y; b <= this.o.length; b++, c++)
-          if (this.o[b] !== a.o[c])
+            c = a.Y; b <= this.n.length; b++, c++)
+          if (this.n[b] !== a.n[c])
             return !1;
         return !0;
       };
@@ -5213,8 +5213,8 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
             c = a.Y;
         if (uc(this) > uc(a))
           return !1;
-        for (; b < this.o.length; ) {
-          if (this.o[b] !== a.o[c])
+        for (; b < this.n.length; ) {
+          if (this.n[b] !== a.n[c])
             return !1;
           ++b;
           ++c;
@@ -5324,7 +5324,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
           throw Hc(b);
       }
       function Hc(a) {
-        return Error("Firebase (2.2.4) INTERNAL ASSERT FAILED: " + a);
+        return Error("Firebase (2.2.5) INTERNAL ASSERT FAILED: " + a);
       }
       function Ic(a) {
         try {
@@ -5607,7 +5607,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
       ;
       function dd(a) {
         this.V = a;
-        this.g = a.n.g;
+        this.g = a.o.g;
       }
       function ed(a, b, c, d) {
         var e = [],
@@ -5680,7 +5680,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
         return "value" === a;
       };
       h.createEvent = function(a, b) {
-        var c = b.n.g;
+        var c = b.o.g;
         return new Fb("value", this, new S(a.Ja, b.lc(), c));
       };
       h.Ub = function(a) {
@@ -5722,7 +5722,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
       h.createEvent = function(a, b) {
         J(null != a.Ya, "Child events should have a childName.");
         var c = b.lc().w(a.Ya);
-        return new Fb(a.type, this, new S(a.Ja, c, b.n.g), a.Nd);
+        return new Fb(a.type, this, new S(a.Ja, c, b.o.g), a.Nd);
       };
       h.Ub = function(a) {
         var b = this.sb;
@@ -6308,7 +6308,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
         if (de(a) && a.g == M)
           return b;
         var c;
-        a.g === M ? c = "$priority" : a.g === Yd ? c = "$value" : (J(a.g instanceof Rd, "Unrecognized index type!"), c = a.g.toString());
+        a.g === M ? c = "$priority" : a.g === Yd ? c = "$value" : a.g === Vd ? c = "$key" : (J(a.g instanceof Rd, "Unrecognized index type!"), c = a.g.toString());
         b.orderBy = B(c);
         a.la && (b.startAt = B(a.dc), a.Lb && (b.startAt += "," + B(a.xb)));
         a.na && (b.endAt = B(a.ac), a.Rb && (b.endAt += "," + B(a.vb)));
@@ -6790,7 +6790,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
       ;
       function te(a, b) {
         this.V = a;
-        var c = a.n,
+        var c = a.o,
             d = new ld(c.g),
             c = de(c) ? new ld(c.g) : c.ia ? new rd(c) : new md(c);
         this.Gf = new zd(c);
@@ -6811,7 +6811,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
       };
       h.hb = function(a) {
         var b = tb(this.Ka);
-        return b && (de(this.V.n) || !a.e() && !b.M(O(a)).e()) ? b.oa(a) : null;
+        return b && (de(this.V.o) || !a.e() && !b.M(O(a)).e()) ? b.oa(a) : null;
       };
       h.e = function() {
         return 0 === this.Za.length;
@@ -6910,7 +6910,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
       function Be(a, b) {
         if (n(b))
           return "tag$" + b;
-        var c = a.n;
+        var c = a.o;
         J(de(c) && c.g == M, "should have a tag if it's not a default query.");
         return a.path.toString();
       }
@@ -6921,7 +6921,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
         var f = Be(a, c),
             g = {};
         this.aa[f] = g;
-        a = ee(a.n);
+        a = ee(a.o);
         var k = this;
         Ce(this, e + ".json", a, function(a, b) {
           var v = b;
@@ -7383,11 +7383,11 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
           var k = this;
           r(this.ya, function(a, d) {
             f = f.concat(a.kb(b, c));
-            a.e() && (delete k.ya[d], de(a.V.n) || e.push(a.V));
+            a.e() && (delete k.ya[d], de(a.V.o) || e.push(a.V));
           });
         } else {
           var l = w(this.ya, d);
-          l && (f = f.concat(l.kb(b, c)), l.e() && (delete this.ya[d], de(l.V.n) || e.push(l.V)));
+          l && (f = f.concat(l.kb(b, c)), l.e() && (delete this.ya[d], de(l.V.o) || e.push(l.V)));
         }
         g && null == df(this) && e.push(new U(a.k, a.path));
         return {
@@ -7397,7 +7397,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
       };
       function ef(a) {
         return Pa(ra(a.ya), function(a) {
-          return !de(a.V.n);
+          return !de(a.V.o);
         });
       }
       h.hb = function(a) {
@@ -7408,14 +7408,14 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
         return b;
       };
       function ff(a, b) {
-        if (de(b.n))
+        if (de(b.o))
           return df(a);
         var c = b.wa();
         return w(a.ya, c);
       }
       function df(a) {
         return va(a.ya, function(a) {
-          return de(a.V.n);
+          return de(a.V.o);
         }) || null;
       }
       ;
@@ -7506,7 +7506,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
           c && (d = d.Q(a, c));
         }));
         var k = null != ff(f, a);
-        if (!k && !de(a.n)) {
+        if (!k && !de(a.o)) {
           var l = sf(a);
           J(!(l in this.kc), "View does not exist, but we have a tag");
           var m = tf++;
@@ -7527,7 +7527,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
           e = f.Hg;
           f = f.jg;
           b = -1 !== Ua(e, function(a) {
-            return de(a.n);
+            return de(a.o);
           });
           var g = Ke(this.sa, d, function(a, b) {
             return null != df(b);
@@ -7579,7 +7579,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
       function yf(a, b) {
         for (var c = 0; c < b.length; ++c) {
           var d = b[c];
-          if (!de(d.n)) {
+          if (!de(d.o)) {
             var d = sf(d),
                 e = a.kc[d];
             delete a.kc[d];
@@ -8619,7 +8619,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
         });
         0 === b.length ? setTimeout(function() {
           R(e, yg("TRANSPORT_UNAVAILABLE"));
-        }, 0) : (b = new (b.shift())(d.ce), d = ib(d.ab), d.v = "js-2.2.4", d.transport = b.Bc(), d.suppress_status_codes = !0, a = sg() + "/" + a.H.Cb + c, b.open(a, d, function(a, b) {
+        }, 0) : (b = new (b.shift())(d.ce), d = ib(d.ab), d.v = "js-2.2.5", d.transport = b.Bc(), d.suppress_status_codes = !0, a = sg() + "/" + a.H.Cb + c, b.open(a, d, function(a, b) {
           if (a)
             R(e, a);
           else if (b && b.error) {
@@ -8756,7 +8756,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
         document.body.appendChild(this.fc);
       };
       Ug.isAvailable = function() {
-        return !Wg && !("object" === typeof window && window.chrome && window.chrome.extension && !/^chrome/.test(window.location.href)) && !("object" === typeof Windows && "object" === typeof Windows.Ug) && (Vg || !0);
+        return Vg || !Wg && "undefined" !== typeof document && !("object" === typeof window && window.chrome && window.chrome.extension && !/^chrome/.test(window.location.href)) && !("object" === typeof Windows && "object" === typeof Windows.Ug);
       };
       h = Ug.prototype;
       h.Bd = function() {};
@@ -9252,14 +9252,14 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
             e = c.wa();
         a.f("Listen on " + d + " for " + e);
         var f = {p: d};
-        b.tag && (f.q = ce(c.n), f.t = b.tag);
+        b.tag && (f.q = ce(c.o), f.t = b.tag);
         f.h = b.ud();
         a.Da("q", f, function(f) {
           var k = f.d,
               l = f.s;
           if (k && "object" === typeof k && u(k, "w")) {
             var m = w(k, "w");
-            ea(m) && 0 <= Na(m, "no_index") && Q("Using an unspecified index. Consider adding " + ('".indexOn": "' + c.n.g.toString() + '"') + " at " + c.path.toString() + " to your security rules for better performance");
+            ea(m) && 0 <= Na(m, "no_index") && Q("Using an unspecified index. Consider adding " + ('".indexOn": "' + c.o.g.toString() + '"') + " at " + c.path.toString() + " to your security rules for better performance");
           }
           (a.aa[d] && a.aa[d][e]) === b && (a.f("listen response", f), "ok" !== l && Bh(a, d, e), b.J && b.J(l, k));
         });
@@ -9296,7 +9296,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
             d = a.wa();
         this.f("Unlisten called for " + c + " " + d);
         if (Bh(this, c, d) && this.ma) {
-          var e = ce(a.n);
+          var e = ce(a.o);
           this.f("Unlisten on " + c + " for " + d);
           c = {p: c};
           b && (c.q = e, c.t = b);
@@ -9395,7 +9395,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
         this.ma = !0;
         this.Kc = (new Date).getTime();
         this.Ne({serverTimeOffset: a - (new Date).getTime()});
-        this.mf && (a = {}, a["sdk.js." + "2.2.4".replace(/\./g, "-")] = 1, kg() && (a["framework.cordova"] = 1), this.Te(a));
+        this.mf && (a = {}, a["sdk.js." + "2.2.5".replace(/\./g, "-")] = 1, kg() && (a["framework.cordova"] = 1), this.Te(a));
         Hh(this);
         this.mf = !1;
         this.Tc(!0);
@@ -10126,7 +10126,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
       function Y(a, b, c, d) {
         this.k = a;
         this.path = b;
-        this.n = c;
+        this.o = c;
         this.jc = d;
       }
       function ei(a) {
@@ -10215,9 +10215,9 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
         x("Query.limit", 1, 1, arguments.length);
         if (!ga(a) || Math.floor(a) !== a || 0 >= a)
           throw Error("Query.limit: First argument must be a positive integer.");
-        if (this.n.ia)
+        if (this.o.ia)
           throw Error("Query.limit: Limit was already set (by another call to limit, limitToFirst, orlimitToLast.");
-        var b = this.n.Ge(a);
+        var b = this.o.Ge(a);
         fi(b);
         return new Y(this.k, this.path, b, this.jc);
       };
@@ -10226,18 +10226,18 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
         x("Query.limitToFirst", 1, 1, arguments.length);
         if (!ga(a) || Math.floor(a) !== a || 0 >= a)
           throw Error("Query.limitToFirst: First argument must be a positive integer.");
-        if (this.n.ia)
+        if (this.o.ia)
           throw Error("Query.limitToFirst: Limit was already set (by another call to limit, limitToFirst, or limitToLast).");
-        return new Y(this.k, this.path, this.n.He(a), this.jc);
+        return new Y(this.k, this.path, this.o.He(a), this.jc);
       };
       Y.prototype.limitToFirst = Y.prototype.He;
       Y.prototype.Ie = function(a) {
         x("Query.limitToLast", 1, 1, arguments.length);
         if (!ga(a) || Math.floor(a) !== a || 0 >= a)
           throw Error("Query.limitToLast: First argument must be a positive integer.");
-        if (this.n.ia)
+        if (this.o.ia)
           throw Error("Query.limitToLast: Limit was already set (by another call to limit, limitToFirst, or limitToLast).");
-        return new Y(this.k, this.path, this.n.Ie(a), this.jc);
+        return new Y(this.k, this.path, this.o.Ie(a), this.jc);
       };
       Y.prototype.limitToLast = Y.prototype.Ie;
       Y.prototype.Bg = function(a) {
@@ -10250,7 +10250,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
           throw Error('Query.orderByChild: "$value" is invalid.  Use Query.orderByValue() instead.');
         Wf("Query.orderByChild", 1, a, !1);
         gi(this, "Query.orderByChild");
-        var b = be(this.n, new Rd(a));
+        var b = be(this.o, new Rd(a));
         ei(b);
         return new Y(this.k, this.path, b, !0);
       };
@@ -10258,7 +10258,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
       Y.prototype.Cg = function() {
         x("Query.orderByKey", 0, 0, arguments.length);
         gi(this, "Query.orderByKey");
-        var a = be(this.n, Vd);
+        var a = be(this.o, Vd);
         ei(a);
         return new Y(this.k, this.path, a, !0);
       };
@@ -10266,7 +10266,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
       Y.prototype.Dg = function() {
         x("Query.orderByPriority", 0, 0, arguments.length);
         gi(this, "Query.orderByPriority");
-        var a = be(this.n, M);
+        var a = be(this.o, M);
         ei(a);
         return new Y(this.k, this.path, a, !0);
       };
@@ -10274,7 +10274,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
       Y.prototype.Eg = function() {
         x("Query.orderByValue", 0, 0, arguments.length);
         gi(this, "Query.orderByValue");
-        var a = be(this.n, Yd);
+        var a = be(this.o, Yd);
         ei(a);
         return new Y(this.k, this.path, a, !0);
       };
@@ -10283,10 +10283,10 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
         x("Query.startAt", 0, 2, arguments.length);
         Rf("Query.startAt", a, this.path, !0);
         Wf("Query.startAt", 2, b, !0);
-        var c = this.n.Xd(a, b);
+        var c = this.o.Xd(a, b);
         fi(c);
         ei(c);
-        if (this.n.la)
+        if (this.o.la)
           throw Error("Query.startAt: Starting point was already set (by another call to startAt or equalTo).");
         n(a) || (b = a = null);
         return new Y(this.k, this.path, c, this.jc);
@@ -10296,10 +10296,10 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
         x("Query.endAt", 0, 2, arguments.length);
         Rf("Query.endAt", a, this.path, !0);
         Wf("Query.endAt", 2, b, !0);
-        var c = this.n.qd(a, b);
+        var c = this.o.qd(a, b);
         fi(c);
         ei(c);
-        if (this.n.na)
+        if (this.o.na)
           throw Error("Query.endAt: Ending point was already set (by another call to endAt or equalTo).");
         return new Y(this.k, this.path, c, this.jc);
       };
@@ -10308,9 +10308,9 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
         x("Query.equalTo", 1, 2, arguments.length);
         Rf("Query.equalTo", a, this.path, !1);
         Wf("Query.equalTo", 2, b, !0);
-        if (this.n.la)
+        if (this.o.la)
           throw Error("Query.equalTo: Starting point was already set (by another call to endAt or equalTo).");
-        if (this.n.na)
+        if (this.o.na)
           throw Error("Query.equalTo: Ending point was already set (by another call to endAt or equalTo).");
         return this.Xd(a, b).qd(a, b);
       };
@@ -10319,15 +10319,13 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
         x("Query.toString", 0, 0, arguments.length);
         for (var a = this.path,
             b = "",
-            c = a.Y; c < a.o.length; c++)
-          "" !== a.o[c] && (b += "/" + encodeURIComponent(String(a.o[c])));
-        a = this.k.toString() + (b || "/");
-        b = jb(ee(this.n));
-        return a += b.replace(/^&/, "");
+            c = a.Y; c < a.n.length; c++)
+          "" !== a.n[c] && (b += "/" + encodeURIComponent(String(a.n[c])));
+        return this.k.toString() + (b || "/");
       };
       Y.prototype.toString = Y.prototype.toString;
       Y.prototype.wa = function() {
-        var a = Wc(ce(this.n));
+        var a = Wc(ce(this.o));
         return "{}" === a ? "default" : a;
       };
       function hi(a, b, c) {
@@ -10697,7 +10695,7 @@ System.register("github:firebase/firebase-bower@2.2.4/firebase", [], false, func
       }
       U.enableLogging = Nc;
       U.ServerValue = {TIMESTAMP: {".sv": "timestamp"}};
-      U.SDK_VERSION = "2.2.4";
+      U.SDK_VERSION = "2.2.5";
       U.INTERNAL = V;
       U.Context = W;
       U.TEST_ACCESS = Z;
@@ -11157,11 +11155,11 @@ System.register("npm:eventemitter3@1.1.0", ["npm:eventemitter3@1.1.0/index"], tr
   return module.exports;
 });
 
-System.register("github:firebase/firebase-bower@2.2.4", ["github:firebase/firebase-bower@2.2.4/firebase"], true, function(require, exports, module) {
+System.register("github:firebase/firebase-bower@2.2.5", ["github:firebase/firebase-bower@2.2.5/firebase"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
-  module.exports = require("github:firebase/firebase-bower@2.2.4/firebase");
+  module.exports = require("github:firebase/firebase-bower@2.2.5/firebase");
   global.define = __define;
   return module.exports;
 });
@@ -11184,7 +11182,7 @@ System.register("github:jspm/nodelibs-process@0.1.1", ["github:jspm/nodelibs-pro
   return module.exports;
 });
 
-System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"], true, function(require, exports, module) {
+System.register("npm:lodash@3.9.1/index", ["github:jspm/nodelibs-process@0.1.1"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -11193,7 +11191,7 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
     ;
     (function() {
       var undefined;
-      var VERSION = '3.8.0';
+      var VERSION = '3.9.1';
       var BIND_FLAG = 1,
           BIND_KEY_FLAG = 2,
           CURRY_BOUND_FLAG = 4,
@@ -11379,12 +11377,16 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
       var root = freeGlobal || ((freeWindow !== (this && this.window)) && freeWindow) || freeSelf || this;
       function baseCompareAscending(value, other) {
         if (value !== other) {
-          var valIsReflexive = value === value,
+          var valIsNull = value === null,
+              valIsUndef = value === undefined,
+              valIsReflexive = value === value;
+          var othIsNull = other === null,
+              othIsUndef = other === undefined,
               othIsReflexive = other === other;
-          if (value > other || !valIsReflexive || (value === undefined && othIsReflexive)) {
+          if ((value > other && !othIsNull) || !valIsReflexive || (valIsNull && !othIsUndef && othIsReflexive) || (valIsUndef && othIsReflexive)) {
             return 1;
           }
-          if (value < other || !othIsReflexive || (other === undefined && valIsReflexive)) {
+          if ((value < other && !valIsNull) || !othIsReflexive || (othIsNull && !valIsUndef && valIsReflexive) || (othIsUndef && valIsReflexive)) {
             return -1;
           }
         }
@@ -11421,9 +11423,6 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           return value;
         }
         return value == null ? '' : (value + '');
-      }
-      function charAtCallback(string) {
-        return string.charCodeAt(0);
       }
       function charsLeftIndex(string, chars) {
         var index = -1,
@@ -11540,67 +11539,48 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
         var arrayProto = Array.prototype,
             objectProto = Object.prototype,
             stringProto = String.prototype;
-        var document = (document = context.window) && document.document;
+        var document = (document = context.window) ? document.document : null;
         var fnToString = Function.prototype.toString;
         var hasOwnProperty = objectProto.hasOwnProperty;
         var idCounter = 0;
         var objToString = objectProto.toString;
         var oldDash = context._;
-        var reIsNative = RegExp('^' + escapeRegExp(objToString).replace(/toString|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$');
-        var ArrayBuffer = isNative(ArrayBuffer = context.ArrayBuffer) && ArrayBuffer,
-            bufferSlice = isNative(bufferSlice = ArrayBuffer && new ArrayBuffer(0).slice) && bufferSlice,
+        var reIsNative = RegExp('^' + escapeRegExp(fnToString.call(hasOwnProperty)).replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$');
+        var ArrayBuffer = getNative(context, 'ArrayBuffer'),
+            bufferSlice = getNative(ArrayBuffer && new ArrayBuffer(0), 'slice'),
             ceil = Math.ceil,
             clearTimeout = context.clearTimeout,
             floor = Math.floor,
-            getOwnPropertySymbols = isNative(getOwnPropertySymbols = Object.getOwnPropertySymbols) && getOwnPropertySymbols,
-            getPrototypeOf = isNative(getPrototypeOf = Object.getPrototypeOf) && getPrototypeOf,
+            getPrototypeOf = getNative(Object, 'getPrototypeOf'),
             push = arrayProto.push,
-            preventExtensions = isNative(preventExtensions = Object.preventExtensions) && preventExtensions,
-            propertyIsEnumerable = objectProto.propertyIsEnumerable,
-            Set = isNative(Set = context.Set) && Set,
+            Set = getNative(context, 'Set'),
             setTimeout = context.setTimeout,
             splice = arrayProto.splice,
-            Uint8Array = isNative(Uint8Array = context.Uint8Array) && Uint8Array,
-            WeakMap = isNative(WeakMap = context.WeakMap) && WeakMap;
+            Uint8Array = getNative(context, 'Uint8Array'),
+            WeakMap = getNative(context, 'WeakMap');
         var Float64Array = (function() {
           try {
-            var func = isNative(func = context.Float64Array) && func,
+            var func = getNative(context, 'Float64Array'),
                 result = new func(new ArrayBuffer(10), 0, 1) && func;
           } catch (e) {}
-          return result;
+          return result || null;
         }());
-        var nativeAssign = (function() {
-          var func = preventExtensions && isNative(func = Object.assign) && func;
-          try {
-            if (func) {
-              var object = preventExtensions({'1': 0});
-              object[0] = 1;
-            }
-          } catch (e) {
-            try {
-              func(object, 'xo');
-            } catch (e) {}
-            return !object[1] && func;
-          }
-          return false;
-        }());
-        var nativeIsArray = isNative(nativeIsArray = Array.isArray) && nativeIsArray,
-            nativeCreate = isNative(nativeCreate = Object.create) && nativeCreate,
+        var nativeCreate = getNative(Object, 'create'),
+            nativeIsArray = getNative(Array, 'isArray'),
             nativeIsFinite = context.isFinite,
-            nativeKeys = isNative(nativeKeys = Object.keys) && nativeKeys,
+            nativeKeys = getNative(Object, 'keys'),
             nativeMax = Math.max,
             nativeMin = Math.min,
-            nativeNow = isNative(nativeNow = Date.now) && nativeNow,
-            nativeNumIsFinite = isNative(nativeNumIsFinite = Number.isFinite) && nativeNumIsFinite,
+            nativeNow = getNative(Date, 'now'),
+            nativeNumIsFinite = getNative(Number, 'isFinite'),
             nativeParseInt = context.parseInt,
             nativeRandom = Math.random;
-        var NEGATIVE_INFINITY = Number.NEGATIVE_INFINITY,
-            POSITIVE_INFINITY = Number.POSITIVE_INFINITY;
-        var MAX_ARRAY_LENGTH = Math.pow(2, 32) - 1,
+        var POSITIVE_INFINITY = Number.POSITIVE_INFINITY;
+        var MAX_ARRAY_LENGTH = 4294967295,
             MAX_ARRAY_INDEX = MAX_ARRAY_LENGTH - 1,
             HALF_MAX_ARRAY_LENGTH = MAX_ARRAY_LENGTH >>> 1;
         var FLOAT64_BYTES_PER_ELEMENT = Float64Array ? Float64Array.BYTES_PER_ELEMENT : 0;
-        var MAX_SAFE_INTEGER = Math.pow(2, 53) - 1;
+        var MAX_SAFE_INTEGER = 9007199254740991;
         var metaMap = WeakMap && new WeakMap;
         var realNames = {};
         function lodash(value) {
@@ -11625,7 +11605,6 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           var Ctor = function() {
             this.x = x;
           },
-              args = arguments,
               object = {
                 '0': x,
                 'length': x
@@ -11638,19 +11617,10 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           for (var key in new Ctor) {
             props.push(key);
           }
-          support.funcDecomp = /\bthis\b/.test(function() {
-            return this;
-          });
-          support.funcNames = typeof Function.name == 'string';
           try {
             support.dom = document.createDocumentFragment().nodeType === 11;
           } catch (e) {
             support.dom = false;
-          }
-          try {
-            support.nonEnumArgs = !propertyIsEnumerable.call(args, 1);
-          } catch (e) {
-            support.nonEnumArgs = true;
           }
         }(1, 0));
         lodash.templateSettings = {
@@ -11827,6 +11797,21 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           }
           return true;
         }
+        function arrayExtremum(array, iteratee, comparator, exValue) {
+          var index = -1,
+              length = array.length,
+              computed = exValue,
+              result = computed;
+          while (++index < length) {
+            var value = array[index],
+                current = +iteratee(value);
+            if (comparator(current, computed)) {
+              computed = current;
+              result = value;
+            }
+          }
+          return result;
+        }
         function arrayFilter(array, predicate) {
           var index = -1,
               length = array.length,
@@ -11846,30 +11831,6 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
               result = Array(length);
           while (++index < length) {
             result[index] = iteratee(array[index], index, array);
-          }
-          return result;
-        }
-        function arrayMax(array) {
-          var index = -1,
-              length = array.length,
-              result = NEGATIVE_INFINITY;
-          while (++index < length) {
-            var value = array[index];
-            if (value > result) {
-              result = value;
-            }
-          }
-          return result;
-        }
-        function arrayMin(array) {
-          var index = -1,
-              length = array.length,
-              result = POSITIVE_INFINITY;
-          while (++index < length) {
-            var value = array[index];
-            if (value < result) {
-              result = value;
-            }
           }
           return result;
         }
@@ -11919,9 +11880,8 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           return (objectValue === undefined || !hasOwnProperty.call(object, key)) ? sourceValue : objectValue;
         }
         function assignWith(object, source, customizer) {
-          var props = keys(source);
-          push.apply(props, getSymbols(source));
           var index = -1,
+              props = keys(source),
               length = props.length;
           while (++index < length) {
             var key = props[index],
@@ -11933,14 +11893,14 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           }
           return object;
         }
-        var baseAssign = nativeAssign || function(object, source) {
-          return source == null ? object : baseCopy(source, getSymbols(source), baseCopy(source, keys(source), object));
-        };
+        function baseAssign(object, source) {
+          return source == null ? object : baseCopy(source, keys(source), object);
+        }
         function baseAt(collection, props) {
           var index = -1,
               isNil = collection == null,
               isArr = !isNil && isArrayLike(collection),
-              length = isArr && collection.length,
+              length = isArr ? collection.length : 0,
               propsLength = props.length,
               result = Array(propsLength);
           while (++index < propsLength) {
@@ -12021,14 +11981,14 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           return result;
         }
         var baseCreate = (function() {
-          function Object() {}
+          function object() {}
           return function(prototype) {
             if (isObject(prototype)) {
-              Object.prototype = prototype;
-              var result = new Object;
-              Object.prototype = null;
+              object.prototype = prototype;
+              var result = new object;
+              object.prototype = null;
             }
-            return result || context.Object();
+            return result || {};
           };
         }());
         function baseDelay(func, wait, args) {
@@ -12078,6 +12038,18 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           baseEach(collection, function(value, index, collection) {
             result = !!predicate(value, index, collection);
             return result;
+          });
+          return result;
+        }
+        function baseExtremum(collection, iteratee, comparator, exValue) {
+          var computed = exValue,
+              result = computed;
+          baseEach(collection, function(value, index, collection) {
+            var current = +iteratee(value, index, collection);
+            if (comparator(current, computed) || (current === exValue && current === result)) {
+              computed = current;
+              result = value;
+            }
           });
           return result;
         }
@@ -12170,10 +12142,10 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           if (pathKey !== undefined && pathKey in toObject(object)) {
             path = [pathKey];
           }
-          var index = -1,
+          var index = 0,
               length = path.length;
-          while (object != null && ++index < length) {
-            object = object[path[index]];
+          while (object != null && index < length) {
+            object = object[path[index++]];
           }
           return (index && index == length) ? object : undefined;
         }
@@ -12181,9 +12153,7 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           if (value === other) {
             return true;
           }
-          var valType = typeof value,
-              othType = typeof other;
-          if ((valType != 'function' && valType != 'object' && othType != 'function' && othType != 'object') || value == null || other == null) {
+          if (value == null || other == null || (!isObject(value) && !isObject(other))) {
             return value !== value && other !== other;
           }
           return baseIsEqualDeep(value, other, baseIsEqual, customizer, isLoose, stackA, stackB);
@@ -12216,10 +12186,10 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
             return equalByTag(object, other, objTag);
           }
           if (!isLoose) {
-            var valWrapped = objIsObj && hasOwnProperty.call(object, '__wrapped__'),
-                othWrapped = othIsObj && hasOwnProperty.call(other, '__wrapped__');
-            if (valWrapped || othWrapped) {
-              return equalFunc(valWrapped ? object.value() : object, othWrapped ? other.value() : other, customizer, isLoose, stackA, stackB);
+            var objIsWrapped = objIsObj && hasOwnProperty.call(object, '__wrapped__'),
+                othIsWrapped = othIsObj && hasOwnProperty.call(other, '__wrapped__');
+            if (objIsWrapped || othIsWrapped) {
+              return equalFunc(objIsWrapped ? object.value() : object, othIsWrapped ? other.value() : other, customizer, isLoose, stackA, stackB);
             }
           }
           if (!isSameTag) {
@@ -12240,30 +12210,34 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           stackB.pop();
           return result;
         }
-        function baseIsMatch(object, props, values, strictCompareFlags, customizer) {
-          var index = -1,
-              length = props.length,
+        function baseIsMatch(object, matchData, customizer) {
+          var index = matchData.length,
+              length = index,
               noCustomizer = !customizer;
-          while (++index < length) {
-            if ((noCustomizer && strictCompareFlags[index]) ? values[index] !== object[props[index]] : !(props[index] in object)) {
+          if (object == null) {
+            return !length;
+          }
+          object = toObject(object);
+          while (index--) {
+            var data = matchData[index];
+            if ((noCustomizer && data[2]) ? data[1] !== object[data[0]] : !(data[0] in object)) {
               return false;
             }
           }
-          index = -1;
           while (++index < length) {
-            var key = props[index],
+            data = matchData[index];
+            var key = data[0],
                 objValue = object[key],
-                srcValue = values[index];
-            if (noCustomizer && strictCompareFlags[index]) {
-              var result = objValue !== undefined || (key in object);
-            } else {
-              result = customizer ? customizer(objValue, srcValue, key) : undefined;
-              if (result === undefined) {
-                result = baseIsEqual(srcValue, objValue, customizer, true);
+                srcValue = data[1];
+            if (noCustomizer && data[2]) {
+              if (objValue === undefined && !(key in object)) {
+                return false;
               }
-            }
-            if (!result) {
-              return false;
+            } else {
+              var result = customizer ? customizer(objValue, srcValue, key) : undefined;
+              if (!(result === undefined ? baseIsEqual(srcValue, objValue, customizer, true) : result)) {
+                return false;
+              }
             }
           }
           return true;
@@ -12277,37 +12251,24 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           return result;
         }
         function baseMatches(source) {
-          var props = keys(source),
-              length = props.length;
-          if (!length) {
-            return constant(true);
-          }
-          if (length == 1) {
-            var key = props[0],
-                value = source[key];
-            if (isStrictComparable(value)) {
-              return function(object) {
-                if (object == null) {
-                  return false;
-                }
-                return object[key] === value && (value !== undefined || (key in toObject(object)));
-              };
-            }
-          }
-          var values = Array(length),
-              strictCompareFlags = Array(length);
-          while (length--) {
-            value = source[props[length]];
-            values[length] = value;
-            strictCompareFlags[length] = isStrictComparable(value);
+          var matchData = getMatchData(source);
+          if (matchData.length == 1 && matchData[0][2]) {
+            var key = matchData[0][0],
+                value = matchData[0][1];
+            return function(object) {
+              if (object == null) {
+                return false;
+              }
+              return object[key] === value && (value !== undefined || (key in toObject(object)));
+            };
           }
           return function(object) {
-            return object != null && baseIsMatch(toObject(object), props, values, strictCompareFlags);
+            return baseIsMatch(object, matchData);
           };
         }
-        function baseMatchesProperty(path, value) {
+        function baseMatchesProperty(path, srcValue) {
           var isArr = isArray(path),
-              isCommon = isKey(path) && isStrictComparable(value),
+              isCommon = isKey(path) && isStrictComparable(srcValue),
               pathKey = (path + '');
           path = toPath(path);
           return function(object) {
@@ -12324,18 +12285,15 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
               key = last(path);
               object = toObject(object);
             }
-            return object[key] === value ? (value !== undefined || (key in object)) : baseIsEqual(value, object[key], null, true);
+            return object[key] === srcValue ? (srcValue !== undefined || (key in object)) : baseIsEqual(srcValue, object[key], undefined, true);
           };
         }
         function baseMerge(object, source, customizer, stackA, stackB) {
           if (!isObject(object)) {
             return object;
           }
-          var isSrcArr = isArrayLike(source) && (isArray(source) || isTypedArray(source));
-          if (!isSrcArr) {
-            var props = keys(source);
-            push.apply(props, getSymbols(source));
-          }
+          var isSrcArr = isArrayLike(source) && (isArray(source) || isTypedArray(source)),
+              props = isSrcArr ? null : keys(source);
           arrayEach(props || source, function(srcValue, key) {
             if (props) {
               key = srcValue;
@@ -12352,7 +12310,7 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
               if (isCommon) {
                 result = srcValue;
               }
-              if ((isSrcArr || result !== undefined) && (isCommon || (result === result ? (result !== value) : (value === value)))) {
+              if ((result !== undefined || (isSrcArr && !(key in object))) && (isCommon || (result === result ? (result !== value) : (value === value)))) {
                 object[key] = result;
               }
             }
@@ -12404,7 +12362,7 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
         function basePullAt(array, indexes) {
           var length = array ? indexes.length : 0;
           while (length--) {
-            var index = parseFloat(indexes[length]);
+            var index = indexes[length];
             if (index != previous && isIndex(index)) {
               var previous = index;
               splice.call(array, index, 1);
@@ -12562,7 +12520,7 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
             while (low < high) {
               var mid = (low + high) >>> 1,
                   computed = array[mid];
-              if (retHighest ? (computed <= value) : (computed < value)) {
+              if ((retHighest ? (computed <= value) : (computed < value)) && computed !== null) {
                 low = mid + 1;
               } else {
                 high = mid;
@@ -12577,15 +12535,21 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           var low = 0,
               high = array ? array.length : 0,
               valIsNaN = value !== value,
+              valIsNull = value === null,
               valIsUndef = value === undefined;
           while (low < high) {
             var mid = floor((low + high) / 2),
                 computed = iteratee(array[mid]),
+                isDef = computed !== undefined,
                 isReflexive = computed === computed;
             if (valIsNaN) {
               var setLow = isReflexive || retHighest;
+            } else if (valIsNull) {
+              setLow = isReflexive && isDef && (retHighest || computed != null);
             } else if (valIsUndef) {
-              setLow = isReflexive && (retHighest || computed !== undefined);
+              setLow = isReflexive && (retHighest || isDef);
+            } else if (computed == null) {
+              setLow = false;
             } else {
               setLow = retHighest ? (computed <= value) : (computed < value);
             }
@@ -12707,18 +12671,18 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           return restParam(function(object, sources) {
             var index = -1,
                 length = object == null ? 0 : sources.length,
-                customizer = length > 2 && sources[length - 2],
-                guard = length > 2 && sources[2],
-                thisArg = length > 1 && sources[length - 1];
+                customizer = length > 2 ? sources[length - 2] : undefined,
+                guard = length > 2 ? sources[2] : undefined,
+                thisArg = length > 1 ? sources[length - 1] : undefined;
             if (typeof customizer == 'function') {
               customizer = bindCallback(customizer, thisArg, 5);
               length -= 2;
             } else {
-              customizer = typeof thisArg == 'function' ? thisArg : null;
+              customizer = typeof thisArg == 'function' ? thisArg : undefined;
               length -= (customizer ? 1 : 0);
             }
             if (guard && isIterateeCall(sources[0], sources[1], guard)) {
-              customizer = length < 3 ? null : customizer;
+              customizer = length < 3 ? undefined : customizer;
               length = 1;
             }
             while (++index < length) {
@@ -12786,8 +12750,23 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
         }
         function createCtorWrapper(Ctor) {
           return function() {
+            var args = arguments;
+            switch (args.length) {
+              case 0:
+                return new Ctor;
+              case 1:
+                return new Ctor(args[0]);
+              case 2:
+                return new Ctor(args[0], args[1]);
+              case 3:
+                return new Ctor(args[0], args[1], args[2]);
+              case 4:
+                return new Ctor(args[0], args[1], args[2], args[3]);
+              case 5:
+                return new Ctor(args[0], args[1], args[2], args[3], args[4]);
+            }
             var thisBinding = baseCreate(Ctor.prototype),
-                result = Ctor.apply(thisBinding, arguments);
+                result = Ctor.apply(thisBinding, args);
             return isObject(result) ? result : thisBinding;
           };
         }
@@ -12802,26 +12781,20 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           }
           return curryFunc;
         }
-        function createExtremum(arrayFunc, isMin) {
+        function createExtremum(comparator, exValue) {
           return function(collection, iteratee, thisArg) {
             if (thisArg && isIterateeCall(collection, iteratee, thisArg)) {
               iteratee = null;
             }
-            var func = getCallback(),
-                noIteratee = iteratee == null;
-            if (!(func === baseCallback && noIteratee)) {
-              noIteratee = false;
-              iteratee = func(iteratee, thisArg, 3);
-            }
-            if (noIteratee) {
-              var isArr = isArray(collection);
-              if (!isArr && isString(collection)) {
-                iteratee = charAtCallback;
-              } else {
-                return arrayFunc(isArr ? collection : toIterable(collection));
+            iteratee = getCallback(iteratee, thisArg, 3);
+            if (iteratee.length == 1) {
+              collection = toIterable(collection);
+              var result = arrayExtremum(collection, iteratee, comparator, exValue);
+              if (!(collection.length && result === exValue)) {
+                return result;
               }
             }
-            return extremumBy(collection, iteratee, isMin);
+            return baseExtremum(collection, iteratee, comparator, exValue);
           };
         }
         function createFind(eachFunc, fromRight) {
@@ -12851,13 +12824,8 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
         }
         function createFlow(fromRight) {
           return function() {
-            var length = arguments.length;
-            if (!length) {
-              return function() {
-                return arguments[0];
-              };
-            }
             var wrapper,
+                length = arguments.length,
                 index = fromRight ? length : -1,
                 leftIndex = 0,
                 funcs = Array(length);
@@ -12866,14 +12834,15 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
               if (typeof func != 'function') {
                 throw new TypeError(FUNC_ERROR_TEXT);
               }
-              var funcName = wrapper ? '' : getFuncName(func);
-              wrapper = funcName == 'wrapper' ? new LodashWrapper([]) : wrapper;
+              if (!wrapper && LodashWrapper.prototype.thru && getFuncName(func) == 'wrapper') {
+                wrapper = new LodashWrapper([]);
+              }
             }
             index = wrapper ? -1 : length;
             while (++index < length) {
               func = funcs[index];
-              funcName = getFuncName(func);
-              var data = funcName == 'wrapper' ? getData(func) : null;
+              var funcName = getFuncName(func),
+                  data = funcName == 'wrapper' ? getData(func) : null;
               if (data && isLaziable(data[0]) && data[1] == (ARY_FLAG | CURRY_FLAG | PARTIAL_FLAG | REARG_FLAG) && !data[4].length && data[9] == 1) {
                 wrapper = wrapper[getFuncName(data[0])].apply(wrapper, data[3]);
               } else {
@@ -12886,7 +12855,7 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
                 return wrapper.plant(args[0]).value();
               }
               var index = 0,
-                  result = funcs[index].apply(this, args);
+                  result = length ? funcs[index].apply(this, args) : args[0];
               while (++index < length) {
                 result = funcs[index].call(this, result);
               }
@@ -12953,9 +12922,8 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
               isBindKey = bitmask & BIND_KEY_FLAG,
               isCurry = bitmask & CURRY_FLAG,
               isCurryBound = bitmask & CURRY_BOUND_FLAG,
-              isCurryRight = bitmask & CURRY_RIGHT_FLAG;
-          var Ctor = !isBindKey && createCtorWrapper(func),
-              key = func;
+              isCurryRight = bitmask & CURRY_RIGHT_FLAG,
+              Ctor = isBindKey ? null : createCtorWrapper(func);
           function wrapper() {
             var length = arguments.length,
                 index = length,
@@ -12994,17 +12962,17 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
                 return result;
               }
             }
-            var thisBinding = isBind ? thisArg : this;
-            if (isBindKey) {
-              func = thisBinding[key];
-            }
+            var thisBinding = isBind ? thisArg : this,
+                fn = isBindKey ? thisBinding[func] : func;
             if (argPos) {
               args = reorder(args, argPos);
             }
             if (isAry && ary < args.length) {
               args.length = ary;
             }
-            var fn = (this && this !== root && this instanceof wrapper) ? (Ctor || createCtorWrapper(func)) : func;
+            if (this && this !== root && this instanceof wrapper) {
+              fn = Ctor || createCtorWrapper(func);
+            }
             return fn.apply(thisBinding, args);
           }
           return wrapper;
@@ -13041,8 +13009,8 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
         }
         function createSortedIndex(retHighest) {
           return function(array, value, iteratee, thisArg) {
-            var func = getCallback(iteratee);
-            return (func === baseCallback && iteratee == null) ? binaryIndex(array, value, retHighest) : binaryIndexBy(array, value, func(iteratee, thisArg, 1), retHighest);
+            var callback = getCallback(iteratee);
+            return (iteratee == null && callback === baseCallback) ? binaryIndex(array, value, retHighest) : binaryIndexBy(array, value, callback(iteratee, thisArg, 1), retHighest);
           };
         }
         function createWrapper(func, bitmask, thisArg, partials, holders, argPos, ary, arity) {
@@ -13082,34 +13050,31 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
         function equalArrays(array, other, equalFunc, customizer, isLoose, stackA, stackB) {
           var index = -1,
               arrLength = array.length,
-              othLength = other.length,
-              result = true;
+              othLength = other.length;
           if (arrLength != othLength && !(isLoose && othLength > arrLength)) {
             return false;
           }
-          while (result && ++index < arrLength) {
+          while (++index < arrLength) {
             var arrValue = array[index],
-                othValue = other[index];
-            result = undefined;
-            if (customizer) {
-              result = isLoose ? customizer(othValue, arrValue, index) : customizer(arrValue, othValue, index);
-            }
-            if (result === undefined) {
-              if (isLoose) {
-                var othIndex = othLength;
-                while (othIndex--) {
-                  othValue = other[othIndex];
-                  result = (arrValue && arrValue === othValue) || equalFunc(arrValue, othValue, customizer, isLoose, stackA, stackB);
-                  if (result) {
-                    break;
-                  }
-                }
-              } else {
-                result = (arrValue && arrValue === othValue) || equalFunc(arrValue, othValue, customizer, isLoose, stackA, stackB);
+                othValue = other[index],
+                result = customizer ? customizer(isLoose ? othValue : arrValue, isLoose ? arrValue : othValue, index) : undefined;
+            if (result !== undefined) {
+              if (result) {
+                continue;
               }
+              return false;
+            }
+            if (isLoose) {
+              if (!arraySome(other, function(othValue) {
+                return arrValue === othValue || equalFunc(arrValue, othValue, customizer, isLoose, stackA, stackB);
+              })) {
+                return false;
+              }
+            } else if (!(arrValue === othValue || equalFunc(arrValue, othValue, customizer, isLoose, stackA, stackB))) {
+              return false;
             }
           }
-          return !!result;
+          return true;
         }
         function equalByTag(object, other, tag) {
           switch (tag) {
@@ -13134,23 +13099,20 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           if (objLength != othLength && !isLoose) {
             return false;
           }
-          var skipCtor = isLoose,
-              index = -1;
-          while (++index < objLength) {
-            var key = objProps[index],
-                result = isLoose ? key in other : hasOwnProperty.call(other, key);
-            if (result) {
-              var objValue = object[key],
-                  othValue = other[key];
-              result = undefined;
-              if (customizer) {
-                result = isLoose ? customizer(othValue, objValue, key) : customizer(objValue, othValue, key);
-              }
-              if (result === undefined) {
-                result = (objValue && objValue === othValue) || equalFunc(objValue, othValue, customizer, isLoose, stackA, stackB);
-              }
+          var index = objLength;
+          while (index--) {
+            var key = objProps[index];
+            if (!(isLoose ? key in other : hasOwnProperty.call(other, key))) {
+              return false;
             }
-            if (!result) {
+          }
+          var skipCtor = isLoose;
+          while (++index < objLength) {
+            key = objProps[index];
+            var objValue = object[key],
+                othValue = other[key],
+                result = customizer ? customizer(isLoose ? othValue : objValue, isLoose ? objValue : othValue, key) : undefined;
+            if (!(result === undefined ? equalFunc(objValue, othValue, customizer, isLoose, stackA, stackB) : result)) {
               return false;
             }
             skipCtor || (skipCtor = key == 'constructor');
@@ -13164,19 +13126,6 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           }
           return true;
         }
-        function extremumBy(collection, iteratee, isMin) {
-          var exValue = isMin ? POSITIVE_INFINITY : NEGATIVE_INFINITY,
-              computed = exValue,
-              result = computed;
-          baseEach(collection, function(value, index, collection) {
-            var current = iteratee(value, index, collection);
-            if ((isMin ? (current < computed) : (current > computed)) || (current === exValue && current === result)) {
-              computed = current;
-              result = value;
-            }
-          });
-          return result;
-        }
         function getCallback(func, thisArg, argCount) {
           var result = lodash.callback || callback;
           result = result === callback ? baseCallback : result;
@@ -13185,36 +13134,37 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
         var getData = !metaMap ? noop : function(func) {
           return metaMap.get(func);
         };
-        var getFuncName = (function() {
-          if (!support.funcNames) {
-            return constant('');
-          }
-          if (constant.name == 'constant') {
-            return baseProperty('name');
-          }
-          return function(func) {
-            var result = func.name,
-                array = realNames[result],
-                length = array ? array.length : 0;
-            while (length--) {
-              var data = array[length],
-                  otherFunc = data.func;
-              if (otherFunc == null || otherFunc == func) {
-                return data.name;
-              }
+        function getFuncName(func) {
+          var result = func.name,
+              array = realNames[result],
+              length = array ? array.length : 0;
+          while (length--) {
+            var data = array[length],
+                otherFunc = data.func;
+            if (otherFunc == null || otherFunc == func) {
+              return data.name;
             }
-            return result;
-          };
-        }());
+          }
+          return result;
+        }
         function getIndexOf(collection, target, fromIndex) {
           var result = lodash.indexOf || indexOf;
           result = result === indexOf ? baseIndexOf : result;
           return collection ? result(collection, target, fromIndex) : result;
         }
         var getLength = baseProperty('length');
-        var getSymbols = !getOwnPropertySymbols ? constant([]) : function(object) {
-          return getOwnPropertySymbols(toObject(object));
-        };
+        function getMatchData(object) {
+          var result = pairs(object),
+              length = result.length;
+          while (length--) {
+            result[length][2] = isStrictComparable(result[length][1]);
+          }
+          return result;
+        }
+        function getNative(object, key) {
+          var value = object == null ? undefined : object[key];
+          return isNative(value) ? value : undefined;
+        }
         function getView(start, end, transforms) {
           var index = -1,
               length = transforms ? transforms.length : 0;
@@ -13298,7 +13248,7 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           return value != null && isLength(getLength(value));
         }
         function isIndex(value, length) {
-          value = +value;
+          value = typeof value == 'number' ? value : parseFloat(value);
           length = length == null ? MAX_SAFE_INTEGER : length;
           return value > -1 && value % 1 == 0 && value < length;
         }
@@ -13437,9 +13387,8 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
         function shimKeys(object) {
           var props = keysIn(object),
               propsLength = props.length,
-              length = propsLength && object.length,
-              support = lodash.support;
-          var allowIndexes = length && isLength(length) && (isArray(object) || (support.nonEnumArgs && isArguments(object)));
+              length = propsLength && object.length;
+          var allowIndexes = !!length && isLength(length) && (isArray(object) || isArguments(object));
           var index = -1,
               result = [];
           while (++index < propsLength) {
@@ -13580,36 +13529,28 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
         function initial(array) {
           return dropRight(array, 1);
         }
-        function intersection() {
-          var args = [],
-              argsIndex = -1,
-              argsLength = arguments.length,
-              caches = [],
+        var intersection = restParam(function(arrays) {
+          var othLength = arrays.length,
+              othIndex = othLength,
+              caches = Array(length),
               indexOf = getIndexOf(),
               isCommon = indexOf == baseIndexOf,
               result = [];
-          while (++argsIndex < argsLength) {
-            var value = arguments[argsIndex];
-            if (isArrayLike(value)) {
-              args.push(value);
-              caches.push((isCommon && value.length >= 120) ? createCache(argsIndex && value) : null);
-            }
+          while (othIndex--) {
+            var value = arrays[othIndex] = isArrayLike(value = arrays[othIndex]) ? value : [];
+            caches[othIndex] = (isCommon && value.length >= 120) ? createCache(othIndex && value) : null;
           }
-          argsLength = args.length;
-          if (argsLength < 2) {
-            return result;
-          }
-          var array = args[0],
+          var array = arrays[0],
               index = -1,
               length = array ? array.length : 0,
               seen = caches[0];
           outer: while (++index < length) {
             value = array[index];
             if ((seen ? cacheIndexOf(seen, value) : indexOf(result, value, 0)) < 0) {
-              argsIndex = argsLength;
-              while (--argsIndex) {
-                var cache = caches[argsIndex];
-                if ((cache ? cacheIndexOf(cache, value) : indexOf(args[argsIndex], value, 0)) < 0) {
+              var othIndex = othLength;
+              while (--othIndex) {
+                var cache = caches[othIndex];
+                if ((cache ? cacheIndexOf(cache, value) : indexOf(arrays[othIndex], value, 0)) < 0) {
                   continue outer;
                 }
               }
@@ -13620,7 +13561,7 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
             }
           }
           return result;
-        }
+        });
         function last(array) {
           var length = array ? array.length : 0;
           return length ? array[length - 1] : undefined;
@@ -13750,9 +13691,9 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
             iteratee = isIterateeCall(array, isSorted, thisArg) ? null : isSorted;
             isSorted = false;
           }
-          var func = getCallback();
-          if (!(func === baseCallback && iteratee == null)) {
-            iteratee = func(iteratee, thisArg, 3);
+          var callback = getCallback();
+          if (!(iteratee == null && callback === baseCallback)) {
+            iteratee = callback(iteratee, thisArg, 3);
           }
           return (isSorted && getIndexOf() == baseIndexOf) ? sortedUniq(array, iteratee) : baseUniq(array, iteratee);
         }
@@ -13822,8 +13763,8 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
         }
         var zipWith = restParam(function(arrays) {
           var length = arrays.length,
-              iteratee = arrays[length - 2],
-              thisArg = arrays[length - 1];
+              iteratee = length > 2 ? arrays[length - 2] : undefined,
+              thisArg = length > 1 ? arrays[length - 1] : undefined;
           if (length > 2 && typeof iteratee == 'function') {
             length -= 2;
           } else {
@@ -13945,7 +13886,7 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
               isProp = isKey(path),
               result = isArrayLike(collection) ? Array(collection.length) : [];
           baseEach(collection, function(value) {
-            var func = isFunc ? path : (isProp && value != null && value[path]);
+            var func = isFunc ? path : ((isProp && value != null) ? value[path] : null);
             result[++index] = func ? func.apply(value, args) : invokePath(value, path, args);
           });
           return result;
@@ -14250,13 +14191,13 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           }
           var memoized = function() {
             var args = arguments,
-                cache = memoized.cache,
-                key = resolver ? resolver.apply(this, args) : args[0];
+                key = resolver ? resolver.apply(this, args) : args[0],
+                cache = memoized.cache;
             if (cache.has(key)) {
               return cache.get(key);
             }
             var result = func.apply(this, args);
-            cache.set(key, result);
+            memoized.cache = cache.set(key, result);
             return result;
           };
           memoized.cache = new memoize.Cache;
@@ -14345,12 +14286,16 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
             customizer = isDeep;
             isDeep = false;
           }
-          customizer = typeof customizer == 'function' && bindCallback(customizer, thisArg, 1);
-          return baseClone(value, isDeep, customizer);
+          return typeof customizer == 'function' ? baseClone(value, isDeep, bindCallback(customizer, thisArg, 1)) : baseClone(value, isDeep);
         }
         function cloneDeep(value, customizer, thisArg) {
-          customizer = typeof customizer == 'function' && bindCallback(customizer, thisArg, 1);
-          return baseClone(value, true, customizer);
+          return typeof customizer == 'function' ? baseClone(value, true, bindCallback(customizer, thisArg, 1)) : baseClone(value, true);
+        }
+        function gt(value, other) {
+          return value > other;
+        }
+        function gte(value, other) {
+          return value >= other;
         }
         function isArguments(value) {
           return isObjectLike(value) && isArrayLike(value) && objToString.call(value) == argsTag;
@@ -14382,10 +14327,7 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           return !keys(value).length;
         }
         function isEqual(value, other, customizer, thisArg) {
-          customizer = typeof customizer == 'function' && bindCallback(customizer, thisArg, 3);
-          if (!customizer && isStrictComparable(value) && isStrictComparable(other)) {
-            return value === other;
-          }
+          customizer = typeof customizer == 'function' ? bindCallback(customizer, thisArg, 3) : undefined;
           var result = customizer ? customizer(value, other) : undefined;
           return result === undefined ? baseIsEqual(value, other, customizer) : !!result;
         }
@@ -14400,33 +14342,11 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
         };
         function isObject(value) {
           var type = typeof value;
-          return type == 'function' || (!!value && type == 'object');
+          return !!value && (type == 'object' || type == 'function');
         }
         function isMatch(object, source, customizer, thisArg) {
-          var props = keys(source),
-              length = props.length;
-          if (!length) {
-            return true;
-          }
-          if (object == null) {
-            return false;
-          }
-          customizer = typeof customizer == 'function' && bindCallback(customizer, thisArg, 3);
-          object = toObject(object);
-          if (!customizer && length == 1) {
-            var key = props[0],
-                value = source[key];
-            if (isStrictComparable(value)) {
-              return value === object[key] && (value !== undefined || (key in object));
-            }
-          }
-          var values = Array(length),
-              strictCompareFlags = Array(length);
-          while (length--) {
-            value = values[length] = source[props[length]];
-            strictCompareFlags[length] = isStrictComparable(value);
-          }
-          return baseIsMatch(object, props, values, strictCompareFlags, customizer);
+          customizer = typeof customizer == 'function' ? bindCallback(customizer, thisArg, 3) : undefined;
+          return baseIsMatch(object, getMatchData(source), customizer);
         }
         function isNaN(value) {
           return isNumber(value) && value != +value;
@@ -14450,8 +14370,8 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           if (!(value && objToString.call(value) == objectTag)) {
             return false;
           }
-          var valueOf = value.valueOf,
-              objProto = isNative(valueOf) && (objProto = getPrototypeOf(valueOf)) && getPrototypeOf(objProto);
+          var valueOf = getNative(value, 'valueOf'),
+              objProto = valueOf && (objProto = getPrototypeOf(valueOf)) && getPrototypeOf(objProto);
           return objProto ? (value == objProto || getPrototypeOf(value) == objProto) : shimIsPlainObject(value);
         };
         function isRegExp(value) {
@@ -14465,6 +14385,12 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
         }
         function isUndefined(value) {
           return value === undefined;
+        }
+        function lt(value, other) {
+          return value < other;
+        }
+        function lte(value, other) {
+          return value <= other;
         }
         function toArray(value) {
           var length = value ? getLength(value) : 0;
@@ -14518,10 +14444,13 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           if (!result && !isKey(path)) {
             path = toPath(path);
             object = path.length == 1 ? object : baseGet(object, baseSlice(path, 0, -1));
+            if (object == null) {
+              return false;
+            }
             path = last(path);
-            result = object != null && hasOwnProperty.call(object, path);
+            result = hasOwnProperty.call(object, path);
           }
-          return result;
+          return result || (isLength(object.length) && isIndex(path, object.length) && (isArray(object) || isArguments(object)));
         }
         function invert(object, multiValue, guard) {
           if (guard && isIterateeCall(object, multiValue, guard)) {
@@ -14547,7 +14476,7 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           return result;
         }
         var keys = !nativeKeys ? shimKeys : function(object) {
-          var Ctor = object != null && object.constructor;
+          var Ctor = object == null ? null : object.constructor;
           if ((typeof Ctor == 'function' && Ctor.prototype === object) || (typeof object != 'function' && isArrayLike(object))) {
             return shimKeys(object);
           }
@@ -14561,7 +14490,7 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
             object = Object(object);
           }
           var length = object.length;
-          length = (length && isLength(length) && (isArray(object) || (support.nonEnumArgs && isArguments(object))) && length) || 0;
+          length = (length && isLength(length) && (isArray(object) || isArguments(object)) && length) || 0;
           var Ctor = object.constructor,
               index = -1,
               isProto = typeof Ctor == 'function' && Ctor.prototype === object,
@@ -14594,6 +14523,7 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
           });
         });
         function pairs(object) {
+          object = toObject(object);
           var index = -1,
               props = keys(object),
               length = props.length,
@@ -14654,7 +14584,7 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
               if (isArr) {
                 accumulator = isArray(object) ? new Ctor : [];
               } else {
-                accumulator = baseCreate(isFunction(Ctor) && Ctor.prototype);
+                accumulator = baseCreate(isFunction(Ctor) ? Ctor.prototype : null);
               }
             } else {
               accumulator = {};
@@ -14971,8 +14901,8 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
         function matches(source) {
           return baseMatches(baseClone(source, true));
         }
-        function matchesProperty(path, value) {
-          return baseMatchesProperty(path, baseClone(value, true));
+        function matchesProperty(path, srcValue) {
+          return baseMatchesProperty(path, baseClone(srcValue, true));
         }
         var method = restParam(function(path, args) {
           return function(object) {
@@ -14987,8 +14917,8 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
         function mixin(object, source, options) {
           if (options == null) {
             var isObj = isObject(source),
-                props = isObj && keys(source),
-                methodNames = props && props.length && baseFunctions(source, props);
+                props = isObj ? keys(source) : null,
+                methodNames = (props && props.length) ? baseFunctions(source, props) : null;
             if (!(methodNames ? methodNames.length : isObj)) {
               methodNames = false;
               options = source;
@@ -15094,17 +15024,17 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
         function add(augend, addend) {
           return (+augend || 0) + (+addend || 0);
         }
-        var max = createExtremum(arrayMax);
-        var min = createExtremum(arrayMin, true);
+        var max = createExtremum(gt, -Infinity);
+        var min = createExtremum(lt, Infinity);
         function sum(collection, iteratee, thisArg) {
           if (thisArg && isIterateeCall(collection, iteratee, thisArg)) {
             iteratee = null;
           }
-          var func = getCallback(),
+          var callback = getCallback(),
               noIteratee = iteratee == null;
-          if (!(func === baseCallback && noIteratee)) {
+          if (!(noIteratee && callback === baseCallback)) {
             noIteratee = false;
-            iteratee = func(iteratee, thisArg, 3);
+            iteratee = callback(iteratee, thisArg, 3);
           }
           return noIteratee ? arraySum(isArray(collection) ? collection : toIterable(collection)) : baseSum(collection, iteratee);
         }
@@ -15259,6 +15189,8 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
         lodash.findWhere = findWhere;
         lodash.first = first;
         lodash.get = get;
+        lodash.gt = gt;
+        lodash.gte = gte;
         lodash.has = has;
         lodash.identity = identity;
         lodash.includes = includes;
@@ -15288,6 +15220,8 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
         lodash.kebabCase = kebabCase;
         lodash.last = last;
         lodash.lastIndexOf = lastIndexOf;
+        lodash.lt = lt;
+        lodash.lte = lte;
         lodash.max = max;
         lodash.min = min;
         lodash.noConflict = noConflict;
@@ -15322,6 +15256,7 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
         lodash.all = every;
         lodash.any = some;
         lodash.contains = includes;
+        lodash.eq = isEqual;
         lodash.detect = find;
         lodash.foldl = reduce;
         lodash.foldr = reduceRight;
@@ -15550,11 +15485,11 @@ System.register("npm:lodash@3.8.0/index", ["github:jspm/nodelibs-process@0.1.1"]
   return module.exports;
 });
 
-System.register("npm:lodash@3.8.0", ["npm:lodash@3.8.0/index"], true, function(require, exports, module) {
+System.register("npm:lodash@3.9.1", ["npm:lodash@3.9.1/index"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
-  module.exports = require("npm:lodash@3.8.0/index");
+  module.exports = require("npm:lodash@3.9.1/index");
   global.define = __define;
   return module.exports;
 });
@@ -15600,7 +15535,7 @@ System.register("core/DataSource", [], function($__export) {
   };
 });
 
-System.register("utils/objectHelper", ["npm:lodash@3.8.0"], function($__export) {
+System.register("utils/objectHelper", ["npm:lodash@3.9.1"], function($__export) {
   "use strict";
   var __moduleName = "utils/objectHelper";
   var _;
@@ -16604,7 +16539,7 @@ System.register("github:Bizboard/di.js@master/annotations", ["github:Bizboard/di
   };
 });
 
-System.register("datasources/SharePoint/SoapClient", ["datasources/SharePoint/xml2js", "npm:lodash@3.8.0", "components/RequestClient", "utils/objectHelper", "components/XmlParser"], function($__export) {
+System.register("datasources/SharePoint/SoapClient", ["datasources/SharePoint/xml2js", "npm:lodash@3.9.1", "components/RequestClient", "utils/objectHelper", "components/XmlParser"], function($__export) {
   "use strict";
   var __moduleName = "datasources/SharePoint/SoapClient";
   var XML2JS,
@@ -16726,7 +16661,7 @@ System.register("datasources/SharePoint/SoapClient", ["datasources/SharePoint/xm
   };
 });
 
-System.register("core/Model/prioritisedObject", ["npm:lodash@3.8.0", "npm:eventemitter3@1.1.0", "utils/objectHelper", "core/Model/snapshot"], function($__export) {
+System.register("core/Model/prioritisedObject", ["npm:lodash@3.9.1", "npm:eventemitter3@1.1.0", "utils/objectHelper", "core/Model/snapshot"], function($__export) {
   "use strict";
   var __moduleName = "core/Model/prioritisedObject";
   var _,
@@ -17208,7 +17143,7 @@ System.register("github:Bizboard/di.js@master/injector", ["github:Bizboard/di.js
   };
 });
 
-System.register("datasources/SharePointSoapDataSource", ["utils/objectHelper", "core/DataSource", "github:firebase/firebase-bower@2.2.4", "github:Bizboard/di.js@master", "datasources/SharePoint/SoapClient", "components/UrlParser", "datasources/SharePoint/SharePointSnapshot"], function($__export) {
+System.register("datasources/SharePointSoapDataSource", ["utils/objectHelper", "core/DataSource", "github:firebase/firebase-bower@2.2.5", "github:Bizboard/di.js@master", "datasources/SharePoint/SoapClient", "components/UrlParser", "datasources/SharePoint/SharePointSnapshot"], function($__export) {
   "use strict";
   var __moduleName = "datasources/SharePointSoapDataSource";
   var ObjectHelper,
@@ -17528,7 +17463,7 @@ System.register("github:Bizboard/di.js@master", ["github:Bizboard/di.js@master/i
   };
 });
 
-System.register("datasources/FirebaseDataSource", ["utils/objectHelper", "core/DataSource", "github:firebase/firebase-bower@2.2.4", "github:Bizboard/di.js@master"], function($__export) {
+System.register("datasources/FirebaseDataSource", ["utils/objectHelper", "core/DataSource", "github:firebase/firebase-bower@2.2.5", "github:Bizboard/di.js@master"], function($__export) {
   "use strict";
   var __moduleName = "datasources/FirebaseDataSource";
   var ObjectHelper,
@@ -17631,7 +17566,7 @@ System.register("datasources/FirebaseDataSource", ["utils/objectHelper", "core/D
             var $__0 = this;
             this._onMoveCallback = callback;
             this._dataReference.on('child_moved', (function(newChildSnapshot, prevChildName) {
-              $__0._onMoveCallback(newChildSnapshot);
+              $__0._onMoveCallback(newChildSnapshot, prevChildName);
             }));
           },
           removeChildMovedCallback: function() {
@@ -17658,7 +17593,7 @@ System.register("datasources/FirebaseDataSource", ["utils/objectHelper", "core/D
   };
 });
 
-System.register("core/Model", ["npm:lodash@3.8.0", "core/Model/prioritisedObject", "core/DataSource", "utils/objectHelper", "github:Bizboard/arva-context@master/Context"], function($__export) {
+System.register("core/Model", ["npm:lodash@3.9.1", "core/Model/prioritisedObject", "core/DataSource", "utils/objectHelper", "github:Bizboard/arva-context@master/Context"], function($__export) {
   "use strict";
   var __moduleName = "core/Model";
   var _,

@@ -10,7 +10,6 @@
 
  */
 
-
 import {DataSource}         from '../../core/DataSource';
 import ObjectHelper         from '../../utils/objectHelper';
 import {Context}            from 'arva-context/Context';
@@ -80,6 +79,20 @@ class PrioritisedArray extends Array {
     }
 
     /**
+     *
+     * @param event
+     * @param fn
+     * @param context
+     * @returns {*}
+     */
+    once(event, fn, context = this) {
+        return this.on(event, function(){
+            fn.call(context, arguments);
+            this.off(event, fn, context);
+        }, this);
+    }
+
+    /**
      * Subscribes to events emitted by this PrioritisedArray.
      * @param {String} event 'value', 'child_changed', 'child_moved', 'child_removed'
      * @param {Function} fn Function to call when event is emitted.
@@ -87,6 +100,9 @@ class PrioritisedArray extends Array {
      * @returns {*}
      */
     on(event, fn, context) {
+        /* If we're already ready, fire immediately */
+        if(event === 'ready' && this._dataSource && this._dataSource.ready) { fn.call(context, this); }
+
         return this._eventEmitter.on(event, fn, context);
     }
 
@@ -207,6 +223,15 @@ class PrioritisedArray extends Array {
      * @private
      */
     _buildFromSnapshot(dataSnapshot) {
+
+        let numChildren = dataSnapshot.numChildren(), currentChild = 1;
+
+        /* If there is no data at this point yet, fire a ready event */
+        if (numChildren === 0) {
+            this._dataSource.ready = true;
+            this._eventEmitter.emit('ready');
+        }
+
         dataSnapshot.forEach(
             /** @param {Snapshot} child **/
             function(child){
@@ -226,6 +251,12 @@ class PrioritisedArray extends Array {
 
                 let newModel = new this._dataType(child.key(), child.val(), options);
                 this.add(newModel);
+
+                /* If this is the last child, fire a ready event */
+                if(currentChild++ == numChildren){
+                    this._dataSource.ready = true;
+                    this._eventEmitter.emit('ready');
+                }
 
             }.bind(this));
 
@@ -272,7 +303,8 @@ class PrioritisedArray extends Array {
      */
     _onChildAdded(snapshot) {
         let id = snapshot.key();
-        let model = this.add(new this._dataType(id, null, {dataSnapshot: snapshot}));
+        var rootPath = snapshot.ref().root().toString();
+        let model = this.add(new this._dataType(id, null, {dataSnapshot: snapshot, path: snapshot.ref().toString().replace(rootPath,'/') }));
 
         this._eventEmitter.emit('child_added', model);
         this._eventEmitter.emit('value', this);
@@ -285,10 +317,13 @@ class PrioritisedArray extends Array {
         let id = snapshot.key();
         let itemIndex = this._findIndexById(id);
         let changedModel = new this._dataType(id, null, {dataSnapshot: snapshot, dataSource: snapshot.ref() });
-        this[itemIndex] = changedModel;
 
-        this._eventEmitter.emit('child_changed', changedModel);
-        this._eventEmitter.emit('value', this);
+        if (!(JSON.stringify(this[itemIndex])===JSON.stringify(changedModel))) {
+            this[itemIndex] = changedModel;
+
+            this._eventEmitter.emit('child_changed', changedModel);
+            this._eventEmitter.emit('value', this);
+        }
     }
 
     /**
@@ -296,16 +331,23 @@ class PrioritisedArray extends Array {
      * @param {Snapshot} snapshot
      * @private
      */
-    _onChildMoved(snapshot) {
+    _onChildMoved(snapshot, prevSiblingId) {
         /* Ignore priority updates whilst we're reordering to avoid floods */
         if (!this._isBeingReordered) {
-            this._recalculatePriorities();
 
             let id = snapshot.key();
-            let position = this._findIndexById(id);
-            let model = this[position];
+            let previousPosition = this._findIndexById(id);
+            let tempModel = this[previousPosition];
+            this.remove(previousPosition);
 
-            this._eventEmitter.emit('child_moved', model);
+            let newPosition = this._findIndexById(prevSiblingId)+1;
+            this.insertAt(tempModel, newPosition);
+
+            this._recalculatePriorities();
+
+            let model = this[newPosition];
+
+            this._eventEmitter.emit('child_moved', model, previousPosition);
             this._eventEmitter.emit('value', this);
         }
     }
@@ -322,7 +364,7 @@ class PrioritisedArray extends Array {
         let model = this[position];
 
         if (position !== -1) {
-            this.remove(position, false);
+            this.remove(position);
 
             this._eventEmitter.emit('child_removed', model);
             this._eventEmitter.emit('value', this);

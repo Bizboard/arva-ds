@@ -190,7 +190,7 @@ export class FirebaseDataSource extends DataSource {
     setChildMovedCallback(callback) {
         this._onMoveCallback = callback;
         this._dataReference.on('child_moved', (newChildSnapshot, prevChildName) => {
-            this._onMoveCallback(newChildSnapshot);
+            this._onMoveCallback(newChildSnapshot, prevChildName);
         });
     }
 
