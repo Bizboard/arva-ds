@@ -15518,6 +15518,9 @@ System.register("core/DataSource", [], function($__export) {
           push: function(newData) {},
           setWithPriority: function(newData, priority) {},
           setPriority: function(newPriority) {},
+          authWithOAuthToken: function(provider, credentials, onComplete, options) {},
+          authWithPassword: function(credentials, onComplete, options) {},
+          getAuth: function() {},
           setValueChangedCallback: function(callback) {},
           removeValueChangedCallback: function() {},
           setChildAddedCallback: function(callback) {},
@@ -16737,6 +16740,7 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.9.1", "npm:evente
             }, this);
           },
           on: function(event, fn, context) {
+            var objectContext = this;
             switch (event) {
               case 'ready':
                 if (this._dataSource && this._dataSource.ready) {
@@ -16744,7 +16748,11 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.9.1", "npm:evente
                 }
                 break;
               case 'value':
-                this._dataSource.setValueChangedCallback(fn.bind(context));
+                var wrapper = function(dataSnapshot) {
+                  objectContext._buildFromSnapshot(dataSnapshot);
+                  fn.call(context, dataSnapshot);
+                }.bind(context);
+                this._dataSource.setValueChangedCallback(wrapper);
                 break;
               case 'added':
                 this._dataSource.setChildAddedCallback(fn.bind(context));
@@ -16797,8 +16805,12 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.9.1", "npm:evente
               var key = child.key();
               var val = child.val();
               if (typeof val === 'object' && val !== null) {
-                val = new PrioritisedObject(ref, child);
-                ObjectHelper.addPropertyToObject(this, key, val, true, true);
+                if (Object.getOwnPropertyDescriptor(this, key)) {
+                  ObjectHelper.addPropertyToObject(this, key, val, true, true, this._onSetterTriggered);
+                } else {
+                  val = new PrioritisedObject(ref, child);
+                  ObjectHelper.addPropertyToObject(this, key, val, true, true);
+                }
               } else {
                 if (Object.getOwnPropertyDescriptor(this, key)) {
                   ObjectHelper.addPropertyToObject(this, key, val, true, true, this._onSetterTriggered);
@@ -17525,6 +17537,15 @@ System.register("datasources/FirebaseDataSource", ["utils/objectHelper", "core/D
           },
           setPriority: function(newPriority) {
             return this._dataReference.setPriority(newPriority);
+          },
+          authWithOAuthToken: function(provider, credentials, onComplete, options) {
+            return this._dataReference.authWithOAuthToken(provider, credentials, onComplete, options);
+          },
+          authWithPassword: function(credentials, onComplete, options) {
+            return this._dataReference.authWithPassword(credentials, onComplete, options);
+          },
+          getAuth: function() {
+            return this._dataReference.getAuth();
           },
           setValueChangedCallback: function(callback) {
             this._onValueCallback = callback;
