@@ -15521,6 +15521,7 @@ System.register("core/DataSource", [], function($__export) {
           authWithOAuthToken: function(provider, credentials, onComplete, options) {},
           authWithPassword: function(credentials, onComplete, options) {},
           getAuth: function() {},
+          unauth: function() {},
           setValueChangedCallback: function(callback) {},
           removeValueChangedCallback: function() {},
           setChildAddedCallback: function(callback) {},
@@ -17555,6 +17556,9 @@ System.register("datasources/FirebaseDataSource", ["utils/objectHelper", "core/D
           },
           getAuth: function() {
             return this._dataReference.getAuth();
+          },
+          unauth: function() {
+            return this._dataReference.unauth();
           },
           setValueChangedCallback: function(callback) {
             this._onValueCallback = callback;

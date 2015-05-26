@@ -136,6 +136,13 @@ export class FirebaseDataSource extends DataSource {
         return this._dataReference.getAuth();
     }
 
+    /**
+     * Logs out from the datasource, allowing to re-authenticate at a later time.
+     */
+    unauth() {
+        return this._dataReference.unauth();
+    }
+
     /** Set the callback triggered when dataSource updates the data.
      * @param {Function} callback **/
     setValueChangedCallback(callback) {

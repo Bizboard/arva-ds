@@ -101,6 +101,11 @@ export class DataSource {
      */
     getAuth() { }
 
+    /**
+     * Logs out from the datasource, allowing to re-authenticate at a later time.
+     */
+    unauth() { }
+
     /** Sets the callback triggered when dataSource updates the data.
      *  @param {Function} callback **/
     setValueChangedCallback(callback){ }
