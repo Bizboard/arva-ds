@@ -85,6 +85,16 @@ export class DataSource {
     authWithOAuthToken(provider, credentials, onComplete, options) { }
 
     /**
+     * Authenticates all instances of this DataSource with a custom auth token or secret.
+     * @param {String} authToken Authentication token or secret.
+     * @param {Function} onComplete Callback, executed when login is completed either successfully or erroneously.
+     * On error, first argument is error message.
+     * On success, the first argument is null, and the second argument is an object containing the fields uid, provider, auth, and expires.
+     * @param {Object} options Optional, additional client arguments, such as configuring session persistence.
+     */
+    authWithCustomToken(authToken, onComplete, options) { }
+
+    /**
      * Authenticates all instances of this DataSource with the given email/password credentials.
      * @param {String|Object} credentials Object with key/value pairs {email: "value", password:"value"}.
      * @param {Function} onComplete Callback, executed when login is completed either successfully or erroneously.

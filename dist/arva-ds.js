@@ -15519,6 +15519,7 @@ System.register("core/DataSource", [], function($__export) {
           setWithPriority: function(newData, priority) {},
           setPriority: function(newPriority) {},
           authWithOAuthToken: function(provider, credentials, onComplete, options) {},
+          authWithCustomToken: function(authToken, onComplete, options) {},
           authWithPassword: function(credentials, onComplete, options) {},
           getAuth: function() {},
           unauth: function() {},
@@ -17550,6 +17551,9 @@ System.register("datasources/FirebaseDataSource", ["utils/objectHelper", "core/D
           },
           authWithOAuthToken: function(provider, credentials, onComplete, options) {
             return this._dataReference.authWithOAuthToken(provider, credentials, onComplete, options);
+          },
+          authWithCustomToken: function(authToken, onComplete, options) {
+            return this._dataReference.authWithCustomToken(authToken, onComplete, options);
           },
           authWithPassword: function(credentials, onComplete, options) {
             return this._dataReference.authWithPassword(credentials, onComplete, options);
