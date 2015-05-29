@@ -29,13 +29,14 @@ export class PrioritisedArray extends Array {
     set length(value) {
     }
 
+
     /**
      *
      * @param {Function} dataType
      * @param {DataSource} dataSource
      * @param {Snapshot} dataSnapshot
      */
-    constructor(dataType, dataSource = null, dataSnapshot = null) {
+    constructor(dataType, dataSource = null, dataSnapshot = null, options = null) {
         super();
         /**** Callbacks ****/
         this._valueChangedCallback = null;
@@ -59,13 +60,15 @@ export class PrioritisedArray extends Array {
 
         /* If no dataSource is given, create own one with guessed path */
         if(!dataSource) {
-            let modelName = Object.getPrototypeOf(this).constructor.name;
-            let path = modelName; //+ 's';
+            let path = Object.getPrototypeOf(this).constructor.name;
 
             // retrieve dataSource from the DI context
             dataSource = Context.getContext().get(DataSource);
 
-            dataSource = dataSource.child(path);
+            if (options)
+                dataSource = dataSource.child(path, options);
+            else dataSource = dataSource.child(path);
+
             this._dataSource = dataSource;
         }
 
@@ -130,11 +133,11 @@ export class PrioritisedArray extends Array {
     add(model) {
         if (model instanceof this._dataType) {
             if (this._findIndexById(model.id) < 0) {
-                model.priority = this.length;
+
                 this.push(model);
 
                 if (!model._inheritable) {
-                    model.on('value', (modelData) => {
+                    model.on('changed', (modelData) => {
                         this._onChildChanged(modelData);
                     });
                 }
@@ -169,7 +172,6 @@ export class PrioritisedArray extends Array {
     insertAt(model, position) {
         if (model instanceof this._dataType) {
             this.splice(position, 0, model);
-            this._recalculatePriorities(position);
         }
         else {
             /* TODO: change to throw exception */
@@ -189,7 +191,6 @@ export class PrioritisedArray extends Array {
         let model = this[fromPosition];
         this.splice(fromPosition, 1);
         this.splice(toPosition, 0, model);
-        this._recalculatePriorities();
     }
 
     /**
@@ -201,18 +202,7 @@ export class PrioritisedArray extends Array {
         this.splice(position, 1);
     }
 
-    /**
-     * Assigns models' priorities based on their position in the PrioritisedArray.
-     * @param {Number} start Index to start calculation from, so we don't process unnecessary models.
-     * @private
-     */
-    _recalculatePriorities(start = 0) {
-        this._isBeingReordered = true;
-        for (let i = start; i < this.length; i++) {
-            this[i].priority = i;
-        }
-        this._isBeingReordered = false;
-    }
+
 
     /**
      * Interprets all childs of a given snapshot as instances of the given data type for this PrioritisedArray,
@@ -263,7 +253,6 @@ export class PrioritisedArray extends Array {
             dataSnapshot.ref().inheritable)
             this._eventEmitter.emit('value', this);
 
-        //this._registerCallbacks(this._dataSource);
     }
 
 
@@ -275,23 +264,25 @@ export class PrioritisedArray extends Array {
      */
     _buildFromDataSource(dataSource) {
 
+        this._registerCallbacks(dataSource);
+        return;
 
         let path = dataSource.path();
+        let options = dataSource.options;
         let DataSource = Object.getPrototypeOf(dataSource).constructor;
-        let newSource = new DataSource(path);
+        let newSource = new DataSource(path, options);
         newSource.setValueChangedCallback((dataSnapshot) => {
             newSource.removeValueChangedCallback();
             this._buildFromSnapshot(dataSnapshot);
             this._registerCallbacks(newSource);
         });
-
     }
 
     _registerCallbacks(dataSource) {
         dataSource.setChildAddedCallback(this._onChildAdded);
         dataSource.setChildMovedCallback(this._onChildMoved);
-        if (dataSource.inheritable)
-            dataSource.setChildChangedCallback(this._onChildChanged);
+        //if (dataSource.inheritable)
+        dataSource.setChildChangedCallback(this._onChildChanged);
         dataSource.setChildRemovedCallback(this._onChildRemoved);
     }
 
@@ -300,29 +291,29 @@ export class PrioritisedArray extends Array {
      * @param {Snapshot} snapshot
      * @private
      */
-    _onChildAdded(snapshot) {
+    _onChildAdded(snapshot, prevSiblingId) {
         let id = snapshot.key();
         var rootPath = snapshot.ref().root().toString();
         let model = this.add(new this._dataType(id, null, {dataSnapshot: snapshot, path: snapshot.ref().toString().replace(rootPath,'/') }));
 
-        this._eventEmitter.emit('child_added', model);
+        this._eventEmitter.emit('child_added', model, prevSiblingId);
         this._eventEmitter.emit('value', this);
     }
 
     /**
      *
      */
-    _onChildChanged(snapshot) {
+    _onChildChanged(snapshot, prevSiblingId) {
         let id = snapshot.key();
         let itemIndex = this._findIndexById(id);
         let changedModel = new this._dataType(id, null, {dataSnapshot: snapshot, dataSource: snapshot.ref() });
 
-        if (!(JSON.stringify(this[itemIndex])===JSON.stringify(changedModel))) {
-            this[itemIndex] = changedModel;
+        //if (!(JSON.stringify(this[itemIndex])===JSON.stringify(changedModel))) {
+        //    this[itemIndex] = changedModel;
 
-            this._eventEmitter.emit('child_changed', changedModel);
+            this._eventEmitter.emit('child_changed', changedModel, prevSiblingId);
             this._eventEmitter.emit('value', this);
-        }
+        //}
     }
 
     /**
@@ -342,7 +333,7 @@ export class PrioritisedArray extends Array {
             let newPosition = this._findIndexById(prevSiblingId)+1;
             this.insertAt(tempModel, newPosition);
 
-            this._recalculatePriorities();
+            //this._recalculatePriorities();
 
             let model = this[newPosition];
 
