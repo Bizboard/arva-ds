@@ -130,11 +130,17 @@ export class PrioritisedArray extends Array {
      * @param {Model} model Subclass of Model
      * @returns {*} Same model as the one originally passed as parameter
      */
-    add(model) {
+    add(model, prevSiblingId = null) {
         if (model instanceof this._dataType) {
             if (this._findIndexById(model.id) < 0) {
 
-                this.push(model);
+                if (prevSiblingId) {
+                    let newPosition = this._findIndexById(prevSiblingId)+1;
+                    this.insertAt(model, newPosition);
+                }
+                else {
+                    this.push(model);
+                }
 
                 if (!model._inheritable) {
                     model.on('changed', (modelData) => {
@@ -294,7 +300,7 @@ export class PrioritisedArray extends Array {
     _onChildAdded(snapshot, prevSiblingId) {
         let id = snapshot.key();
         var rootPath = snapshot.ref().root().toString();
-        let model = this.add(new this._dataType(id, null, {dataSnapshot: snapshot, path: snapshot.ref().toString().replace(rootPath,'/') }));
+        let model = this.add(new this._dataType(id, null, {dataSnapshot: snapshot, path: snapshot.ref().toString().replace(rootPath,'/') }), prevSiblingId);
 
         this._eventEmitter.emit('child_added', model, prevSiblingId);
         this._eventEmitter.emit('value', this);
@@ -305,15 +311,16 @@ export class PrioritisedArray extends Array {
      */
     _onChildChanged(snapshot, prevSiblingId) {
         let id = snapshot.key();
-        let itemIndex = this._findIndexById(id);
         let changedModel = new this._dataType(id, null, {dataSnapshot: snapshot, dataSource: snapshot.ref() });
 
-        //if (!(JSON.stringify(this[itemIndex])===JSON.stringify(changedModel))) {
-        //    this[itemIndex] = changedModel;
+        let previousPosition = this._findIndexById(id);
+        this.remove(previousPosition);
 
-            this._eventEmitter.emit('child_changed', changedModel, prevSiblingId);
-            this._eventEmitter.emit('value', this);
-        //}
+        let newPosition = this._findIndexById(prevSiblingId)+1;
+        this.insertAt(changedModel, newPosition);
+
+        this._eventEmitter.emit('child_changed', changedModel, prevSiblingId);
+        this._eventEmitter.emit('value', this);
     }
 
     /**
@@ -333,7 +340,6 @@ export class PrioritisedArray extends Array {
             let newPosition = this._findIndexById(prevSiblingId)+1;
             this.insertAt(tempModel, newPosition);
 
-            //this._recalculatePriorities();
 
             let model = this[newPosition];
 

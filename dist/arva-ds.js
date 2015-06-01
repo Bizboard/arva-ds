@@ -16672,13 +16672,14 @@ System.register("datasources/SharePoint/SoapClient", ["datasources/SharePoint/xm
   };
 });
 
-System.register("core/Model/prioritisedObject", ["npm:lodash@3.9.1", "npm:eventemitter3@1.1.0", "utils/objectHelper", "core/Model/snapshot"], function($__export) {
+System.register("core/Model/prioritisedObject", ["npm:lodash@3.9.1", "npm:eventemitter3@1.1.0", "utils/objectHelper", "core/Model/snapshot", "core/DataSource"], function($__export) {
   "use strict";
   var __moduleName = "core/Model/prioritisedObject";
   var _,
       EventEmitter,
       ObjectHelper,
       Snapshot,
+      DataSource,
       PrioritisedObject;
   return {
     setters: [function($__m) {
@@ -16689,6 +16690,8 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.9.1", "npm:evente
       ObjectHelper = $__m.ObjectHelper;
     }, function($__m) {
       Snapshot = $__m.Snapshot;
+    }, function($__m) {
+      DataSource = $__m.DataSource;
     }],
     execute: function() {
       'use strict';
@@ -16748,32 +16751,42 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.9.1", "npm:evente
               this.off(event, fn, context);
             }, this);
           },
+          onModelUpdated: function(snapshot) {
+            var toCompare = ObjectHelper.getEnumerableProperties(this);
+            var newData = snapshot.val();
+            if (!_.isEqual(toCompare, newData)) {
+              return true;
+            }
+            return false;
+          },
           on: function(event, fn, context) {
-            var objectContext = this;
+            var objectContext = context || this;
             switch (event) {
               case 'ready':
                 if (this._dataSource && this._dataSource.ready) {
-                  fn.call(context, this);
+                  fn.call(objectContext, this);
                 }
                 break;
               case 'value':
-                var wrapper = function(dataSnapshot) {
-                  objectContext._buildFromSnapshot(dataSnapshot);
-                  fn.call(context, dataSnapshot);
-                }.bind(context);
+                var wrapper = function(dataSnapshot, previousSibling) {
+                  if (this.onModelUpdated(dataSnapshot)) {
+                    objectContext._buildFromSnapshot(dataSnapshot);
+                    fn.call(objectContext, this, previousSibling);
+                  }
+                }.bind(objectContext);
                 this._dataSource.setValueChangedCallback(wrapper);
                 break;
               case 'added':
-                this._dataSource.setChildAddedCallback(fn.bind(context));
+                this._dataSource.setChildAddedCallback(fn.bind(objectContext));
                 break;
               case 'moved':
-                this._dataSource.setChildMovedCallback(fn.bind(context));
+                this._dataSource.setChildMovedCallback(fn.bind(objectContext));
                 break;
               case 'removed':
-                this._dataSource.setChildRemovedCallback(fn.bind(context));
+                this._dataSource.setChildRemovedCallback(fn.bind(objectContext));
                 break;
             }
-            $traceurRuntime.superGet(this, PrioritisedObject.prototype, "on").call(this, event, fn, context);
+            $traceurRuntime.superGet(this, PrioritisedObject.prototype, "on").call(this, event, fn, objectContext);
           },
           off: function(event, fn, context) {
             switch (event) {
@@ -16809,6 +16822,15 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.9.1", "npm:evente
               this._dataSource.ready = true;
               this.emit('ready');
             }
+            var data = dataSnapshot.val();
+            for (var key in data) {
+              if (Object.getOwnPropertyDescriptor(this, key)) {
+                ObjectHelper.addPropertyToObject(this, key, data[key], true, true, this._onSetterTriggered);
+              }
+            }
+            this._dataSource.ready = true;
+            this.emit('ready');
+            return ;
             dataSnapshot.forEach(function(child) {
               var ref = child.ref();
               var key = child.key();
@@ -17509,6 +17531,7 @@ System.register("datasources/FirebaseDataSource", ["utils/objectHelper", "core/D
     execute: function() {
       FirebaseDataSource = (function($__super) {
         function FirebaseDataSource(path) {
+          var options = arguments[1] !== (void 0) ? arguments[1] : {orderBy: '.priority'};
           $traceurRuntime.superConstructor(FirebaseDataSource).call(this, path);
           this._onValueCallback = null;
           this._onAddCallback = null;
@@ -17516,6 +17539,7 @@ System.register("datasources/FirebaseDataSource", ["utils/objectHelper", "core/D
           this._onMoveCallback = null;
           this._onRemoveCallback = null;
           this._dataReference = new Firebase(path);
+          this.options = options;
           ObjectHelper.bindAllMethods(this, this);
         }
         return ($traceurRuntime.createClass)(FirebaseDataSource, {
@@ -17526,7 +17550,11 @@ System.register("datasources/FirebaseDataSource", ["utils/objectHelper", "core/D
             this._dataReference = value;
           },
           child: function(childName) {
-            return new FirebaseDataSource(this._dataReference.child(childName).toString());
+            var options = arguments[1] !== (void 0) ? arguments[1] : null;
+            if (options)
+              return new FirebaseDataSource(this._dataReference.child(childName).toString(), options);
+            else
+              return new FirebaseDataSource(this._dataReference.child(childName).toString());
           },
           path: function() {
             return this._dataReference.toString();
@@ -17577,9 +17605,18 @@ System.register("datasources/FirebaseDataSource", ["utils/objectHelper", "core/D
           setChildAddedCallback: function(callback) {
             var $__0 = this;
             this._onAddCallback = callback;
-            this._dataReference.on('child_added', (function(newChildSnapshot, prevChildName) {
-              $__0._onAddCallback(newChildSnapshot);
-            }));
+            var wrapper = (function(newChildSnapshot, prevChildName) {
+              $__0._onAddCallback(newChildSnapshot, prevChildName);
+            });
+            if (this.options.orderBy && this.options.orderBy == '.priority') {
+              this._dataReference.orderByPriority().on('child_added', wrapper.bind(this));
+            } else if (this.options.orderBy && this.options.orderBy == '.value') {
+              this._dataReference.orderByValue().on('child_added', wrapper.bind(this));
+            } else if (this.options.orderBy && this.options.orderBy != '') {
+              this._dataReference.orderByChild(this.options.orderBy).on('child_added', wrapper.bind(this));
+            } else {
+              this._dataReference.on('child_added', wrapper.bind(this));
+            }
           },
           removeChildAddedCallback: function() {
             if (this._onAddCallback) {
@@ -17590,9 +17627,18 @@ System.register("datasources/FirebaseDataSource", ["utils/objectHelper", "core/D
           setChildChangedCallback: function(callback) {
             var $__0 = this;
             this._onChangeCallback = callback;
-            this._dataReference.on('child_changed', (function(newChildSnapshot, prevChildName) {
-              $__0._onChangeCallback(newChildSnapshot);
-            }));
+            var wrapper = (function(newChildSnapshot, prevChildName) {
+              $__0._onChangeCallback(newChildSnapshot, prevChildName);
+            });
+            if (this.options.orderBy && this.options.orderBy == '.priority') {
+              this._dataReference.orderByPriority().on('child_changed', wrapper.bind(this));
+            } else if (this.options.orderBy && this.options.orderBy == '.value') {
+              this._dataReference.orderByValue().on('child_changed', wrapper.bind(this));
+            } else if (this.options.orderBy && this.options.orderBy != '') {
+              this._dataReference.orderByChild(this.options.orderBy).on('child_changed', wrapper.bind(this));
+            } else {
+              this._dataReference.on('child_changed', wrapper.bind(this));
+            }
           },
           removeChildChangedCallback: function() {
             if (this._onChangeCallback) {
