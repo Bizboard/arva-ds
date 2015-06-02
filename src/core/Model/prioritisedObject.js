@@ -16,6 +16,7 @@ import _                from 'lodash';
 import EventEmitter     from 'eventemitter3';
 import {ObjectHelper}   from 'arva-utils/ObjectHelper';
 import {Snapshot}       from './snapshot';
+import {DataSource}     from '../DataSource';
 
 export class PrioritisedObject extends EventEmitter {
 
@@ -75,6 +76,9 @@ export class PrioritisedObject extends EventEmitter {
         } else {
             this._buildFromDataSource(dataSource);
         }
+
+        //if (this._dataSource && this._dataSource instanceof DataSource)
+        //    this._dataSource.setValueChangedCallback(this.onModelUpdated.bind(this));
     }
 
     /**
@@ -88,6 +92,8 @@ export class PrioritisedObject extends EventEmitter {
         delete this;
     }
 
+
+
     once(event, fn, context = this) {
         return this.on(event, function(){
             fn.call(context, arguments);
@@ -95,35 +101,51 @@ export class PrioritisedObject extends EventEmitter {
         }, this);
     }
 
+    onModelUpdated(snapshot) {
+        let toCompare = ObjectHelper.getEnumerableProperties(this);
+        let newData = snapshot.val();
+
+        if (!_.isEqual(toCompare, newData)) {
+            return true;
+            //this._buildFromSnapshot(snapshot);
+            //this.emit('changed', snapshot);
+        }
+
+        return false;
+    }
+
+
     on(event, fn, context) {
 
-        let objectContext = this;
+        let objectContext = context || this;
 
         switch(event) {
             case 'ready':
                 /* If we're already ready, fire immediately */
-                if(this._dataSource && this._dataSource.ready){ fn.call(context, this); }
+                if(this._dataSource && this._dataSource.ready){ fn.call(objectContext, this); }
                 break;
             case 'value':
-                let wrapper = function(dataSnapshot) {
-                    objectContext._buildFromSnapshot(dataSnapshot);
-                    fn.call(context, dataSnapshot);
-                }.bind(context);
+                let wrapper = function(dataSnapshot, previousSibling) {
+                    if (this.onModelUpdated(dataSnapshot)) {
+                        objectContext._buildFromSnapshot(dataSnapshot);
+                        fn.call(objectContext, this, previousSibling);
+                    }
+                }.bind(objectContext);
 
                 this._dataSource.setValueChangedCallback(wrapper);
                 break;
             case 'added':
-                this._dataSource.setChildAddedCallback(fn.bind(context));
+                this._dataSource.setChildAddedCallback(fn.bind(objectContext));
                 break;
             case 'moved':
-                this._dataSource.setChildMovedCallback(fn.bind(context));
+                this._dataSource.setChildMovedCallback(fn.bind(objectContext));
                 break;
             case 'removed':
-                this._dataSource.setChildRemovedCallback(fn.bind(context));
+                this._dataSource.setChildRemovedCallback(fn.bind(objectContext));
                 break;
         }
 
-        super.on(event, fn, context);
+        super.on(event, fn, objectContext);
     }
 
     off(event, fn, context) {
@@ -159,6 +181,7 @@ export class PrioritisedObject extends EventEmitter {
      * @private
      */
     _buildFromSnapshot(dataSnapshot) {
+
         /* Set root object _priority */
         this._priority = dataSnapshot.getPriority();
         let numChildren = dataSnapshot.numChildren(), currentChild = 1;
@@ -172,6 +195,25 @@ export class PrioritisedObject extends EventEmitter {
             this._dataSource.ready = true;
             this.emit('ready');
         }
+
+        let data = dataSnapshot.val();
+
+        for(let key in data) {
+
+            // only map properties that exists on our model
+            if (Object.getOwnPropertyDescriptor(this, key)) {
+                /* If child is a primitive, listen to changes so we can synch with Firebase */
+                ObjectHelper.addPropertyToObject(this, key, data[key], true, true, this._onSetterTriggered);
+            }
+
+        }
+
+        this._dataSource.ready = true;
+        this.emit('ready');
+
+        return;
+
+
 
         /* For each primitive in the snapshot, define getter/setter.
          * For objects, add them as a PrioritisedObject.
@@ -221,6 +263,7 @@ export class PrioritisedObject extends EventEmitter {
      */
     _buildFromDataSource(dataSource) {
         if (!dataSource) return;
+
         let path = dataSource.path();
         let DataSource = Object.getPrototypeOf(dataSource).constructor;
         let newSource = new DataSource(path);
