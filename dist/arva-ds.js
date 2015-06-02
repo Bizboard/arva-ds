@@ -15540,9 +15540,9 @@ System.register("core/DataSource", [], function($__export) {
   };
 });
 
-System.register("utils/objectHelper", ["npm:lodash@3.9.1"], function($__export) {
+System.register("github:Bizboard/arva-utils@master/ObjectHelper", ["npm:lodash@3.9.1"], function($__export) {
   "use strict";
-  var __moduleName = "utils/objectHelper";
+  var __moduleName = "github:Bizboard/arva-utils@master/ObjectHelper";
   var _,
       ObjectHelper;
   return {
@@ -15623,15 +15623,12 @@ System.register("utils/objectHelper", ["npm:lodash@3.9.1"], function($__export) 
           },
           buildPropertyShadow: function(object, propName, prop) {
             var shadow = {};
-            if (!object || !propName) {
-              debugger;
-            }
             try {
               if ('shadow' in object) {
-                shadow = object['shadow'];
+                shadow = object.shadow;
               }
             } catch (error) {
-              debugger;
+              return ;
             }
             shadow[propName] = prop;
             Object.defineProperty(object, 'shadow', {
@@ -15649,11 +15646,11 @@ System.register("utils/objectHelper", ["npm:lodash@3.9.1"], function($__export) 
               enumerable: enumerable,
               configurable: true,
               get: function() {
-                return object['shadow'][propName];
+                return object.shadow[propName];
               },
               set: function(value) {
                 if (writable) {
-                  object['shadow'][propName] = value;
+                  object.shadow[propName] = value;
                   if (setCallback && typeof setCallback === 'function') {
                     setCallback({
                       propertyName: propName,
@@ -15661,7 +15658,7 @@ System.register("utils/objectHelper", ["npm:lodash@3.9.1"], function($__export) 
                     });
                   }
                 } else {
-                  throw new ReferenceError('Attempted to write to non-writable property "' + propName + '".');
+                  throw new ReferenceError('Attempted to write to non-writable property ' + propName + '.');
                 }
               }
             };
@@ -15800,9 +15797,9 @@ System.register("core/Model/snapshot", [], function($__export) {
   };
 });
 
-System.register("github:Bizboard/arva-context@master/Context", [], function($__export) {
+System.register("github:Bizboard/arva-utils@master/Context", [], function($__export) {
   "use strict";
-  var __moduleName = "github:Bizboard/arva-context@master/Context";
+  var __moduleName = "github:Bizboard/arva-utils@master/Context";
   var contextContainer,
       Context;
   return {
@@ -16243,7 +16240,7 @@ System.register("components/UrlParser", [], function($__export) {
   };
 });
 
-System.register("datasources/SharePoint/SharePointSnapshot", ["utils/objectHelper", "core/Model/snapshot"], function($__export) {
+System.register("datasources/SharePoint/SharePointSnapshot", ["github:Bizboard/arva-utils@master/ObjectHelper", "core/Model/snapshot"], function($__export) {
   "use strict";
   var __moduleName = "datasources/SharePoint/SharePointSnapshot";
   var ObjectHelper,
@@ -16550,13 +16547,13 @@ System.register("github:Bizboard/di.js@master/annotations", ["github:Bizboard/di
   };
 });
 
-System.register("datasources/SharePoint/SoapClient", ["datasources/SharePoint/xml2js", "npm:lodash@3.9.1", "components/RequestClient", "utils/objectHelper", "components/XmlParser"], function($__export) {
+System.register("datasources/SharePoint/SoapClient", ["datasources/SharePoint/xml2js", "npm:lodash@3.9.1", "github:Bizboard/arva-utils@master/ObjectHelper", "components/RequestClient", "components/XmlParser"], function($__export) {
   "use strict";
   var __moduleName = "datasources/SharePoint/SoapClient";
   var XML2JS,
       _,
-      PostRequest,
       ObjectHelper,
+      PostRequest,
       ParseStringToXml,
       SoapClient;
   return {
@@ -16565,9 +16562,9 @@ System.register("datasources/SharePoint/SoapClient", ["datasources/SharePoint/xm
     }, function($__m) {
       _ = $__m.default;
     }, function($__m) {
-      PostRequest = $__m.PostRequest;
-    }, function($__m) {
       ObjectHelper = $__m.ObjectHelper;
+    }, function($__m) {
+      PostRequest = $__m.PostRequest;
     }, function($__m) {
       ParseStringToXml = $__m.ParseStringToXml;
     }],
@@ -16672,7 +16669,7 @@ System.register("datasources/SharePoint/SoapClient", ["datasources/SharePoint/xm
   };
 });
 
-System.register("core/Model/prioritisedObject", ["npm:lodash@3.9.1", "npm:eventemitter3@1.1.0", "utils/objectHelper", "core/Model/snapshot"], function($__export) {
+System.register("core/Model/prioritisedObject", ["npm:lodash@3.9.1", "npm:eventemitter3@1.1.0", "github:Bizboard/arva-utils@master/ObjectHelper", "core/Model/snapshot"], function($__export) {
   "use strict";
   var __moduleName = "core/Model/prioritisedObject";
   var _,
@@ -17165,7 +17162,7 @@ System.register("github:Bizboard/di.js@master/injector", ["github:Bizboard/di.js
   };
 });
 
-System.register("datasources/SharePointSoapDataSource", ["github:firebase/firebase-bower@2.2.5", "github:Bizboard/di.js@master", "utils/objectHelper", "core/DataSource", "datasources/SharePoint/SoapClient", "components/UrlParser", "datasources/SharePoint/SharePointSnapshot"], function($__export) {
+System.register("datasources/SharePointSoapDataSource", ["github:firebase/firebase-bower@2.2.5", "github:Bizboard/di.js@master", "github:Bizboard/arva-utils@master/ObjectHelper", "core/DataSource", "datasources/SharePoint/SoapClient", "components/UrlParser", "datasources/SharePoint/SharePointSnapshot"], function($__export) {
   "use strict";
   var __moduleName = "datasources/SharePointSoapDataSource";
   var Firebase,
@@ -17486,7 +17483,7 @@ System.register("github:Bizboard/di.js@master", ["github:Bizboard/di.js@master/i
   };
 });
 
-System.register("datasources/FirebaseDataSource", ["utils/objectHelper", "core/DataSource", "github:firebase/firebase-bower@2.2.5", "github:Bizboard/di.js@master"], function($__export) {
+System.register("datasources/FirebaseDataSource", ["github:Bizboard/arva-utils@master/ObjectHelper", "core/DataSource", "github:firebase/firebase-bower@2.2.5", "github:Bizboard/di.js@master"], function($__export) {
   "use strict";
   var __moduleName = "datasources/FirebaseDataSource";
   var ObjectHelper,
@@ -17631,7 +17628,7 @@ System.register("datasources/FirebaseDataSource", ["utils/objectHelper", "core/D
   };
 });
 
-System.register("core/Model", ["npm:lodash@3.9.1", "core/Model/prioritisedObject", "core/DataSource", "utils/objectHelper", "github:Bizboard/arva-context@master/Context"], function($__export) {
+System.register("core/Model", ["npm:lodash@3.9.1", "core/Model/prioritisedObject", "core/DataSource", "github:Bizboard/arva-utils@master/ObjectHelper", "github:Bizboard/arva-utils@master/Context"], function($__export) {
   "use strict";
   var __moduleName = "core/Model";
   var _,

@@ -12,8 +12,8 @@
 
 import EventEmitter         from 'eventemitter3';
 import {DataSource}         from '../../core/DataSource';
-import {ObjectHelper}       from '../../utils/objectHelper';
-import {Context}            from 'arva-context/Context';
+import {ObjectHelper}       from 'arva-utils/ObjectHelper';
+import {Context}            from 'arva-utils/Context';
 
 
 export class PrioritisedArray extends Array {

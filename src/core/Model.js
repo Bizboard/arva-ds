@@ -9,11 +9,11 @@
 
  */
 
-import _                    from 'lodash'
-import {PrioritisedObject}  from './Model/prioritisedObject'
+import _                    from 'lodash';
+import {PrioritisedObject}  from './Model/prioritisedObject';
 import {DataSource}         from './DataSource';
-import {ObjectHelper}       from '../utils/objectHelper'
-import {Context}            from 'arva-context/Context'
+import {ObjectHelper}       from 'arva-utils/ObjectHelper';
+import {Context}            from 'arva-utils/Context';
 
 export class Model extends PrioritisedObject {
 

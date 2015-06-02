@@ -12,7 +12,7 @@
 import _                    from 'lodash';
 import XML2JS               from './xml2js';
 import {PostRequest}        from '../../components/RequestClient';
-import {ObjectHelper}       from '../../utils/objectHelper';
+import {ObjectHelper}       from 'arva-utils/ObjectHelper';
 import {UrlParser}          from 'components/UrlParser';
 import {ParseStringToXml}   from 'components/XmlParser';
 

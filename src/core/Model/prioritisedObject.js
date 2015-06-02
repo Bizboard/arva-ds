@@ -14,7 +14,7 @@
 
 import _                from 'lodash';
 import EventEmitter     from 'eventemitter3';
-import {ObjectHelper}   from '../../utils/objectHelper';
+import {ObjectHelper}   from 'arva-utils/ObjectHelper';
 import {Snapshot}       from './snapshot';
 
 export class PrioritisedObject extends EventEmitter {

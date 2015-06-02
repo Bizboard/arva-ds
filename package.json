@@ -16,7 +16,7 @@
       "lib": "src"
     },
     "dependencies": {
-      "arva-context": "github:Bizboard/arva-context@master",
+      "arva-utils": "github:Bizboard/arva-utils@master",
       "di.js": "github:Bizboard/di.js@master",
       "eventemitter3": "npm:eventemitter3@^1.1.0",
       "firebase": "github:firebase/firebase-bower@^2.2.0",
