@@ -23,10 +23,20 @@ export class DataModelGenerator {
 
         // initialize the arguments
         if (!schema) throw "Schema wasn't provided.";
-        if (schema && schema.Prefix) this._applicationId = schema.Prefix;
+        if (schema && schema.Prefix)  {
+            this._applicationId = schema.Prefix;
+        }
+
+        this.hidden = 'TRUE';
         this._originalPath = originalPath;
         this._Schema = schema.Schema;
         this._Seed = schema.Seed;
+
+        // if the dataspec contains an instruction 'hidden' have this setting override the default
+        if (schema &&
+            typeof schema.hidden == 'boolean') {
+            this.hidden = schema.hidden.toString().toUpperCase();
+        }
 
         /* Bind all local methods to the current object instance, so we can refer to "this"
          * in the methods as expected, even when they're called from event handlers.        */
@@ -180,7 +190,7 @@ export class DataModelGenerator {
             },
             listProperties: {
                 List: {
-                    _Hidden: 'TRUE',
+                    _Hidden: this.hidden,
                     _EnableAttachments: 'FALSE'
                 }
             }
