@@ -9,11 +9,11 @@
 
  */
 
-import XML2JS               from './xml2js'
-import _                    from 'lodash'
+import XML2JS               from './xml2js';
+import _                    from 'lodash';
 import {ObjectHelper}       from 'arva-utils/ObjectHelper';
-import {PostRequest}        from '../../components/RequestClient'
-import {ParseStringToXml}   from '../../components/XmlParser'
+import {PostRequest}        from 'arva-utils/request/RequestClient';
+import {ParseStringToXml}   from 'arva-utils/request/XmlParser';
 
 
 export class SoapClient {

@@ -8,6 +8,9 @@
     "type": "git",
     "url": "git://github.com/Bizboard/arva-ds.git"
   },
+  "scripts": {
+    "build": "jspm bundle-sfx main dist/arva-ds.js"
+  },
   "bugs": {
     "url": "https://github.com/Bizboard/arva-ds/issues"
   },

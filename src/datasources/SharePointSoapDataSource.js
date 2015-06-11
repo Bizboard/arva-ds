@@ -14,7 +14,7 @@ import {Provide}                    from 'di.js';
 import {ObjectHelper}               from 'arva-utils/ObjectHelper';
 import {DataSource}                 from '../core/DataSource';
 import {SoapClient}                 from './SharePoint/SoapClient';
-import {UrlParser}                  from '../components/UrlParser';
+import {UrlParser}                  from 'arva-utils/request/UrlParser';
 import {SharePointSnapshot}         from './SharePoint/SharePointSnapshot';
 
 @Provide(DataSource)
