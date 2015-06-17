@@ -171,7 +171,12 @@ export class SharePointDataSource extends DataSource {
      *  @param {Function} callback **/
     setValueChangedCallback(callback){
         this._onValueCallback = callback;
-        this._dataReference.on('value', this._onValueCallback);
+
+        let wrapper = (data) => {
+            let newChildSnapshot = new SharePointSnapshot(data, this);
+            this._onValueCallback(newChildSnapshot);
+        };
+        this._dataReference.on('value', wrapper.bind(this));
     }
 
     /** Removes the callback set to trigger when dataSource updates the data. **/
@@ -186,7 +191,12 @@ export class SharePointDataSource extends DataSource {
      * @param {Function} callback **/
     setChildAddedCallback(callback) {
         this._onAddCallback = callback;
-        this._dataReference.on('child_added', this._onAddCallback);
+
+        let wrapper = (data) => {
+            let newChildSnapshot = new SharePointSnapshot(data, this);
+            this._onAddCallback(newChildSnapshot);
+        };
+        this._dataReference.on('child_added', wrapper.bind(this));
     }
 
     /** Removes the callback set to trigger when dataSource adds a data element. **/
@@ -201,7 +211,12 @@ export class SharePointDataSource extends DataSource {
      * @param {Function} callback **/
     setChildChangedCallback(callback) {
         this._onChangeCallback = callback;
-        this._dataReference.on('child_changed', this._onChangeCallback);
+
+        let wrapper = (data) => {
+            let newChildSnapshot = new SharePointSnapshot(data, this);
+            this._onChangeCallback(newChildSnapshot);
+        };
+        this._dataReference.on('child_changed', wrapper.bind(this));
     }
 
     /** Removes the callback set to trigger when dataSource changes a data element. **/
