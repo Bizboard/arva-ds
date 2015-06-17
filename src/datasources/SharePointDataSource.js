@@ -92,7 +92,7 @@ export class SharePointDataSource extends DataSource {
     child(childName) {
         // the selector will be interpreted at each level and is used to address the correct endpoints relative from the original path
         let newSelector = this._selector?this._selector+ '/' + childName: childName;
-        return new SharePointSoapDataSource(this._orginialPath, newSelector);
+        return new SharePointDataSource(this._orginialPath, newSelector);
     }
 
     root() {
