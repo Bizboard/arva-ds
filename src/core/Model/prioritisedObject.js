@@ -10,8 +10,6 @@
 
  */
 
-'use strict';
-
 import _                from 'lodash';
 import EventEmitter     from 'eventemitter3';
 import {ObjectHelper}   from 'arva-utils/ObjectHelper';
@@ -21,12 +19,14 @@ import {DataSource}     from '../DataSource';
 export class PrioritisedObject extends EventEmitter {
 
     get id() { return this._id; }
+
     set id(value) { this._id = value; }
 
     /** Priority (positioning) of the object in the dataSource */
     get priority() {
         return this._priority;
     }
+
     set priority(value) {
         if (this._priority !== value) {
             this._priority = value;
@@ -51,7 +51,7 @@ export class PrioritisedObject extends EventEmitter {
         this._valueChangedCallback = null;
 
         /**** Private properties ****/
-        this._id = 0;
+        this._id = dataSource ? dataSource.key() : 0;
         this._events = this._events || [];
         this._dataSource = dataSource;
         this._priority = 0; // Priority of this object on remote dataSource
@@ -71,14 +71,11 @@ export class PrioritisedObject extends EventEmitter {
         /* Hide the priority field from enumeration, so we don't save it to the dataSource. */
         ObjectHelper.hidePropertyFromObject(this, 'priority');
 
-        if(dataSnapshot){
+        if (dataSnapshot) {
             this._buildFromSnapshot(dataSnapshot);
         } else {
             this._buildFromDataSource(dataSource);
         }
-
-        //if (this._dataSource && this._dataSource instanceof DataSource)
-        //    this._dataSource.setValueChangedCallback(this.onModelUpdated.bind(this));
     }
 
     /**
@@ -93,9 +90,8 @@ export class PrioritisedObject extends EventEmitter {
     }
 
 
-
     once(event, fn, context = this) {
-        return this.on(event, function(){
+        return this.on(event, function () {
             fn.call(context, arguments);
             this.off(event, fn, context);
         }, this);
@@ -105,71 +101,59 @@ export class PrioritisedObject extends EventEmitter {
         let toCompare = ObjectHelper.getEnumerableProperties(this);
         let newData = snapshot.val();
 
-        if (!_.isEqual(toCompare, newData)) {
-            return true;
-            //this._buildFromSnapshot(snapshot);
-            //this.emit('changed', snapshot);
-        }
-
-        return false;
+        return !_.isEqual(toCompare, newData);
     }
 
 
-    on(event, fn, context) {
+    on(event, fn, context = this) {
 
-        let objectContext = context || this;
-
-        switch(event) {
+        switch (event) {
             case 'ready':
                 /* If we're already ready, fire immediately */
-                if(this._dataSource && this._dataSource.ready){ fn.call(objectContext, this); }
+                if (this._dataSource && this._dataSource.ready) { fn.call(context, this); }
                 break;
             case 'value':
-                let wrapper = function(dataSnapshot, previousSibling) {
-                    if (this.onModelUpdated(dataSnapshot)) {
-                        objectContext._buildFromSnapshot(dataSnapshot);
-                        fn.call(objectContext, this, previousSibling);
-                    }
-                }.bind(objectContext);
-
-                this._dataSource.setValueChangedCallback(wrapper);
+                this._dataSource.setValueChangedCallback(this._onChildValue);
                 break;
             case 'added':
-                this._dataSource.setChildAddedCallback(fn.bind(objectContext));
+                this._dataSource.setChildAddedCallback(this._onChildAdded);
                 break;
             case 'moved':
-                this._dataSource.setChildMovedCallback(fn.bind(objectContext));
+                this._dataSource.setChildMovedCallback(this._onChildMoved);
                 break;
             case 'removed':
-                this._dataSource.setChildRemovedCallback(fn.bind(objectContext));
+                this._dataSource.setChildRemovedCallback(this._onChildRemoved);
                 break;
         }
 
-        super.on(event, fn, objectContext);
+        super.on(event, fn, context);
     }
 
     off(event, fn, context) {
-        switch(event) {
-            case 'ready':
-                break;
-            case 'value':
-                this._dataSource.removeValueChangedCallback();
-                break;
-            case 'added':
-                this._dataSource.removeChildAddedCallback();
-                break;
-            case 'moved':
-                this._dataSource.removeChildMovedCallback();
-                break;
-            case 'removed':
-                this._dataSource.removeChildRemovedCallback();
-                break;
-        }
-
-        if(event && (fn || context)) {
+        if (event && (fn || context)) {
             super.removeListener(event, fn, context);
         } else {
             super.removeAllListeners(event);
+        }
+
+        /* If we have no more listeners of this event type, remove dataSource callback. */
+        if (!this.listeners(event, true)) {
+            switch (event) {
+                case 'ready':
+                    break;
+                case 'value':
+                    this._dataSource.removeValueChangedCallback();
+                    break;
+                case 'added':
+                    this._dataSource.removeChildAddedCallback();
+                    break;
+                case 'moved':
+                    this._dataSource.removeChildMovedCallback();
+                    break;
+                case 'removed':
+                    this._dataSource.removeChildRemovedCallback();
+                    break;
+            }
         }
     }
 
@@ -186,7 +170,7 @@ export class PrioritisedObject extends EventEmitter {
         this._priority = dataSnapshot.getPriority();
         let numChildren = dataSnapshot.numChildren(), currentChild = 1;
 
-        if (!this._id) {
+        if(!this._id) {
             this._id = dataSnapshot.key();
         }
 
@@ -198,9 +182,9 @@ export class PrioritisedObject extends EventEmitter {
 
         let data = dataSnapshot.val();
 
-        for(let key in data) {
+        for (let key in data) {
 
-            // only map properties that exists on our model
+            /* Only map properties that exists on our model */
             if (Object.getOwnPropertyDescriptor(this, key)) {
                 /* If child is a primitive, listen to changes so we can synch with Firebase */
                 ObjectHelper.addPropertyToObject(this, key, data[key], true, true, this._onSetterTriggered);
@@ -210,49 +194,6 @@ export class PrioritisedObject extends EventEmitter {
 
         this._dataSource.ready = true;
         this.emit('ready');
-
-        return;
-
-
-
-        /* For each primitive in the snapshot, define getter/setter.
-         * For objects, add them as a PrioritisedObject.
-         */
-        dataSnapshot.forEach(
-            /** @param {Snapshot} child **/
-            function(child) {
-                let ref = child.ref();
-                let key = child.key();
-                let val = child.val();
-
-                if (typeof val === 'object' && val !== null) {
-                    // if there is a property descriptor for the object. consider it's value
-                    // complex and map it.
-                    if (Object.getOwnPropertyDescriptor(this, key)) {
-                        ObjectHelper.addPropertyToObject(this, key, val, true, true, this._onSetterTriggered);
-                    }
-                    else {
-                        /* If child is an object, put it in its own PrioritisedObject. We're not interested
-                         * in updates from this object, since it will have its own change listener */
-                        val = new PrioritisedObject(ref, child);
-                        ObjectHelper.addPropertyToObject(this, key, val, true, true);
-                    }
-                }
-                else {
-
-                    // only map properties that exists on our model
-                    if (Object.getOwnPropertyDescriptor(this, key)) {
-                        /* If child is a primitive, listen to changes so we can synch with Firebase */
-                        ObjectHelper.addPropertyToObject(this, key, val, true, true, this._onSetterTriggered);
-                    }
-                }
-
-                /* If this is the last child, fire a ready event */
-                if(currentChild++ == numChildren){
-                    this._dataSource.ready = true;
-                    this.emit('ready');
-                }
-            }.bind(this));
     }
 
     /**
@@ -290,13 +231,13 @@ export class PrioritisedObject extends EventEmitter {
      * @param dataSnapshot
      * @private
      */
-    _onDataSourceValue(dataSnapshot) {
+    _onChildValue(dataSnapshot, previousSiblingID) {
 
         /* If the new dataSource data is equal to what we have locallly,
          * this is an update triggered by a local change having been pushed
          * to the remote dataSource. We can ignore it.
          */
-        if (_.isEqual(this, dataSnapshot)) {
+        if (_.isEqual(ObjectHelper.getEnumerableProperties(this), dataSnapshot.val())) {
             return;
         }
 
@@ -305,6 +246,12 @@ export class PrioritisedObject extends EventEmitter {
         this._buildFromSnapshot(dataSnapshot);
         this._isBeingWrittenByDatasource = false;
 
-        this.emit('value', this);
+        this.emit('value', dataSnapshot, previousSiblingID);
     }
+
+    _onChildAdded(dataSnapshot, previousSiblingID) { this.emit('added', dataSnapshot, previousSiblingID); }
+
+    _onChildMoved(dataSnapshot, previousSiblingID) { this.emit('moved', dataSnapshot, previousSiblingID); }
+
+    _onChildRemoved(dataSnapshot, previousSiblingID) { this.emit('removed', dataSnapshot, previousSiblingID); }
 }
