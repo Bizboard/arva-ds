@@ -17230,7 +17230,8 @@ System.register("datasources/SharePointSoapDataSource", ["github:firebase/fireba
     }],
     execute: function() {
       SharePointSoapDataSource = (function($__super) {
-        function SharePointSoapDataSource(path, credentials) {
+        function SharePointSoapDataSource(path) {
+          var selector = arguments[1] !== (void 0) ? arguments[1] : null;
           $traceurRuntime.superConstructor(SharePointSoapDataSource).call(this, path);
           this._dataReference = null;
           this._onValueCallback = null;
@@ -17238,15 +17239,15 @@ System.register("datasources/SharePointSoapDataSource", ["github:firebase/fireba
           this._onChangeCallback = null;
           this._onMoveCallback = null;
           this._onRemoveCallback = null;
-          this._credentials = credentials;
           this._orginialPath = path;
+          this._selector = selector;
           ObjectHelper.bindAllMethods(this, this);
           ObjectHelper.hideMethodsAndPrivatePropertiesFromObject(this);
           ObjectHelper.hidePropertyFromObject(Object.getPrototypeOf(this), 'length');
-          if (this.key().length == 0)
-            return ;
-          this._dataReference = new SoapClient();
-          this._updateDataSource();
+          if (this.key().length > 0) {
+            this._dataReference = new SoapClient();
+            this._updateDataSource();
+          }
         }
         return ($traceurRuntime.createClass)(SharePointSoapDataSource, {
           _updateDataSource: function() {
@@ -17263,6 +17264,7 @@ System.register("datasources/SharePointSoapDataSource", ["github:firebase/fireba
             this._dataReference.call(configuration).then((function(data) {
               var snapshot = new SharePointSnapshot(data, $__0);
               $__0._notifyOnValue(snapshot);
+              $__0._onAddCallback(snapshot);
             }), (function(error) {
               console.log(error);
             }));
@@ -17272,13 +17274,14 @@ System.register("datasources/SharePointSoapDataSource", ["github:firebase/fireba
               this._onValueCallback(snapshot);
             }
           },
+          _ParseSelector: function(path, endPoint) {},
           _ParsePath: function(path, endPoint) {
             var url = UrlParser(path);
             if (!url)
               console.log("Invalid datasource path provided!");
             var pathParts = url.path.split('/');
             var newPath = url.protocol + "://" + url.host + "/";
-            for (var i = 0; i < pathParts.length - 1; i++)
+            for (var i = 0; i < pathParts.length; i++)
               newPath += pathParts[i] + "/";
             newPath += endPoint;
             return newPath;
@@ -17287,23 +17290,23 @@ System.register("datasources/SharePointSoapDataSource", ["github:firebase/fireba
             return true;
           },
           child: function(childName) {
-            var newPath = this._orginialPath + "/" + childName;
-            return new SharePointSoapDataSource(newPath);
+            var newSelector = this._selector ? this._selector + '/' + childName : childName;
+            return new SharePointSoapDataSource(this._orginialPath, newSelector);
+          },
+          root: function() {
+            return this._orginialPath;
           },
           path: function() {
             return this._orginialPath;
           },
           key: function() {
-            var url = UrlParser(this._orginialPath);
-            if (!url)
-              console.log("Invalid datasource path provided!");
-            if (url.path.length == 0)
-              return "";
-            var pathElements = url.path.split('/');
-            if (pathElements.length == 1)
-              return url.path;
-            else
-              return url.path.split('/').pop();
+            if (this._selector) {
+              var parts = this._selector.split('/');
+              if (parts.length > 0) {
+                return parts[parts.length - 1];
+              }
+            }
+            return '';
           },
           set: function(newData) {
             var $__0 = this;
@@ -17656,7 +17659,7 @@ System.register("datasources/FirebaseDataSource", ["github:Bizboard/arva-utils@m
           },
           removeChildChangedCallback: function() {
             if (this._onChangeCallback) {
-              this._dataReference.off('child_added', this._onChangeCallback);
+              this._dataReference.off('child_changed', this._onChangeCallback);
               this._onChangeCallback = null;
             }
           },
@@ -17731,7 +17734,9 @@ System.register("core/Model", ["npm:lodash@3.9.3", "core/Model/prioritisedObject
           var modelName = Object.getPrototypeOf(this).constructor.name;
           var pathRoot = modelName + 's';
           if (id) {
+            this._isBeingWrittenByDatasource = true;
             this.id = id;
+            this._isBeingWrittenByDatasource = false;
             if (options.dataSource) {
               this._dataSource = options.dataSource;
             } else if (options.path) {
@@ -17751,7 +17756,9 @@ System.register("core/Model", ["npm:lodash@3.9.3", "core/Model/prioritisedObject
               else {
                 this._dataSource = dataSource.child(pathRoot).push(data);
               }
+              this._isBeingWrittenByDatasource = true;
               this.id = this._dataSource.key();
+              this._isBeingWrittenByDatasource = false;
             }
           }
           if (options.dataSnapshot)
