@@ -228,7 +228,7 @@ export class FirebaseDataSource extends DataSource {
     /** Removes the callback set to trigger when dataSource changes a data element. **/
     removeChildChangedCallback() {
         if(this._onChangeCallback) {
-            this._dataReference.off('child_added', this._onChangeCallback);
+            this._dataReference.off('child_changed', this._onChangeCallback);
             this._onChangeCallback = null;
         }
     }

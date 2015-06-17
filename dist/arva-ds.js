@@ -17656,7 +17656,7 @@ System.register("datasources/FirebaseDataSource", ["github:Bizboard/arva-utils@m
           },
           removeChildChangedCallback: function() {
             if (this._onChangeCallback) {
-              this._dataReference.off('child_added', this._onChangeCallback);
+              this._dataReference.off('child_changed', this._onChangeCallback);
               this._onChangeCallback = null;
             }
           },
@@ -17731,7 +17731,9 @@ System.register("core/Model", ["npm:lodash@3.9.3", "core/Model/prioritisedObject
           var modelName = Object.getPrototypeOf(this).constructor.name;
           var pathRoot = modelName + 's';
           if (id) {
+            this._isBeingWrittenByDatasource = true;
             this.id = id;
+            this._isBeingWrittenByDatasource = false;
             if (options.dataSource) {
               this._dataSource = options.dataSource;
             } else if (options.path) {
@@ -17751,7 +17753,9 @@ System.register("core/Model", ["npm:lodash@3.9.3", "core/Model/prioritisedObject
               else {
                 this._dataSource = dataSource.child(pathRoot).push(data);
               }
+              this._isBeingWrittenByDatasource = true;
               this.id = this._dataSource.key();
+              this._isBeingWrittenByDatasource = false;
             }
           }
           if (options.dataSnapshot)

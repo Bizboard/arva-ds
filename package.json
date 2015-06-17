@@ -19,6 +19,7 @@
       "lib": "src"
     },
     "dependencies": {
+      "SPSoapAdapter": "github:Bizboard/SPSoapAdapter@master",
       "arva-utils": "github:Bizboard/arva-utils@master",
       "di.js": "github:Bizboard/di.js@master",
       "eventemitter3": "npm:eventemitter3@^1.1.0",
