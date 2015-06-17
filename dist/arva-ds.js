@@ -16882,16 +16882,16 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.9.3", "npm:evente
             this._isBeingWrittenByDatasource = true;
             this._buildFromSnapshot(dataSnapshot);
             this._isBeingWrittenByDatasource = false;
-            this.emit('value', dataSnapshot, previousSiblingID);
+            this.emit('value', this, previousSiblingID);
           },
           _onChildAdded: function(dataSnapshot, previousSiblingID) {
-            this.emit('added', dataSnapshot, previousSiblingID);
+            this.emit('added', this, previousSiblingID);
           },
           _onChildMoved: function(dataSnapshot, previousSiblingID) {
-            this.emit('moved', dataSnapshot, previousSiblingID);
+            this.emit('moved', this, previousSiblingID);
           },
           _onChildRemoved: function(dataSnapshot, previousSiblingID) {
-            this.emit('removed', dataSnapshot, previousSiblingID);
+            this.emit('removed', this, previousSiblingID);
           }
         }, {}, $__super);
       }(EventEmitter));

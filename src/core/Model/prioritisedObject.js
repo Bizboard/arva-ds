@@ -246,12 +246,11 @@ export class PrioritisedObject extends EventEmitter {
         this._buildFromSnapshot(dataSnapshot);
         this._isBeingWrittenByDatasource = false;
 
-        this.emit('value', dataSnapshot, previousSiblingID);
+        this.emit('value', this, previousSiblingID);
     }
 
-    _onChildAdded(dataSnapshot, previousSiblingID) { this.emit('added', dataSnapshot, previousSiblingID); }
-
-    _onChildMoved(dataSnapshot, previousSiblingID) { this.emit('moved', dataSnapshot, previousSiblingID); }
-
-    _onChildRemoved(dataSnapshot, previousSiblingID) { this.emit('removed', dataSnapshot, previousSiblingID); }
+    /* TODO: implement partial updates of model */
+    _onChildAdded(dataSnapshot, previousSiblingID) { this.emit('added', this, previousSiblingID); }
+    _onChildMoved(dataSnapshot, previousSiblingID) { this.emit('moved', this, previousSiblingID); }
+    _onChildRemoved(dataSnapshot, previousSiblingID) { this.emit('removed', this, previousSiblingID); }
 }
