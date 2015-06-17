@@ -16,7 +16,7 @@ import {SharePointSnapshot}         from './SharePoint/SharePointSnapshot';
 import {SharePoint}                 from 'SPSoapAdapter/SharePoint';
 
 @Provide(DataSource)
-export class SharePointSoapDataSource extends DataSource {
+export class SharePointDataSource extends DataSource {
 
     /** @param {String} path **/
     constructor(path, selector = null) {
