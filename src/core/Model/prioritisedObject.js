@@ -97,15 +97,8 @@ export class PrioritisedObject extends EventEmitter {
         }, this);
     }
 
-    onModelUpdated(snapshot) {
-        let toCompare = ObjectHelper.getEnumerableProperties(this);
-        let newData = snapshot.val();
-
-        return !_.isEqual(toCompare, newData);
-    }
-
-
     on(event, fn, context = this) {
+        let haveListeners = this.listeners(event, true);
 
         switch (event) {
             case 'ready':
@@ -113,16 +106,22 @@ export class PrioritisedObject extends EventEmitter {
                 if (this._dataSource && this._dataSource.ready) { fn.call(context, this); }
                 break;
             case 'value':
-                this._dataSource.setValueChangedCallback(this._onChildValue);
+                if (!haveListeners) {
+                    /* Only subscribe to the dataSource if there are no previous listeners for this event type. */
+                    this._dataSource.setValueChangedCallback(this._onChildValue);
+                } else {
+                    /* If there are previous listeners, fire the value callback once to present the subscriber with inital data. */
+                    fn.call(context, this);
+                }
                 break;
             case 'added':
-                this._dataSource.setChildAddedCallback(this._onChildAdded);
+                if (!haveListeners) { this._dataSource.setChildAddedCallback(this._onChildAdded); }
                 break;
             case 'moved':
-                this._dataSource.setChildMovedCallback(this._onChildMoved);
+                if (!haveListeners) { this._dataSource.setChildMovedCallback(this._onChildMoved); }
                 break;
             case 'removed':
-                this._dataSource.setChildRemovedCallback(this._onChildRemoved);
+                if (!haveListeners) { this._dataSource.setChildRemovedCallback(this._onChildRemoved); }
                 break;
         }
 
@@ -158,6 +157,34 @@ export class PrioritisedObject extends EventEmitter {
     }
 
     /**
+     * Allows multiple modifications to be made to the model without triggering dataSource pushes and event emits for each change.
+     * Triggers a push to the dataSource after executing the given method. This push should then emit an event notifying subscribers of any changes.
+     * @param {Function} method Function in which the model can be modified.
+     */
+    transaction(method) {
+        this.disableChangeListener();
+        method();
+        this.enableChangeListener();
+        this._onSetterTriggered();
+    }
+
+    /**
+     * Disables pushes of local changes to the dataSource, and stops event emits that refer to the model's data.
+     */
+    disableChangeListener() {
+        this._isBeingWrittenByDatasource = true;
+    }
+
+
+    /**
+     * Enables pushes of local changes to the dataSource, and enables event emits that refer to the model's data.
+     * The change listener is active by default, so you'll only need to call this method if you've previously called disableChangeListener().
+     */
+    enableChangeListener() {
+        this._isBeingWrittenByDatasource = false;
+    }
+
+    /**
      * Recursively builds getter/setter based properties on current PrioritisedObject from
      * a given dataSnapshot. If an object value is detected, the object itself gets built as
      * another PrioritisedObject and set to the current PrioritisedObject as a property.
@@ -168,9 +195,10 @@ export class PrioritisedObject extends EventEmitter {
 
         /* Set root object _priority */
         this._priority = dataSnapshot.getPriority();
+        let data = dataSnapshot.val();
         let numChildren = dataSnapshot.numChildren(), currentChild = 1;
 
-        if(!this._id) {
+        if (!this._id) {
             this._id = dataSnapshot.key();
         }
 
@@ -179,8 +207,6 @@ export class PrioritisedObject extends EventEmitter {
             this._dataSource.ready = true;
             this.emit('ready');
         }
-
-        let data = dataSnapshot.val();
 
         for (let key in data) {
 
@@ -238,6 +264,7 @@ export class PrioritisedObject extends EventEmitter {
          * to the remote dataSource. We can ignore it.
          */
         if (_.isEqual(ObjectHelper.getEnumerableProperties(this), dataSnapshot.val())) {
+            this.emit('value', this, previousSiblingID);
             return;
         }
 
@@ -251,6 +278,8 @@ export class PrioritisedObject extends EventEmitter {
 
     /* TODO: implement partial updates of model */
     _onChildAdded(dataSnapshot, previousSiblingID) { this.emit('added', this, previousSiblingID); }
+
     _onChildMoved(dataSnapshot, previousSiblingID) { this.emit('moved', this, previousSiblingID); }
+
     _onChildRemoved(dataSnapshot, previousSiblingID) { this.emit('removed', this, previousSiblingID); }
 }

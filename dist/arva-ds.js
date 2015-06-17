@@ -16785,13 +16785,9 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.9.3", "npm:evente
               this.off(event, fn, context);
             }, this);
           },
-          onModelUpdated: function(snapshot) {
-            var toCompare = ObjectHelper.getEnumerableProperties(this);
-            var newData = snapshot.val();
-            return !_.isEqual(toCompare, newData);
-          },
           on: function(event, fn) {
             var context = arguments[2] !== (void 0) ? arguments[2] : this;
+            var haveListeners = this.listeners(event, true);
             switch (event) {
               case 'ready':
                 if (this._dataSource && this._dataSource.ready) {
@@ -16799,16 +16795,26 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.9.3", "npm:evente
                 }
                 break;
               case 'value':
-                this._dataSource.setValueChangedCallback(this._onChildValue);
+                if (!haveListeners) {
+                  this._dataSource.setValueChangedCallback(this._onChildValue);
+                } else {
+                  fn.call(context, this);
+                }
                 break;
               case 'added':
-                this._dataSource.setChildAddedCallback(this._onChildAdded);
+                if (!haveListeners) {
+                  this._dataSource.setChildAddedCallback(this._onChildAdded);
+                }
                 break;
               case 'moved':
-                this._dataSource.setChildMovedCallback(this._onChildMoved);
+                if (!haveListeners) {
+                  this._dataSource.setChildMovedCallback(this._onChildMoved);
+                }
                 break;
               case 'removed':
-                this._dataSource.setChildRemovedCallback(this._onChildRemoved);
+                if (!haveListeners) {
+                  this._dataSource.setChildRemovedCallback(this._onChildRemoved);
+                }
                 break;
             }
             $traceurRuntime.superGet(this, PrioritisedObject.prototype, "on").call(this, event, fn, context);
@@ -16838,8 +16844,21 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.9.3", "npm:evente
               }
             }
           },
+          transaction: function(method) {
+            this.disableChangeListener();
+            method();
+            this.enableChangeListener();
+            this._onSetterTriggered();
+          },
+          disableChangeListener: function() {
+            this._isBeingWrittenByDatasource = true;
+          },
+          enableChangeListener: function() {
+            this._isBeingWrittenByDatasource = false;
+          },
           _buildFromSnapshot: function(dataSnapshot) {
             this._priority = dataSnapshot.getPriority();
+            var data = dataSnapshot.val();
             var numChildren = dataSnapshot.numChildren(),
                 currentChild = 1;
             if (!this._id) {
@@ -16849,7 +16868,6 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.9.3", "npm:evente
               this._dataSource.ready = true;
               this.emit('ready');
             }
-            var data = dataSnapshot.val();
             for (var key in data) {
               if (Object.getOwnPropertyDescriptor(this, key)) {
                 ObjectHelper.addPropertyToObject(this, key, data[key], true, true, this._onSetterTriggered);
@@ -16877,6 +16895,7 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.9.3", "npm:evente
           },
           _onChildValue: function(dataSnapshot, previousSiblingID) {
             if (_.isEqual(ObjectHelper.getEnumerableProperties(this), dataSnapshot.val())) {
+              this.emit('value', this, previousSiblingID);
               return ;
             }
             this._isBeingWrittenByDatasource = true;
