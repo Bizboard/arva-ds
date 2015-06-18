@@ -17736,9 +17736,10 @@ System.register("core/Model", ["npm:lodash@3.9.3", "core/Model/prioritisedObject
         function Model(id) {
           var data = arguments[1] !== (void 0) ? arguments[1] : null;
           var options = arguments[2] !== (void 0) ? arguments[2] : {};
+          var $__0;
           var dataSource = Context.getContext().get(DataSource);
           if (options.path) {
-            $traceurRuntime.superConstructor(Model).call(this, dataSource.child(options.path), options.dataSnapshot);
+            $traceurRuntime.superConstructor(Model).call(this, dataSource.child(options.path + '/' + id || ''), options.dataSnapshot);
           } else if (options.dataSource) {
             $traceurRuntime.superConstructor(Model).call(this, options.dataSource, options.dataSnapshot);
           } else if (options.dataSnapshot) {
@@ -17750,13 +17751,13 @@ System.register("core/Model", ["npm:lodash@3.9.3", "core/Model/prioritisedObject
           var modelName = Object.getPrototypeOf(this).constructor.name;
           var pathRoot = modelName + 's';
           if (id) {
-            this._isBeingWrittenByDatasource = true;
+            this.disableChangeListener();
             this.id = id;
-            this._isBeingWrittenByDatasource = false;
+            this.enableChangeListener();
             if (options.dataSource) {
               this._dataSource = options.dataSource;
             } else if (options.path) {
-              this._dataSource = dataSource.child(options.path);
+              this._dataSource = dataSource.child(options.path).child(id);
             } else {
               this._dataSource = dataSource.child(pathRoot).child(id);
             }
@@ -17772,26 +17773,25 @@ System.register("core/Model", ["npm:lodash@3.9.3", "core/Model/prioritisedObject
               else {
                 this._dataSource = dataSource.child(pathRoot).push(data);
               }
-              this._isBeingWrittenByDatasource = true;
+              this.disableChangeListener();
               this.id = this._dataSource.key();
-              this._isBeingWrittenByDatasource = false;
+              this.enableChangeListener();
             }
           }
-          if (options.dataSnapshot)
+          if (options.dataSnapshot) {
             this._buildFromSnapshot(options.dataSnapshot);
-          else
+          } else {
             this._buildFromDataSource(this._dataSource);
+          }
           if (data) {
-            this._isBeingWrittenByDatasource = true;
-            for (var name in data) {
-              if (Object.getOwnPropertyDescriptor(this, name)) {
-                var value = data[name];
-                this[name] = value;
+            this.transaction(($__0 = this, function() {
+              for (var name in data) {
+                if (Object.getOwnPropertyDescriptor($__0, name)) {
+                  var value = data[name];
+                  $__0[name] = value;
+                }
               }
-            }
-            this._isBeingWrittenByDatasource = false;
-            if (!id)
-              this._onSetterTriggered();
+            }));
           }
         }
         return ($traceurRuntime.createClass)(Model, {_replaceModelAccessorsWithDatabinding: function() {

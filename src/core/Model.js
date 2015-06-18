@@ -35,7 +35,7 @@ export class Model extends PrioritisedObject {
         let dataSource = Context.getContext().get(DataSource);
 
         if (options.path) {
-            super(dataSource.child(options.path), options.dataSnapshot);
+            super(dataSource.child(options.path + '/' + id || ''), options.dataSnapshot);
         } else if (options.dataSource) {
             super(options.dataSource, options.dataSnapshot);
         } else if (options.dataSnapshot) {
@@ -46,7 +46,7 @@ export class Model extends PrioritisedObject {
         }
 
         /* Replace all stub data fields of any subclass of Model with databinding accessors.
-         * This causes changes to be synched to and from the dataSource */
+         * This causes changes to be synched to and from the dataSource. */
         this._replaceModelAccessorsWithDatabinding();
 
 
@@ -56,18 +56,18 @@ export class Model extends PrioritisedObject {
 
 
         /* If an id is present, use it to locate our model. */
-        if(id){
-            this._isBeingWrittenByDatasource = true;
+        if (id) {
+            this.disableChangeListener();
             this.id = id;
-            this._isBeingWrittenByDatasource = false;
+            this.enableChangeListener();
 
             if (options.dataSource) { this._dataSource = options.dataSource; }
-            else if (options.path) { this._dataSource = dataSource.child(options.path); }
+            else if (options.path) { this._dataSource = dataSource.child(options.path).child(id); }
             else { this._dataSource = dataSource.child(pathRoot).child(id); }
         } else {
             /* No id is present, check if we have a dataSnapshot we can extract it from.
              * If we can't, generate a random one by pushing a new entry to the dataSource. */
-            if(options.dataSnapshot) {
+            if (options.dataSnapshot) {
                 id = options.dataSnapshot.key();
                 this._dataSource = dataSource.child(pathRoot).child(id);
             } else {
@@ -77,47 +77,44 @@ export class Model extends PrioritisedObject {
                     this._dataSource = dataSource.child(pathRoot).push(data);
                 }
 
-                this._isBeingWrittenByDatasource = true;
+                this.disableChangeListener();
                 this.id = this._dataSource.key();
-                this._isBeingWrittenByDatasource = false;
+                this.enableChangeListener();
             }
         }
 
         /* Construct core PrioritisedObject */
-        if (options.dataSnapshot) this._buildFromSnapshot(options.dataSnapshot);
-        else this._buildFromDataSource(this._dataSource);
+        if (options.dataSnapshot) {
+            this._buildFromSnapshot(options.dataSnapshot);
+        } else {
+            this._buildFromDataSource(this._dataSource);
+        }
 
+        /* Write local data to model, if any data is present. */
+        if (data) {
+            this.transaction(() => {
+                for (let name in data) {
 
-
-        /* Write local data to model, if any data is present */
-        if(data) {
-            this._isBeingWrittenByDatasource = true;
-            for(let name in data) {
-
-                // only map properties that exists on our model
-                if (Object.getOwnPropertyDescriptor(this, name)) {
-                    let value = data[name];
-                    this[name] = value;
+                    // only map properties that exists on our model
+                    if (Object.getOwnPropertyDescriptor(this, name)) {
+                        let value = data[name];
+                        this[name] = value;
+                    }
                 }
-            }
-            this._isBeingWrittenByDatasource = false;
-
-            /* Trigger update to dataSource when we have an unbound record */
-            if (!id)
-                this._onSetterTriggered();
+            });
         }
     }
 
     _replaceModelAccessorsWithDatabinding() {
         let prototype = Object.getPrototypeOf(this);
 
-        while(prototype.constructor.name !== 'Model') {
+        while (prototype.constructor.name !== 'Model') {
             /* Get all properties except the id and constructor of this model */
             let propNames = _.difference(Object.getOwnPropertyNames(prototype), ['constructor', 'id']);
 
-            for(let name of propNames) {
+            for (let name of propNames) {
                 let descriptor = Object.getOwnPropertyDescriptor(prototype, name);
-                if(descriptor && descriptor.get) {
+                if (descriptor && descriptor.get) {
                     let value = this[name];
                     delete this[name];
                     ObjectHelper.addPropertyToObject(this, name, value, true, true, () => {this._onSetterTriggered()});
