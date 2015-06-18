@@ -105,6 +105,16 @@ export class PrioritisedArray extends Array {
         /* If we're already ready, fire immediately */
         if(event === 'ready' && this._dataSource && this._dataSource.ready) { fn.call(context, this); }
 
+        /* If we already have children stored locally when the subscriber calls this method,
+         * fire their callback for all pre-existing children. */
+        if(event === 'child_added') {
+            for(let i = 0; i < this.length; i++) {
+                let model = this[i];
+                let previousSiblingID = i > 0 ? this[i - 1].id : null;
+                fn.call(context, model, previousSiblingID);
+            }
+        }
+
         return this._eventEmitter.on(event, fn, context);
     }
 
@@ -235,14 +245,14 @@ export class PrioritisedArray extends Array {
 
                 /* whenever the ref() is a datasource, we can bind that source to the model.
                  * whenever it's not a datasource, we assume the model should instantiate a new
-                  * datasource to bind the model */
+                 * datasource to bind the model */
 
-                 if (child.ref() instanceof DataSource)
+                if (child.ref() instanceof DataSource)
                     options.dataSource = child.ref();
-                 else {
-                     var rootPath = child.ref().root().toString();
-                     options.path = child.ref().toString().replace(rootPath,'/');
-                 }
+                else {
+                    var rootPath = child.ref().root().toString();
+                    options.path = child.ref().toString().replace(rootPath,'/');
+                }
 
                 let newModel = new this._dataType(child.key(), child.val(), options);
                 this.add(newModel);
@@ -302,6 +312,10 @@ export class PrioritisedArray extends Array {
         var rootPath = snapshot.ref().root().toString();
         let model = this.add(new this._dataType(id, null, {dataSnapshot: snapshot, path: snapshot.ref().toString().replace(rootPath,'/') }), prevSiblingId);
 
+        if(!this._dataSource.ready){
+            this._dataSource.ready = true;
+            this._eventEmitter.emit('ready');
+        }
         this._eventEmitter.emit('child_added', model, prevSiblingId);
         this._eventEmitter.emit('value', this);
     }
