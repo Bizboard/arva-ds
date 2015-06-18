@@ -14,12 +14,13 @@ import {ObjectHelper}               from 'arva-utils/ObjectHelper';
 import {DataSource}                 from '../core/DataSource';
 import {SharePointSnapshot}         from './SharePoint/SharePointSnapshot';
 import {SharePoint}                 from 'SPSoapAdapter/SharePoint';
+import {UrlParser}                  from 'arva-utils/request/UrlParser';
 
 @Provide(DataSource)
 export class SharePointDataSource extends DataSource {
 
     /** @param {String} path **/
-    constructor(path, selector = null) {
+    constructor(path) {
         super(path);
 
         this._dataReference = null;
@@ -29,7 +30,6 @@ export class SharePointDataSource extends DataSource {
         this._onMoveCallback = null;
         this._onRemoveCallback = null;
         this._orginialPath = path;
-        this._selector = selector;
 
         /* Bind all local methods to the current object instance, so we can refer to "this"
          * in the methods as expected, even when they're called from event handlers.        */
@@ -90,9 +90,7 @@ export class SharePointDataSource extends DataSource {
      * @param {String} childName
      */
     child(childName) {
-        // the selector will be interpreted at each level and is used to address the correct endpoints relative from the original path
-        let newSelector = this._selector?this._selector+ '/' + childName: childName;
-        return new SharePointDataSource(this._orginialPath, newSelector);
+        return new SharePointDataSource(this._orginialPath + '/' + childName);
     }
 
     root() {
@@ -114,16 +112,13 @@ export class SharePointDataSource extends DataSource {
      * Returns the name of the current branch in the path on the datasource.
      */
     key() {
+        var url = UrlParser(this._orginialPath);
+        if (!url) console.log("Invalid datasource path provided!");
 
-        // process the selector
-        if (this._selector) {
-            let parts = this._selector.split('/');
-            if (parts.length>0) {
-                return parts[parts.length-1];
-            }
-        }
-        return '';
-
+        if (url.path.length==0) return "";
+        var pathElements = url.path.split('/');
+        if (pathElements.length==1) return url.path;
+        else return url.path.split('/').pop();
 
     }
 
@@ -133,6 +128,7 @@ export class SharePointDataSource extends DataSource {
      */
     set(newData) {
         this._dataReference.set(newData);
+        return this._dataReference;
     }
 
     /**
@@ -192,9 +188,9 @@ export class SharePointDataSource extends DataSource {
     setChildAddedCallback(callback) {
         this._onAddCallback = callback;
 
-        let wrapper = (data) => {
+        let wrapper = (data, previousSiblingId) => {
             let newChildSnapshot = new SharePointSnapshot(data, this);
-            this._onAddCallback(newChildSnapshot);
+            this._onAddCallback(newChildSnapshot, previousSiblingId);
         };
         this._dataReference.on('child_added', wrapper.bind(this));
     }
@@ -212,9 +208,9 @@ export class SharePointDataSource extends DataSource {
     setChildChangedCallback(callback) {
         this._onChangeCallback = callback;
 
-        let wrapper = (data) => {
+        let wrapper = (data, previousSiblingId) => {
             let newChildSnapshot = new SharePointSnapshot(data, this);
-            this._onChangeCallback(newChildSnapshot);
+            this._onChangeCallback(newChildSnapshot, previousSiblingId);
         };
         this._dataReference.on('child_changed', wrapper.bind(this));
     }
