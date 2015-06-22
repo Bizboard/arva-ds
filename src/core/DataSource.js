@@ -74,6 +74,18 @@ export class DataSource {
     setPriority(newPriority) { }
 
     /**
+     * Returns a new dataSource reference that will limit the subscription to only the first given amount items.
+     * @param {Number} amount Amount of items to limit the dataSource to.
+     */
+    limitToFirst(amount) { }
+
+    /**
+     * Returns a new dataSource reference that will limit the subscription to only the last given amount items.
+     * @param {Number} amount Amount of items to limit the dataSource to.
+     */
+    limitToLast(amount) { }
+
+    /**
      * Authenticates all instances of this DataSource with the given OAuth provider and credentials.
      * @param {String} provider google, facebook, github, or twitter
      * @param {String|Object} credentials Access token string, or object with key/value pairs with e.g. OAuth 1.1 credentials.
