@@ -45,7 +45,7 @@ export class SharePointDataSource extends DataSource {
 
         // don't initialize this datasource when there is no path selected to
         // retrieve data from.
-        if (this.key().length>0) {
+        if (this.key().length > 0) {
 
             // bind the soap adapter against the datasource with configuration
             this._dataReference = new SharePoint({
@@ -56,7 +56,7 @@ export class SharePointDataSource extends DataSource {
     }
 
     _notifyOnValue(snapshot) {
-        if(this._onValueCallback) {
+        if (this._onValueCallback) {
             this._onValueCallback(snapshot);
         }
     }
@@ -72,29 +72,41 @@ export class SharePointDataSource extends DataSource {
 
         var pathParts = url.path.split('/');
         var newPath = url.protocol + "://" + url.host + "/";
-        for(var i=0;i<pathParts.length;i++)
+        for (var i = 0; i < pathParts.length; i++)
             newPath += pathParts[i] + "/";
         newPath += endPoint;
         return newPath;
-    };
+    }
+
+;
 
 
     /**
      * Indicate that the DataSource can be inherited when instantiating a list of models.
      * @returns {boolean}
      */
-    get inheritable() { return true; }
+    get inheritable() {
+        return true;
+    }
 
     /**
      * Returns a datasource reference to the given child branch of the current datasouce.
      * @param {String} childName
      */
     child(childName) {
-        return new SharePointDataSource(this._orginialPath + '/' + childName);
+        let childPath = '';
+        if (childName.indexOf('http')>-1) {
+            childPath = childName.substring(1);
+        }
+        else {
+            childPath += this._orginialPath + '/' + childName;
+        }
+
+        return new SharePointDataSource(childPath);
     }
 
     root() {
-        return this._orginialPath;
+        return '';
     }
 
     /**
@@ -115,11 +127,10 @@ export class SharePointDataSource extends DataSource {
         var url = UrlParser(this._orginialPath);
         if (!url) console.log("Invalid datasource path provided!");
 
-        if (url.path.length==0) return "";
+        if (url.path.length == 0) return "";
         var pathElements = url.path.split('/');
-        if (pathElements.length==1) return url.path;
+        if (pathElements.length == 1) return url.path;
         else return url.path.split('/').pop();
-
     }
 
     /**
@@ -161,11 +172,12 @@ export class SharePointDataSource extends DataSource {
      * Sets the priority (ordering) of an object on a given dataSource.
      * @param {String|Number} newPriority
      */
-    setPriority(newPriority) { }
+    setPriority(newPriority) {
+    }
 
     /** Sets the callback triggered when dataSource updates the data.
      *  @param {Function} callback **/
-    setValueChangedCallback(callback){
+    setValueChangedCallback(callback) {
         this._onValueCallback = callback;
 
         let wrapper = (data) => {
@@ -177,7 +189,7 @@ export class SharePointDataSource extends DataSource {
 
     /** Removes the callback set to trigger when dataSource updates the data. **/
     removeValueChangedCallback() {
-        if(this._onValueCallback) {
+        if (this._onValueCallback) {
             this._dataReference.off('value', this._onValueCallback);
             this._onValueCallback = null;
         }
@@ -197,7 +209,7 @@ export class SharePointDataSource extends DataSource {
 
     /** Removes the callback set to trigger when dataSource adds a data element. **/
     removeChildAddedCallback() {
-        if(this._onAddCallback) {
+        if (this._onAddCallback) {
             this._dataReference.off('child_added', this._onAddCallback);
             this._onAddCallback = null;
         }
@@ -217,7 +229,7 @@ export class SharePointDataSource extends DataSource {
 
     /** Removes the callback set to trigger when dataSource changes a data element. **/
     removeChildChangedCallback() {
-        if(this._onChangeCallback) {
+        if (this._onChangeCallback) {
             this._dataReference.off('child_changed', this._onChangeCallback);
             this._onChangeCallback = null;
         }
@@ -236,12 +248,18 @@ export class SharePointDataSource extends DataSource {
      * @param {Function} callback **/
     setChildRemovedCallback(callback) {
         this._onRemoveCallback = callback;
-        this._dataReference.on('child_removed', this._onRemoveCallback);
+
+        let wrapper = (data) => {
+            let removedChildSnapshot = new SharePointSnapshot(data, this);
+            this._onRemoveCallback(removedChildSnapshot);
+        };
+
+        this._dataReference.on('child_removed', wrapper.bind(this));
     }
 
     /** Removes the callback set to trigger when dataSource adds a data element. **/
     removeChildRemovedCallback() {
-        if(this._onRemoveCallback) {
+        if (this._onRemoveCallback) {
             this._dataReference.off('child_removed', this._onRemoveCallback);
             this._onRemoveCallback = null;
         }
