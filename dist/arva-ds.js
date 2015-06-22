@@ -15546,6 +15546,8 @@ System.register("core/DataSource", [], function($__export) {
           push: function(newData) {},
           setWithPriority: function(newData, priority) {},
           setPriority: function(newPriority) {},
+          limitToFirst: function(amount) {},
+          limitToLast: function(amount) {},
           authWithOAuthToken: function(provider, credentials, onComplete, options) {},
           authWithCustomToken: function(authToken, onComplete, options) {},
           authWithPassword: function(credentials, onComplete, options) {},
@@ -17609,6 +17611,12 @@ System.register("datasources/FirebaseDataSource", ["github:Bizboard/arva-utils@m
           },
           setPriority: function(newPriority) {
             return this._dataReference.setPriority(newPriority);
+          },
+          limitToFirst: function(amount) {
+            return this._dataReference.limitToFirst(amount);
+          },
+          limitToLast: function(amount) {
+            return this._dataReference.limitToLast(amount);
           },
           authWithOAuthToken: function(provider, credentials, onComplete, options) {
             return this._dataReference.authWithOAuthToken(provider, credentials, onComplete, options);
