@@ -1,6 +1,6 @@
 {
   "name": "arva-ds",
-  "version": "1.0.0-pre-1",
+  "version": "1.0.0-beta-1",
   "description": "Using the latest ES6 standards creating a simple, compact DataSource library that enables plain object interaction in Javascript and automated synchronisation.",
   "main": false,
   "homepage": "https://github.com/Bizboard/arva-ds",
@@ -21,14 +21,14 @@
     "dependencies": {
       "SPSoapAdapter": "github:Bizboard/SPSoapAdapter@master",
       "arva-utils": "github:Bizboard/arva-utils@master",
-      "di.js": "github:Bizboard/di.js@master",
+      "di": "github:Bizboard/di.js@master",
       "eventemitter3": "npm:eventemitter3@^1.1.0",
       "firebase": "github:firebase/firebase-bower@^2.2.0",
       "lodash": "npm:lodash@^3.2.0"
     },
     "devDependencies": {
-      "traceur": "github:jmcriffey/bower-traceur@0.0.88",
-      "traceur-runtime": "github:jmcriffey/bower-traceur-runtime@0.0.88"
+      "traceur": "github:jmcriffey/bower-traceur@0.0.90",
+      "traceur-runtime": "github:jmcriffey/bower-traceur-runtime@0.0.90"
     }
   },
   "author": "Tom Clement <tom.clement@bizboard.nl>, Hans van den Akker <hans@bizboard.nl>",

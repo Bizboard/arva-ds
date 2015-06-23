@@ -9,7 +9,7 @@
 
  */
 
-import {Provide}                    from 'di.js';
+import {Provide}                    from 'di';
 import {ObjectHelper}               from 'arva-utils/ObjectHelper';
 import {DataSource}                 from '../core/DataSource';
 import {SharePointSnapshot}         from './SharePoint/SharePointSnapshot';

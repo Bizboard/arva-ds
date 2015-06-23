@@ -11,7 +11,7 @@
 import {ObjectHelper}               from 'arva-utils/ObjectHelper';
 import {DataSource}                 from '../core/DataSource';
 import Firebase                     from 'firebase';
-import {Provide, annotate}          from 'di.js';
+import {Provide, annotate}          from 'di';
 
 export class FirebaseDataSource extends DataSource {
 

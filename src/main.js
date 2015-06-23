@@ -13,4 +13,4 @@
 export * from 'core/DataSource';
 export * from 'core/Model';
 export * from 'datasources/FirebaseDataSource';
-export * from 'datasources/SharePointSoapDataSource';
+export * from 'datasources/SharePointDataSource';

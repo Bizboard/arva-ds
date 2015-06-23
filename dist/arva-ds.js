@@ -1,10 +1,11 @@
+(function(){ var curSystem = typeof System != 'undefined' ? System : undefined;
 /* */ 
 "format global";
 "exports $traceurRuntime";
 (function(global) {
   'use strict';
   if (global.$traceurRuntime) {
-    return ;
+    return;
   }
   var $Object = Object;
   var $TypeError = TypeError;
@@ -275,7 +276,7 @@
         var names = $getOwnPropertyNames(arguments[i]);
         for (var j = 0; j < names.length; j++) {
           var name = names[j];
-          if (name === '__esModule' || isSymbolString(name))
+          if (name === '__esModule' || name === 'default' || isSymbolString(name))
             continue;
           (function(mod, name) {
             $defineProperty(object, name, {
@@ -303,10 +304,14 @@
       }
       return argument;
     }
+    var hasNativeSymbol;
     function polyfillSymbol(global, Symbol) {
       if (!global.Symbol) {
         global.Symbol = Symbol;
         Object.getOwnPropertySymbols = getOwnPropertySymbols;
+        hasNativeSymbol = false;
+      } else {
+        hasNativeSymbol = true;
       }
       if (!global.Symbol.iterator) {
         global.Symbol.iterator = Symbol('Symbol.iterator');
@@ -314,6 +319,9 @@
       if (!global.Symbol.observer) {
         global.Symbol.observer = Symbol('Symbol.observer');
       }
+    }
+    function hasNativeSymbolFunc() {
+      return hasNativeSymbol;
     }
     function setupGlobals(global) {
       polyfillSymbol(global, Symbol);
@@ -334,6 +342,7 @@
       getOwnHashObject: getOwnHashObject,
       getOwnPropertyDescriptor: $getOwnPropertyDescriptor,
       getOwnPropertyNames: $getOwnPropertyNames,
+      hasNativeSymbol: hasNativeSymbolFunc,
       initTailRecursiveFunction: initTailRecursiveFunction,
       isObject: isObject,
       isPrivateName: isPrivateName,
@@ -508,11 +517,11 @@
   };
   ModuleEvaluationError.prototype.stripStack = function(causeStack) {
     var stack = [];
-    causeStack.split('\n').some((function(frame) {
+    causeStack.split('\n').some(function(frame) {
       if (/UncoatedModuleInstantiator/.test(frame))
         return true;
       stack.push(frame);
-    }));
+    });
     stack[0] = this.stripError(stack[0]);
     return stack.join('\n');
   };
@@ -566,7 +575,7 @@
       if (ex.stack) {
         var lines = this.func.toString().split('\n');
         var evaled = [];
-        ex.stack.split('\n').some((function(frame, index) {
+        ex.stack.split('\n').some(function(frame, index) {
           if (frame.indexOf('UncoatedModuleInstantiator.getUncoatedModule') > 0)
             return true;
           var m = /(at\s[^\s]*\s).*>:(\d*):(\d*)\)/.exec(frame);
@@ -583,7 +592,7 @@
           } else {
             evaled.push(frame);
           }
-        }));
+        });
         ex.stack = evaled.join('\n');
       }
       throw new ModuleEvaluationError(this.url, ex);
@@ -591,7 +600,7 @@
   };
   function getUncoatedModuleInstantiator(name) {
     if (!name)
-      return ;
+      return;
     var url = ModuleStore.normalize(name);
     return moduleInstantiators[url];
   }
@@ -601,7 +610,7 @@
   function Module(uncoatedModule) {
     var isLive = arguments[1];
     var coatedModule = Object.create(null);
-    Object.getOwnPropertyNames(uncoatedModule).forEach((function(name) {
+    Object.getOwnPropertyNames(uncoatedModule).forEach(function(name) {
       var getter,
           value;
       if (isLive === liveModuleSentinel) {
@@ -619,7 +628,7 @@
         get: getter,
         enumerable: true
       });
-    }));
+    });
     Object.preventExtensions(coatedModule);
     return coatedModule;
   }
@@ -648,9 +657,9 @@
     },
     set: function(normalizedName, module) {
       normalizedName = String(normalizedName);
-      moduleInstantiators[normalizedName] = new UncoatedModuleInstantiator(normalizedName, (function() {
+      moduleInstantiators[normalizedName] = new UncoatedModuleInstantiator(normalizedName, function() {
         return module;
-      }));
+      });
       moduleInstances[normalizedName] = module;
     },
     get baseURL() {
@@ -675,9 +684,9 @@
           execute: function() {
             var $__0 = arguments;
             var depMap = {};
-            deps.forEach((function(dep, index) {
+            deps.forEach(function(dep, index) {
               return depMap[dep] = $__0[index];
-            }));
+            });
             var registryEntry = func.call(this, depMap);
             registryEntry.execute.call(this);
             return registryEntry.exports;
@@ -687,19 +696,6 @@
     },
     getAnonymousModule: function(func) {
       return new Module(func.call(global), liveModuleSentinel);
-    },
-    getForTesting: function(name) {
-      var $__0 = this;
-      if (!this.testingPrefix_) {
-        Object.keys(moduleInstances).some((function(key) {
-          var m = /(traceur@[^\/]*\/)/.exec(key);
-          if (m) {
-            $__0.testingPrefix_ = m[1];
-            return true;
-          }
-        }));
-      }
-      return this.get(this.testingPrefix_ + name);
     }
   };
   var moduleStoreModule = new Module({ModuleStore: ModuleStore});
@@ -717,9 +713,9 @@
     normalize: ModuleStore.normalize
   };
 })(typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : this);
-System.registerModule("traceur-runtime@0.0.88/src/runtime/async.js", [], function() {
+System.registerModule("traceur-runtime@0.0.90/src/runtime/async.js", [], function() {
   "use strict";
-  var __moduleName = "traceur-runtime@0.0.88/src/runtime/async.js";
+  var __moduleName = "traceur-runtime@0.0.90/src/runtime/async.js";
   if (typeof $traceurRuntime !== 'object') {
     throw new Error('traceur runtime not found.');
   }
@@ -735,12 +731,12 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/async.js", [], functio
   AsyncGeneratorFunction.prototype = AsyncGeneratorFunctionPrototype;
   AsyncGeneratorFunctionPrototype.constructor = AsyncGeneratorFunction;
   $defineProperty(AsyncGeneratorFunctionPrototype, 'constructor', {enumerable: false});
-  var AsyncGeneratorContext = (function() {
+  var AsyncGeneratorContext = function() {
     function AsyncGeneratorContext(observer) {
       var $__0 = this;
-      this.decoratedObserver = $traceurRuntime.createDecoratedGenerator(observer, (function() {
+      this.decoratedObserver = $traceurRuntime.createDecoratedGenerator(observer, function() {
         $__0.done = true;
-      }));
+      });
       this.done = false;
       this.inReturn = false;
     }
@@ -763,7 +759,7 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/async.js", [], functio
           throw e;
         }
         if (result === undefined) {
-          return ;
+          return;
         }
         if (result.done) {
           this.done = true;
@@ -777,7 +773,7 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/async.js", [], functio
         return $traceurRuntime.observeForEach(observable[$traceurRuntime.toProperty(Symbol.observer)].bind(observable), function(value) {
           if (ctx.done) {
             this.return();
-            return ;
+            return;
           }
           var result;
           try {
@@ -787,7 +783,7 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/async.js", [], functio
             throw e;
           }
           if (result === undefined) {
-            return ;
+            return;
           }
           if (result.done) {
             ctx.done = true;
@@ -796,21 +792,21 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/async.js", [], functio
         });
       }
     }, {});
-  }());
+  }();
   AsyncGeneratorFunctionPrototype.prototype[Symbol.observer] = function(observer) {
     var observe = this[observeName];
     var ctx = new AsyncGeneratorContext(observer);
-    $traceurRuntime.schedule((function() {
+    $traceurRuntime.schedule(function() {
       return observe(ctx);
-    })).then((function(value) {
+    }).then(function(value) {
       if (!ctx.done) {
         ctx.decoratedObserver.return(value);
       }
-    })).catch((function(error) {
+    }).catch(function(error) {
       if (!ctx.done) {
         ctx.decoratedObserver.throw(error);
       }
-    }));
+    });
     return ctx.decoratedObserver;
   };
   $defineProperty(AsyncGeneratorFunctionPrototype.prototype, Symbol.observer, {enumerable: false});
@@ -821,8 +817,8 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/async.js", [], functio
   }
   function createAsyncGeneratorInstance(observe, functionObject) {
     for (var args = [],
-        $__2 = 2; $__2 < arguments.length; $__2++)
-      args[$__2 - 2] = arguments[$__2];
+        $__9 = 2; $__9 < arguments.length; $__9++)
+      args[$__9 - 2] = arguments[$__9];
     var object = $create(functionObject.prototype);
     object[thisName] = this;
     object[argsName] = args;
@@ -830,7 +826,7 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/async.js", [], functio
     return object;
   }
   function observeForEach(observe, next) {
-    return new Promise((function(resolve, reject) {
+    return new Promise(function(resolve, reject) {
       var generator = observe({
         next: function(value) {
           return next.call(generator, value);
@@ -842,14 +838,14 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/async.js", [], functio
           resolve(value);
         }
       });
-    }));
+    });
   }
   function schedule(asyncF) {
     return Promise.resolve().then(asyncF);
   }
   var generator = Symbol();
   var onDone = Symbol();
-  var DecoratedGenerator = (function() {
+  var DecoratedGenerator = function() {
     function DecoratedGenerator(_generator, _onDone) {
       this[generator] = _generator;
       this[onDone] = _onDone;
@@ -871,10 +867,47 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/async.js", [], functio
         return this[generator].return(value);
       }
     }, {});
-  }());
+  }();
   function createDecoratedGenerator(generator, onDone) {
     return new DecoratedGenerator(generator, onDone);
   }
+  Array.prototype[$traceurRuntime.toProperty(Symbol.observer)] = function(observer) {
+    var done = false;
+    var decoratedObserver = createDecoratedGenerator(observer, function() {
+      return done = true;
+    });
+    var $__5 = true;
+    var $__6 = false;
+    var $__7 = undefined;
+    try {
+      for (var $__3 = void 0,
+          $__2 = (this)[$traceurRuntime.toProperty(Symbol.iterator)](); !($__5 = ($__3 = $__2.next()).done); $__5 = true) {
+        var value = $__3.value;
+        {
+          decoratedObserver.next(value);
+          if (done) {
+            return;
+          }
+        }
+      }
+    } catch ($__8) {
+      $__6 = true;
+      $__7 = $__8;
+    } finally {
+      try {
+        if (!$__5 && $__2.return != null) {
+          $__2.return();
+        }
+      } finally {
+        if ($__6) {
+          throw $__7;
+        }
+      }
+    }
+    decoratedObserver.return();
+    return decoratedObserver;
+  };
+  $defineProperty(Array.prototype, $traceurRuntime.toProperty(Symbol.observer), {enumerable: false});
   $traceurRuntime.initAsyncGeneratorFunction = initAsyncGeneratorFunction;
   $traceurRuntime.createAsyncGeneratorInstance = createAsyncGeneratorInstance;
   $traceurRuntime.observeForEach = observeForEach;
@@ -882,9 +915,9 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/async.js", [], functio
   $traceurRuntime.createDecoratedGenerator = createDecoratedGenerator;
   return {};
 });
-System.registerModule("traceur-runtime@0.0.88/src/runtime/classes.js", [], function() {
+System.registerModule("traceur-runtime@0.0.90/src/runtime/classes.js", [], function() {
   "use strict";
-  var __moduleName = "traceur-runtime@0.0.88/src/runtime/classes.js";
+  var __moduleName = "traceur-runtime@0.0.90/src/runtime/classes.js";
   var $Object = Object;
   var $TypeError = TypeError;
   var $create = $Object.create;
@@ -912,8 +945,11 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/classes.js", [], funct
   function superGet(self, homeObject, name) {
     var descriptor = superDescriptor(homeObject, name);
     if (descriptor) {
+      var value = descriptor.value;
+      if (value)
+        return value;
       if (!descriptor.get)
-        return descriptor.value;
+        return value;
       return descriptor.get.call(self);
     }
     return undefined;
@@ -932,17 +968,17 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/classes.js", [], funct
   }
   function getDescriptors(object) {
     var descriptors = {};
-    forEachPropertyKey(object, (function(key) {
+    forEachPropertyKey(object, function(key) {
       descriptors[key] = $getOwnPropertyDescriptor(object, key);
       descriptors[key].enumerable = false;
-    }));
+    });
     return descriptors;
   }
   var nonEnum = {enumerable: false};
   function makePropertiesNonEnumerable(object) {
-    forEachPropertyKey(object, (function(key) {
+    forEachPropertyKey(object, function(key) {
       $defineProperty(object, key, nonEnum);
-    }));
+    });
   }
   function createClass(ctor, object, staticObject, superClass) {
     $defineProperty(object, 'constructor', {
@@ -982,9 +1018,9 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/classes.js", [], funct
   $traceurRuntime.superSet = superSet;
   return {};
 });
-System.registerModule("traceur-runtime@0.0.88/src/runtime/destructuring.js", [], function() {
+System.registerModule("traceur-runtime@0.0.90/src/runtime/destructuring.js", [], function() {
   "use strict";
-  var __moduleName = "traceur-runtime@0.0.88/src/runtime/destructuring.js";
+  var __moduleName = "traceur-runtime@0.0.90/src/runtime/destructuring.js";
   function iteratorToArray(iter) {
     var rv = [];
     var i = 0;
@@ -997,9 +1033,9 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/destructuring.js", [],
   $traceurRuntime.iteratorToArray = iteratorToArray;
   return {};
 });
-System.registerModule("traceur-runtime@0.0.88/src/runtime/generators.js", [], function() {
+System.registerModule("traceur-runtime@0.0.90/src/runtime/generators.js", [], function() {
   "use strict";
-  var __moduleName = "traceur-runtime@0.0.88/src/runtime/generators.js";
+  var __moduleName = "traceur-runtime@0.0.90/src/runtime/generators.js";
   if (typeof $traceurRuntime !== 'object') {
     throw new Error('traceur runtime not found.');
   }
@@ -1279,7 +1315,7 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/generators.js", [], fu
     var last = ctx.tryStack_[ctx.tryStack_.length - 1];
     if (!last) {
       ctx.handleException(ex);
-      return ;
+      return;
     }
     ctx.state = last.catch !== undefined ? last.catch : last.finally;
     if (last.finallyFallThrough !== undefined)
@@ -1290,9 +1326,9 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/generators.js", [], fu
   $traceurRuntime.createGeneratorInstance = createGeneratorInstance;
   return {};
 });
-System.registerModule("traceur-runtime@0.0.88/src/runtime/relativeRequire.js", [], function() {
+System.registerModule("traceur-runtime@0.0.90/src/runtime/relativeRequire.js", [], function() {
   "use strict";
-  var __moduleName = "traceur-runtime@0.0.88/src/runtime/relativeRequire.js";
+  var __moduleName = "traceur-runtime@0.0.90/src/runtime/relativeRequire.js";
   var path;
   function relativeRequire(callerPath, requiredPath) {
     path = path || typeof require !== 'undefined' && require('path');
@@ -1306,15 +1342,15 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/relativeRequire.js", [
       return path[0] === '.';
     }
     if (isDirectory(requiredPath) || isAbsolute(requiredPath))
-      return ;
+      return;
     return isRelative(requiredPath) ? require(path.resolve(path.dirname(callerPath), requiredPath)) : require(requiredPath);
   }
   $traceurRuntime.require = relativeRequire;
   return {};
 });
-System.registerModule("traceur-runtime@0.0.88/src/runtime/spread.js", [], function() {
+System.registerModule("traceur-runtime@0.0.90/src/runtime/spread.js", [], function() {
   "use strict";
-  var __moduleName = "traceur-runtime@0.0.88/src/runtime/spread.js";
+  var __moduleName = "traceur-runtime@0.0.90/src/runtime/spread.js";
   function spread() {
     var rv = [],
         j = 0,
@@ -1334,9 +1370,9 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/spread.js", [], functi
   $traceurRuntime.spread = spread;
   return {};
 });
-System.registerModule("traceur-runtime@0.0.88/src/runtime/template.js", [], function() {
+System.registerModule("traceur-runtime@0.0.90/src/runtime/template.js", [], function() {
   "use strict";
-  var __moduleName = "traceur-runtime@0.0.88/src/runtime/template.js";
+  var __moduleName = "traceur-runtime@0.0.90/src/runtime/template.js";
   var $__0 = Object,
       defineProperty = $__0.defineProperty,
       freeze = $__0.freeze;
@@ -1356,9 +1392,9 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/template.js", [], func
   $traceurRuntime.getTemplateObject = getTemplateObject;
   return {};
 });
-System.registerModule("traceur-runtime@0.0.88/src/runtime/type-assertions.js", [], function() {
+System.registerModule("traceur-runtime@0.0.90/src/runtime/type-assertions.js", [], function() {
   "use strict";
-  var __moduleName = "traceur-runtime@0.0.88/src/runtime/type-assertions.js";
+  var __moduleName = "traceur-runtime@0.0.90/src/runtime/type-assertions.js";
   var types = {
     any: {name: 'any'},
     boolean: {name: 'boolean'},
@@ -1367,13 +1403,13 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/type-assertions.js", [
     symbol: {name: 'symbol'},
     void: {name: 'void'}
   };
-  var GenericType = (function() {
+  var GenericType = function() {
     function GenericType(type, argumentTypes) {
       this.type = type;
       this.argumentTypes = argumentTypes;
     }
     return ($traceurRuntime.createClass)(GenericType, {}, {});
-  }());
+  }();
   var typeRegister = Object.create(null);
   function genericType(type) {
     for (var argumentTypes = [],
@@ -1404,23 +1440,23 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/type-assertions.js", [
   $traceurRuntime.type = types;
   return {};
 });
-System.registerModule("traceur-runtime@0.0.88/src/runtime/runtime-modules.js", [], function() {
+System.registerModule("traceur-runtime@0.0.90/src/runtime/runtime-modules.js", [], function() {
   "use strict";
-  var __moduleName = "traceur-runtime@0.0.88/src/runtime/runtime-modules.js";
-  System.get("traceur-runtime@0.0.88/src/runtime/relativeRequire.js");
-  System.get("traceur-runtime@0.0.88/src/runtime/spread.js");
-  System.get("traceur-runtime@0.0.88/src/runtime/destructuring.js");
-  System.get("traceur-runtime@0.0.88/src/runtime/classes.js");
-  System.get("traceur-runtime@0.0.88/src/runtime/async.js");
-  System.get("traceur-runtime@0.0.88/src/runtime/generators.js");
-  System.get("traceur-runtime@0.0.88/src/runtime/template.js");
-  System.get("traceur-runtime@0.0.88/src/runtime/type-assertions.js");
+  var __moduleName = "traceur-runtime@0.0.90/src/runtime/runtime-modules.js";
+  System.get("traceur-runtime@0.0.90/src/runtime/relativeRequire.js");
+  System.get("traceur-runtime@0.0.90/src/runtime/spread.js");
+  System.get("traceur-runtime@0.0.90/src/runtime/destructuring.js");
+  System.get("traceur-runtime@0.0.90/src/runtime/classes.js");
+  System.get("traceur-runtime@0.0.90/src/runtime/async.js");
+  System.get("traceur-runtime@0.0.90/src/runtime/generators.js");
+  System.get("traceur-runtime@0.0.90/src/runtime/template.js");
+  System.get("traceur-runtime@0.0.90/src/runtime/type-assertions.js");
   return {};
 });
-System.get("traceur-runtime@0.0.88/src/runtime/runtime-modules.js" + '');
-System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/utils.js", [], function() {
+System.get("traceur-runtime@0.0.90/src/runtime/runtime-modules.js" + '');
+System.registerModule("traceur-runtime@0.0.90/src/runtime/polyfills/utils.js", [], function() {
   "use strict";
-  var __moduleName = "traceur-runtime@0.0.88/src/runtime/polyfills/utils.js";
+  var __moduleName = "traceur-runtime@0.0.90/src/runtime/polyfills/utils.js";
   var $ceil = Math.ceil;
   var $floor = Math.floor;
   var $isFinite = isFinite;
@@ -1502,7 +1538,7 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/utils.js", [
   }
   function maybeAddIterator(object, func, Symbol) {
     if (!Symbol || !Symbol.iterator || object[Symbol.iterator])
-      return ;
+      return;
     if (object['@@iterator'])
       func = object['@@iterator'];
     Object.defineProperty(object, Symbol.iterator, {
@@ -1517,9 +1553,9 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/utils.js", [
     polyfills.push(func);
   }
   function polyfillAll(global) {
-    polyfills.forEach((function(f) {
+    polyfills.forEach(function(f) {
       return f(global);
-    }));
+    });
   }
   return {
     get toObject() {
@@ -1578,14 +1614,15 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/utils.js", [
     }
   };
 });
-System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Map.js", [], function() {
+System.registerModule("traceur-runtime@0.0.90/src/runtime/polyfills/Map.js", [], function() {
   "use strict";
-  var __moduleName = "traceur-runtime@0.0.88/src/runtime/polyfills/Map.js";
-  var $__0 = System.get("traceur-runtime@0.0.88/src/runtime/polyfills/utils.js"),
+  var __moduleName = "traceur-runtime@0.0.90/src/runtime/polyfills/Map.js";
+  var $__0 = System.get("traceur-runtime@0.0.90/src/runtime/polyfills/utils.js"),
       isObject = $__0.isObject,
-      maybeAddIterator = $__0.maybeAddIterator,
       registerPolyfill = $__0.registerPolyfill;
-  var getOwnHashObject = $traceurRuntime.getOwnHashObject;
+  var $__9 = $traceurRuntime,
+      getOwnHashObject = $__9.getOwnHashObject,
+      hasNativeSymbol = $__9.hasNativeSymbol;
   var $hasOwnProperty = Object.prototype.hasOwnProperty;
   var deletedSentinel = {};
   function lookupIndex(map, key) {
@@ -1604,10 +1641,10 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Map.js", [],
     map.primitiveIndex_ = Object.create(null);
     map.deletedCount_ = 0;
   }
-  var Map = (function() {
+  var Map = function() {
     function Map() {
-      var $__10,
-          $__11;
+      var $__11,
+          $__12;
       var iterable = arguments[0];
       if (!isObject(this))
         throw new TypeError('Map called on incompatible type');
@@ -1622,9 +1659,9 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Map.js", [],
         try {
           for (var $__3 = void 0,
               $__2 = (iterable)[$traceurRuntime.toProperty(Symbol.iterator)](); !($__5 = ($__3 = $__2.next()).done); $__5 = true) {
-            var $__9 = $__3.value,
-                key = ($__10 = $__9[$traceurRuntime.toProperty(Symbol.iterator)](), ($__11 = $__10.next()).done ? void 0 : $__11.value),
-                value = ($__11 = $__10.next()).done ? void 0 : $__11.value;
+            var $__10 = $__3.value,
+                key = ($__11 = $__10[$traceurRuntime.toProperty(Symbol.iterator)](), ($__12 = $__11.next()).done ? void 0 : $__12.value),
+                value = ($__12 = $__11.next()).done ? void 0 : $__12.value;
             {
               this.set(key, value);
             }
@@ -1718,7 +1755,7 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Map.js", [],
           callbackFn.call(thisArg, value, key, this);
         }
       },
-      entries: $traceurRuntime.initGeneratorFunction(function $__12() {
+      entries: $traceurRuntime.initGeneratorFunction(function $__13() {
         var i,
             key,
             value;
@@ -1754,9 +1791,9 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Map.js", [],
               default:
                 return $ctx.end();
             }
-        }, $__12, this);
+        }, $__13, this);
       }),
-      keys: $traceurRuntime.initGeneratorFunction(function $__13() {
+      keys: $traceurRuntime.initGeneratorFunction(function $__14() {
         var i,
             key,
             value;
@@ -1792,9 +1829,9 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Map.js", [],
               default:
                 return $ctx.end();
             }
-        }, $__13, this);
+        }, $__14, this);
       }),
-      values: $traceurRuntime.initGeneratorFunction(function $__14() {
+      values: $traceurRuntime.initGeneratorFunction(function $__15() {
         var i,
             key,
             value;
@@ -1830,29 +1867,31 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Map.js", [],
               default:
                 return $ctx.end();
             }
-        }, $__14, this);
+        }, $__15, this);
       })
     }, {});
-  }());
+  }();
   Object.defineProperty(Map.prototype, Symbol.iterator, {
     configurable: true,
     writable: true,
     value: Map.prototype.entries
   });
+  function needsPolyfill(global) {
+    var $__10 = global,
+        Map = $__10.Map,
+        Symbol = $__10.Symbol;
+    if (!Map || !$traceurRuntime.hasNativeSymbol() || !Map.prototype[Symbol.iterator] || !Map.prototype.entries) {
+      return true;
+    }
+    try {
+      return new Map([[]]).size !== 1;
+    } catch (e) {
+      return false;
+    }
+  }
   function polyfillMap(global) {
-    var $__9 = global,
-        Object = $__9.Object,
-        Symbol = $__9.Symbol;
-    if (!global.Map)
+    if (needsPolyfill(global)) {
       global.Map = Map;
-    var mapPrototype = global.Map.prototype;
-    if (mapPrototype.entries === undefined)
-      global.Map = Map;
-    if (mapPrototype.entries) {
-      maybeAddIterator(mapPrototype, mapPrototype.entries, Symbol);
-      maybeAddIterator(Object.getPrototypeOf(new global.Map().entries()), function() {
-        return this;
-      }, Symbol);
     }
   }
   registerPolyfill(polyfillMap);
@@ -1865,21 +1904,20 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Map.js", [],
     }
   };
 });
-System.get("traceur-runtime@0.0.88/src/runtime/polyfills/Map.js" + '');
-System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Set.js", [], function() {
+System.get("traceur-runtime@0.0.90/src/runtime/polyfills/Map.js" + '');
+System.registerModule("traceur-runtime@0.0.90/src/runtime/polyfills/Set.js", [], function() {
   "use strict";
-  var __moduleName = "traceur-runtime@0.0.88/src/runtime/polyfills/Set.js";
-  var $__0 = System.get("traceur-runtime@0.0.88/src/runtime/polyfills/utils.js"),
+  var __moduleName = "traceur-runtime@0.0.90/src/runtime/polyfills/Set.js";
+  var $__0 = System.get("traceur-runtime@0.0.90/src/runtime/polyfills/utils.js"),
       isObject = $__0.isObject,
-      maybeAddIterator = $__0.maybeAddIterator,
       registerPolyfill = $__0.registerPolyfill;
-  var Map = System.get("traceur-runtime@0.0.88/src/runtime/polyfills/Map.js").Map;
+  var Map = System.get("traceur-runtime@0.0.90/src/runtime/polyfills/Map.js").Map;
   var getOwnHashObject = $traceurRuntime.getOwnHashObject;
   var $hasOwnProperty = Object.prototype.hasOwnProperty;
   function initSet(set) {
     set.map_ = new Map();
   }
-  var Set = (function() {
+  var Set = function() {
     function Set() {
       var iterable = arguments[0];
       if (!isObject(this))
@@ -1936,9 +1974,9 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Set.js", [],
       forEach: function(callbackFn) {
         var thisArg = arguments[1];
         var $__2 = this;
-        return this.map_.forEach((function(value, key) {
+        return this.map_.forEach(function(value, key) {
           callbackFn.call(thisArg, key, key, $__2);
-        }));
+        });
       },
       values: $traceurRuntime.initGeneratorFunction(function $__12() {
         var $__13,
@@ -2003,7 +2041,7 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Set.js", [],
         }, $__15, this);
       })
     }, {});
-  }());
+  }();
   Object.defineProperty(Set.prototype, Symbol.iterator, {
     configurable: true,
     writable: true,
@@ -2014,18 +2052,22 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Set.js", [],
     writable: true,
     value: Set.prototype.values
   });
-  function polyfillSet(global) {
+  function needsPolyfill(global) {
     var $__11 = global,
-        Object = $__11.Object,
+        Set = $__11.Set,
         Symbol = $__11.Symbol;
-    if (!global.Set)
+    if (!Set || !$traceurRuntime.hasNativeSymbol() || !Set.prototype[Symbol.iterator] || !Set.prototype.values) {
+      return true;
+    }
+    try {
+      return new Set([1]).size !== 1;
+    } catch (e) {
+      return false;
+    }
+  }
+  function polyfillSet(global) {
+    if (needsPolyfill(global)) {
       global.Set = Set;
-    var setPrototype = global.Set.prototype;
-    if (setPrototype.values) {
-      maybeAddIterator(setPrototype, setPrototype.values, Symbol);
-      maybeAddIterator(Object.getPrototypeOf(new global.Set().values()), function() {
-        return this;
-      }, Symbol);
     }
   }
   registerPolyfill(polyfillSet);
@@ -2038,10 +2080,10 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Set.js", [],
     }
   };
 });
-System.get("traceur-runtime@0.0.88/src/runtime/polyfills/Set.js" + '');
-System.registerModule("traceur-runtime@0.0.88/node_modules/rsvp/lib/rsvp/asap.js", [], function() {
+System.get("traceur-runtime@0.0.90/src/runtime/polyfills/Set.js" + '');
+System.registerModule("traceur-runtime@0.0.90/node_modules/rsvp/lib/rsvp/asap.js", [], function() {
   "use strict";
-  var __moduleName = "traceur-runtime@0.0.88/node_modules/rsvp/lib/rsvp/asap.js";
+  var __moduleName = "traceur-runtime@0.0.90/node_modules/rsvp/lib/rsvp/asap.js";
   var len = 0;
   function asap(callback, arg) {
     queue[len] = callback;
@@ -2106,11 +2148,11 @@ System.registerModule("traceur-runtime@0.0.88/node_modules/rsvp/lib/rsvp/asap.js
       return $__default;
     }};
 });
-System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Promise.js", [], function() {
+System.registerModule("traceur-runtime@0.0.90/src/runtime/polyfills/Promise.js", [], function() {
   "use strict";
-  var __moduleName = "traceur-runtime@0.0.88/src/runtime/polyfills/Promise.js";
-  var async = System.get("traceur-runtime@0.0.88/node_modules/rsvp/lib/rsvp/asap.js").default;
-  var registerPolyfill = System.get("traceur-runtime@0.0.88/src/runtime/polyfills/utils.js").registerPolyfill;
+  var __moduleName = "traceur-runtime@0.0.90/src/runtime/polyfills/Promise.js";
+  var async = System.get("traceur-runtime@0.0.90/node_modules/rsvp/lib/rsvp/asap.js").default;
+  var registerPolyfill = System.get("traceur-runtime@0.0.90/src/runtime/polyfills/utils.js").registerPolyfill;
   var promiseRaw = {};
   function isPromise(x) {
     return x && typeof x === 'object' && x.status_ !== undefined;
@@ -2146,19 +2188,19 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Promise.js",
       var promise = promiseInit(new $Promise(promiseRaw));
       return {
         promise: promise,
-        resolve: (function(x) {
+        resolve: function(x) {
           promiseResolve(promise, x);
-        }),
-        reject: (function(r) {
+        },
+        reject: function(r) {
           promiseReject(promise, r);
-        })
+        }
       };
     } else {
       var result = {};
-      result.promise = new C((function(resolve, reject) {
+      result.promise = new C(function(resolve, reject) {
         result.resolve = resolve;
         result.reject = reject;
-      }));
+      });
       return result;
     }
   }
@@ -2172,19 +2214,19 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Promise.js",
   function promiseInit(promise) {
     return promiseSet(promise, 0, undefined, [], []);
   }
-  var Promise = (function() {
+  var Promise = function() {
     function Promise(resolver) {
       if (resolver === promiseRaw)
-        return ;
+        return;
       if (typeof resolver !== 'function')
         throw new TypeError;
       var promise = promiseInit(this);
       try {
-        resolver((function(x) {
+        resolver(function(x) {
           promiseResolve(promise, x);
-        }), (function(r) {
+        }, function(r) {
           promiseReject(promise, r);
-        }));
+        });
       } catch (e) {
         promiseReject(promise, e);
       }
@@ -2222,9 +2264,9 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Promise.js",
         if (this === $Promise) {
           return promiseSet(new $Promise(promiseRaw), -1, r);
         } else {
-          return new this((function(resolve, reject) {
+          return new this(function(resolve, reject) {
             reject(r);
-          }));
+          });
         }
       },
       all: function(values) {
@@ -2232,11 +2274,11 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Promise.js",
         var resolutions = [];
         try {
           var makeCountdownFunction = function(i) {
-            return (function(x) {
+            return function(x) {
               resolutions[i] = x;
               if (--count === 0)
                 deferred.resolve(resolutions);
-            });
+            };
           };
           var count = 0;
           var i = 0;
@@ -2249,9 +2291,9 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Promise.js",
               var value = $__4.value;
               {
                 var countdownFunction = makeCountdownFunction(i);
-                this.resolve(value).then(countdownFunction, (function(r) {
+                this.resolve(value).then(countdownFunction, function(r) {
                   deferred.reject(r);
-                }));
+                });
                 ++i;
                 ++count;
               }
@@ -2282,11 +2324,11 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Promise.js",
         var deferred = getDeferred(this);
         try {
           for (var i = 0; i < values.length; i++) {
-            this.resolve(values[i]).then((function(x) {
+            this.resolve(values[i]).then(function(x) {
               deferred.resolve(x);
-            }), (function(r) {
+            }, function(r) {
               deferred.reject(r);
-            }));
+            });
           }
         } catch (e) {
           deferred.reject(e);
@@ -2294,7 +2336,7 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Promise.js",
         return deferred.promise;
       }
     });
-  }());
+  }();
   var $Promise = Promise;
   var $PromiseReject = $Promise.reject;
   function promiseResolve(promise, x) {
@@ -2305,16 +2347,16 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Promise.js",
   }
   function promiseDone(promise, status, value, reactions) {
     if (promise.status_ !== 0)
-      return ;
+      return;
     promiseEnqueue(value, reactions);
     promiseSet(promise, status, value);
   }
   function promiseEnqueue(value, tasks) {
-    async((function() {
+    async(function() {
       for (var i = 0; i < tasks.length; i += 2) {
         promiseHandle(value, tasks[i], tasks[i + 1]);
       }
-    }));
+    });
   }
   function promiseHandle(value, handler, deferred) {
     try {
@@ -2377,18 +2419,18 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Promise.js",
     }
   };
 });
-System.get("traceur-runtime@0.0.88/src/runtime/polyfills/Promise.js" + '');
-System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/StringIterator.js", [], function() {
+System.get("traceur-runtime@0.0.90/src/runtime/polyfills/Promise.js" + '');
+System.registerModule("traceur-runtime@0.0.90/src/runtime/polyfills/StringIterator.js", [], function() {
   "use strict";
-  var __moduleName = "traceur-runtime@0.0.88/src/runtime/polyfills/StringIterator.js";
-  var $__0 = System.get("traceur-runtime@0.0.88/src/runtime/polyfills/utils.js"),
+  var __moduleName = "traceur-runtime@0.0.90/src/runtime/polyfills/StringIterator.js";
+  var $__0 = System.get("traceur-runtime@0.0.90/src/runtime/polyfills/utils.js"),
       createIteratorResultObject = $__0.createIteratorResultObject,
       isObject = $__0.isObject;
   var toProperty = $traceurRuntime.toProperty;
   var hasOwnProperty = Object.prototype.hasOwnProperty;
   var iteratedString = Symbol('iteratedString');
   var stringIteratorNextIndex = Symbol('stringIteratorNextIndex');
-  var StringIterator = (function() {
+  var StringIterator = function() {
     var $__2;
     function StringIterator() {}
     return ($traceurRuntime.createClass)(StringIterator, ($__2 = {}, Object.defineProperty($__2, "next", {
@@ -2433,7 +2475,7 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/StringIterat
       enumerable: true,
       writable: true
     }), $__2), {});
-  }());
+  }();
   function createStringIterator(string) {
     var s = String(string);
     var iterator = Object.create(StringIterator.prototype);
@@ -2445,11 +2487,11 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/StringIterat
       return createStringIterator;
     }};
 });
-System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/String.js", [], function() {
+System.registerModule("traceur-runtime@0.0.90/src/runtime/polyfills/String.js", [], function() {
   "use strict";
-  var __moduleName = "traceur-runtime@0.0.88/src/runtime/polyfills/String.js";
-  var createStringIterator = System.get("traceur-runtime@0.0.88/src/runtime/polyfills/StringIterator.js").createStringIterator;
-  var $__1 = System.get("traceur-runtime@0.0.88/src/runtime/polyfills/utils.js"),
+  var __moduleName = "traceur-runtime@0.0.90/src/runtime/polyfills/String.js";
+  var createStringIterator = System.get("traceur-runtime@0.0.90/src/runtime/polyfills/StringIterator.js").createStringIterator;
+  var $__1 = System.get("traceur-runtime@0.0.90/src/runtime/polyfills/utils.js"),
       maybeAddFunctions = $__1.maybeAddFunctions,
       maybeAddIterator = $__1.maybeAddIterator,
       registerPolyfill = $__1.registerPolyfill;
@@ -2645,18 +2687,18 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/String.js", 
     }
   };
 });
-System.get("traceur-runtime@0.0.88/src/runtime/polyfills/String.js" + '');
-System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/ArrayIterator.js", [], function() {
+System.get("traceur-runtime@0.0.90/src/runtime/polyfills/String.js" + '');
+System.registerModule("traceur-runtime@0.0.90/src/runtime/polyfills/ArrayIterator.js", [], function() {
   "use strict";
-  var __moduleName = "traceur-runtime@0.0.88/src/runtime/polyfills/ArrayIterator.js";
-  var $__0 = System.get("traceur-runtime@0.0.88/src/runtime/polyfills/utils.js"),
+  var __moduleName = "traceur-runtime@0.0.90/src/runtime/polyfills/ArrayIterator.js";
+  var $__0 = System.get("traceur-runtime@0.0.90/src/runtime/polyfills/utils.js"),
       toObject = $__0.toObject,
       toUint32 = $__0.toUint32,
       createIteratorResultObject = $__0.createIteratorResultObject;
   var ARRAY_ITERATOR_KIND_KEYS = 1;
   var ARRAY_ITERATOR_KIND_VALUES = 2;
   var ARRAY_ITERATOR_KIND_ENTRIES = 3;
-  var ArrayIterator = (function() {
+  var ArrayIterator = function() {
     var $__2;
     function ArrayIterator() {}
     return ($traceurRuntime.createClass)(ArrayIterator, ($__2 = {}, Object.defineProperty($__2, "next", {
@@ -2691,7 +2733,7 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/ArrayIterato
       enumerable: true,
       writable: true
     }), $__2), {});
-  }());
+  }();
   function createArrayIterator(array, kind) {
     var object = toObject(array);
     var iterator = new ArrayIterator;
@@ -2721,14 +2763,14 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/ArrayIterato
     }
   };
 });
-System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Array.js", [], function() {
+System.registerModule("traceur-runtime@0.0.90/src/runtime/polyfills/Array.js", [], function() {
   "use strict";
-  var __moduleName = "traceur-runtime@0.0.88/src/runtime/polyfills/Array.js";
-  var $__0 = System.get("traceur-runtime@0.0.88/src/runtime/polyfills/ArrayIterator.js"),
+  var __moduleName = "traceur-runtime@0.0.90/src/runtime/polyfills/Array.js";
+  var $__0 = System.get("traceur-runtime@0.0.90/src/runtime/polyfills/ArrayIterator.js"),
       entries = $__0.entries,
       keys = $__0.keys,
       jsValues = $__0.values;
-  var $__1 = System.get("traceur-runtime@0.0.88/src/runtime/polyfills/utils.js"),
+  var $__1 = System.get("traceur-runtime@0.0.90/src/runtime/polyfills/utils.js"),
       checkIterable = $__1.checkIterable,
       isCallable = $__1.isCallable,
       isConstructor = $__1.isConstructor,
@@ -2887,11 +2929,11 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Array.js", [
     }
   };
 });
-System.get("traceur-runtime@0.0.88/src/runtime/polyfills/Array.js" + '');
-System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Object.js", [], function() {
+System.get("traceur-runtime@0.0.90/src/runtime/polyfills/Array.js" + '');
+System.registerModule("traceur-runtime@0.0.90/src/runtime/polyfills/Object.js", [], function() {
   "use strict";
-  var __moduleName = "traceur-runtime@0.0.88/src/runtime/polyfills/Object.js";
-  var $__0 = System.get("traceur-runtime@0.0.88/src/runtime/polyfills/utils.js"),
+  var __moduleName = "traceur-runtime@0.0.90/src/runtime/polyfills/Object.js";
+  var $__0 = System.get("traceur-runtime@0.0.90/src/runtime/polyfills/utils.js"),
       maybeAddFunctions = $__0.maybeAddFunctions,
       registerPolyfill = $__0.registerPolyfill;
   var $__1 = $traceurRuntime,
@@ -2954,11 +2996,11 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Object.js", 
     }
   };
 });
-System.get("traceur-runtime@0.0.88/src/runtime/polyfills/Object.js" + '');
-System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Number.js", [], function() {
+System.get("traceur-runtime@0.0.90/src/runtime/polyfills/Object.js" + '');
+System.registerModule("traceur-runtime@0.0.90/src/runtime/polyfills/Number.js", [], function() {
   "use strict";
-  var __moduleName = "traceur-runtime@0.0.88/src/runtime/polyfills/Number.js";
-  var $__0 = System.get("traceur-runtime@0.0.88/src/runtime/polyfills/utils.js"),
+  var __moduleName = "traceur-runtime@0.0.90/src/runtime/polyfills/Number.js";
+  var $__0 = System.get("traceur-runtime@0.0.90/src/runtime/polyfills/utils.js"),
       isNumber = $__0.isNumber,
       maybeAddConsts = $__0.maybeAddConsts,
       maybeAddFunctions = $__0.maybeAddFunctions,
@@ -3020,10 +3062,10 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Number.js", 
     }
   };
 });
-System.get("traceur-runtime@0.0.88/src/runtime/polyfills/Number.js" + '');
-System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/fround.js", [], function() {
+System.get("traceur-runtime@0.0.90/src/runtime/polyfills/Number.js" + '');
+System.registerModule("traceur-runtime@0.0.90/src/runtime/polyfills/fround.js", [], function() {
   "use strict";
-  var __moduleName = "traceur-runtime@0.0.88/src/runtime/polyfills/fround.js";
+  var __moduleName = "traceur-runtime@0.0.90/src/runtime/polyfills/fround.js";
   var $isFinite = isFinite;
   var $isNaN = isNaN;
   var $__0 = Math,
@@ -3154,11 +3196,11 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/fround.js", 
       return fround;
     }};
 });
-System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Math.js", [], function() {
+System.registerModule("traceur-runtime@0.0.90/src/runtime/polyfills/Math.js", [], function() {
   "use strict";
-  var __moduleName = "traceur-runtime@0.0.88/src/runtime/polyfills/Math.js";
-  var jsFround = System.get("traceur-runtime@0.0.88/src/runtime/polyfills/fround.js").fround;
-  var $__1 = System.get("traceur-runtime@0.0.88/src/runtime/polyfills/utils.js"),
+  var __moduleName = "traceur-runtime@0.0.90/src/runtime/polyfills/Math.js";
+  var jsFround = System.get("traceur-runtime@0.0.90/src/runtime/polyfills/fround.js").fround;
+  var $__1 = System.get("traceur-runtime@0.0.90/src/runtime/polyfills/utils.js"),
       maybeAddFunctions = $__1.maybeAddFunctions,
       registerPolyfill = $__1.registerPolyfill,
       toUint32 = $__1.toUint32;
@@ -3448,11 +3490,11 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/Math.js", []
     }
   };
 });
-System.get("traceur-runtime@0.0.88/src/runtime/polyfills/Math.js" + '');
-System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/polyfills.js", [], function() {
+System.get("traceur-runtime@0.0.90/src/runtime/polyfills/Math.js" + '');
+System.registerModule("traceur-runtime@0.0.90/src/runtime/polyfills/polyfills.js", [], function() {
   "use strict";
-  var __moduleName = "traceur-runtime@0.0.88/src/runtime/polyfills/polyfills.js";
-  var polyfillAll = System.get("traceur-runtime@0.0.88/src/runtime/polyfills/utils.js").polyfillAll;
+  var __moduleName = "traceur-runtime@0.0.90/src/runtime/polyfills/polyfills.js";
+  var polyfillAll = System.get("traceur-runtime@0.0.90/src/runtime/polyfills/utils.js").polyfillAll;
   polyfillAll(Reflect.global);
   var setupGlobals = $traceurRuntime.setupGlobals;
   $traceurRuntime.setupGlobals = function(global) {
@@ -3461,8 +3503,9 @@ System.registerModule("traceur-runtime@0.0.88/src/runtime/polyfills/polyfills.js
   };
   return {};
 });
-System.get("traceur-runtime@0.0.88/src/runtime/polyfills/polyfills.js" + '');
+System.get("traceur-runtime@0.0.90/src/runtime/polyfills/polyfills.js" + '');
 
+System = curSystem; })();
 (function(global) {
 
   var defined = {};
@@ -3483,30 +3526,26 @@ System.get("traceur-runtime@0.0.88/src/runtime/polyfills/polyfills.js" + '');
     return newDeps;
   }
 
-  function register(name, deps, declare, execute) {
-    if (typeof name != 'string')
-      throw "System.register provided no module name";
+  function register(name, deps, declare) {
+    if (arguments.length === 4)
+      return registerDynamic.apply(this, arguments);
+    doRegister(name, {
+      declarative: true,
+      deps: deps,
+      declare: declare
+    });
+  }
 
-    var entry;
+  function registerDynamic(name, deps, executingRequire, execute) {
+    doRegister(name, {
+      declarative: false,
+      deps: deps,
+      executingRequire: executingRequire,
+      execute: execute
+    });
+  }
 
-    // dynamic
-    if (typeof declare == 'boolean') {
-      entry = {
-        declarative: false,
-        deps: deps,
-        execute: execute,
-        executingRequire: declare
-      };
-    }
-    else {
-      // ES6 declarative
-      entry = {
-        declarative: true,
-        deps: deps,
-        declare: declare
-      };
-    }
-
+  function doRegister(name, entry) {
     entry.name = name;
 
     // we never overwrite an existing define
@@ -3520,6 +3559,7 @@ System.get("traceur-runtime@0.0.88/src/runtime/polyfills/polyfills.js" + '');
     // entry.normalizedDeps = entry.deps.map(normalize);
     entry.normalizedDeps = entry.deps;
   }
+
 
   function buildGroups(entry, groups) {
     groups[entry.groupIndex] = groups[entry.groupIndex] || [];
@@ -3622,9 +3662,6 @@ System.get("traceur-runtime@0.0.88/src/runtime/polyfills/polyfills.js" + '');
     module.setters = declaration.setters;
     module.execute = declaration.execute;
 
-    if (!module.setters || !module.execute)
-      throw new TypeError("Invalid System.register form for " + entry.name);
-
     // now link all the module dependencies
     for (var i = 0, l = entry.normalizedDeps.length; i < l; i++) {
       var depName = entry.normalizedDeps[i];
@@ -3638,10 +3675,7 @@ System.get("traceur-runtime@0.0.88/src/runtime/polyfills/polyfills.js" + '');
         depExports = depModule.exports;
       }
       else if (depEntry && !depEntry.declarative) {
-        if (depEntry.module.exports && depEntry.module.exports.__esModule)
-          depExports = depEntry.module.exports;
-        else
-          depExports = { 'default': depEntry.module.exports, __useDefault: true };
+        depExports = depEntry.esModule;
       }
       // in the module registry
       else if (!depEntry) {
@@ -3726,6 +3760,23 @@ System.get("traceur-runtime@0.0.88/src/runtime/polyfills/polyfills.js" + '');
 
     if (output)
       module.exports = output;
+
+    // create the esModule object, which allows ES6 named imports of dynamics
+    exports = module.exports;
+ 
+    if (exports && exports.__esModule) {
+      entry.esModule = exports;
+    }
+    else {
+      var hasOwnProperty = exports && exports.hasOwnProperty;
+      entry.esModule = {};
+      for (var p in exports) {
+        if (!hasOwnProperty || exports.hasOwnProperty(p))
+          entry.esModule[p] = exports[p];
+      }
+      entry.esModule['default'] = exports;
+      entry.esModule.__useDefault = true;
+    }
   }
 
   /*
@@ -3787,46 +3838,166 @@ System.get("traceur-runtime@0.0.88/src/runtime/polyfills/polyfills.js" + '');
     // remove from the registry
     defined[name] = undefined;
 
-    var module = entry.module.exports;
-
-    if (!module || !entry.declarative && module.__esModule !== true)
-      module = { 'default': module, __useDefault: true };
-
     // return the defined module object
-    return modules[name] = module;
+    return modules[name] = entry.declarative ? entry.module.exports : entry.esModule;
   };
 
   return function(mains, declare) {
+    return function(formatDetect) {
+      formatDetect(function() {
+        var System = {
+          _nodeRequire: typeof require != 'undefined' && require.resolve && typeof process != 'undefined' && require,
+          register: register,
+          registerDynamic: registerDynamic,
+          get: load, 
+          set: function(name, module) {
+            modules[name] = module; 
+          },
+          newModule: function(module) {
+            return module;
+          },
+          'import': function() {
+            throw new TypeError('Dynamic System.import calls are not supported for SFX bundles.');
+          }
+        };
+        System.set('@empty', {});
 
-    var System;
-    var System = {
-      register: register, 
-      get: load, 
-      set: function(name, module) {
-        modules[name] = module; 
-      },
-      newModule: function(module) {
-        return module;
-      },
-      global: global 
+        declare(System);
+
+        var firstLoad = load(mains[0]);
+        if (mains.length > 1)
+          for (var i = 1; i < mains.length; i++)
+            load(mains[i]);
+
+        return firstLoad;
+      });
     };
-    System.set('@empty', {});
+  };
 
-    declare(System);
-
-    for (var i = 0; i < mains.length; i++)
-      load(mains[i]);
-  }
-
-})(typeof window != 'undefined' ? window : global)
+})(typeof self != 'undefined' ? self : global)
 /* (['mainModule'], function(System) {
   System.register(...);
-}); */
+})
+(function(factory) {
+  if (typeof define && define.amd)
+    define(factory);
+  // etc UMD / module pattern
+})*/
 
-(['main'], function(System) {
+(['main.js'], function(System) {
 
-System.register("npm:process@0.10.1/browser", [], true, function(require, exports, module) {
-  var global = System.global,
+(function(__global) {
+  var hasOwnProperty = __global.hasOwnProperty;
+  var indexOf = Array.prototype.indexOf || function(item) {
+    for (var i = 0, l = this.length; i < l; i++)
+      if (this[i] === item)
+        return i;
+    return -1;
+  }
+
+  function readMemberExpression(p, value) {
+    var pParts = p.split('.');
+    while (pParts.length)
+      value = value[pParts.shift()];
+    return value;
+  }
+
+  // bare minimum ignores for IE8
+  var ignoredGlobalProps = ['_g', 'sessionStorage', 'localStorage', 'clipboardData', 'frames', 'external'];
+
+  var globalSnapshot;
+
+  function forEachGlobal(callback) {
+    if (Object.keys)
+      Object.keys(__global).forEach(callback);
+    else
+      for (var g in __global) {
+        if (!hasOwnProperty.call(__global, g))
+          continue;
+        callback(g);
+      }
+  }
+
+  function forEachGlobalValue(callback) {
+    forEachGlobal(function(globalName) {
+      if (indexOf.call(ignoredGlobalProps, globalName) != -1)
+        return;
+      try {
+        var value = __global[globalName];
+      }
+      catch (e) {
+        ignoredGlobalProps.push(globalName);
+      }
+      callback(globalName, value);
+    });
+  }
+
+  System.set('@@global-helpers', System.newModule({
+    prepareGlobal: function(moduleName, exportName, globals) {
+      // set globals
+      var oldGlobals;
+      if (globals) {
+        oldGlobals = {};
+        for (var g in globals) {
+          oldGlobals[g] = globals[g];
+          __global[g] = globals[g];
+        }
+      }
+
+      // store a complete copy of the global object in order to detect changes
+      if (!exportName) {
+        globalSnapshot = {};
+
+        forEachGlobalValue(function(name, value) {
+          globalSnapshot[name] = value;
+        });
+      }
+
+      // return function to retrieve global
+      return function() {
+        var globalValue;
+
+        if (exportName) {
+          globalValue = readMemberExpression(exportName, __global);
+        }
+        else {
+          var singleGlobal;
+          var multipleExports;
+          var exports = {};
+
+          forEachGlobalValue(function(name, value) {
+            if (globalSnapshot[name] === value)
+              return;
+            if (typeof value == 'undefined')
+              return;
+            exports[name] = value;
+
+            if (typeof singleGlobal != 'undefined') {
+              if (!multipleExports && singleGlobal !== value)
+                multipleExports = true;
+            }
+            else {
+              singleGlobal = value;
+            }
+          });
+          globalValue = multipleExports ? exports : singleGlobal;
+        }
+
+        // revert globals
+        if (oldGlobals) {
+          for (var g in oldGlobals)
+            __global[g] = oldGlobals[g];
+        }
+
+        return globalValue;
+      };
+    }
+  }));
+
+})(typeof self != 'undefined' ? self : global);
+
+System.registerDynamic("npm:process@0.10.1/browser.js", [], true, function(require, exports, module) {
+  var global = this,
       __define = global.define;
   global.define = undefined;
   var process = module.exports = {};
@@ -3834,7 +4005,7 @@ System.register("npm:process@0.10.1/browser", [], true, function(require, export
   var draining = false;
   function drainQueue() {
     if (draining) {
-      return ;
+      return;
     }
     draining = true;
     var currentQueue;
@@ -3886,8 +4057,8 @@ System.register("npm:process@0.10.1/browser", [], true, function(require, export
   return module.exports;
 });
 
-System.register("npm:eventemitter3@1.1.1/index", [], true, function(require, exports, module) {
-  var global = System.global,
+System.registerDynamic("npm:eventemitter3@1.1.1/index.js", [], true, function(require, exports, module) {
+  var global = this,
       __define = global.define;
   global.define = undefined;
   'use strict';
@@ -4050,8 +4221,8 @@ System.register("npm:eventemitter3@1.1.1/index", [], true, function(require, exp
   return module.exports;
 });
 
-System.register("github:firebase/firebase-bower@2.2.7/firebase", [], false, function(__require, __exports, __module) {
-  System.get("@@global-helpers").prepareGlobal(__module.id, []);
+System.registerDynamic("github:firebase/firebase-bower@2.2.7/firebase.js", [], false, function(__require, __exports, __module) {
+  var _retrieveGlobal = System.get("@@global-helpers").prepareGlobal(__module.id, null, null);
   (function() {
     (function() {
       var h,
@@ -8940,7 +9111,7 @@ System.register("github:firebase/firebase-bower@2.2.7/firebase", [], false, func
           var d = c.message || c.data;
           d && this.f(d);
           this.ib();
-          return ;
+          return;
         }
         var e = this;
         this.va.onopen = function() {
@@ -10718,490 +10889,57 @@ System.register("github:firebase/firebase-bower@2.2.7/firebase", [], false, func
       U.Context = W;
       U.TEST_ACCESS = Z;
     })();
-  }).call(System.global);
-  return System.get("@@global-helpers").retrieveGlobal(__module.id, false);
+  })();
+  return _retrieveGlobal();
 });
 
-(function() {
-function define(){};  define.amd = {};
-System.register("datasources/SharePoint/xml2js", [], false, function(require) {
-  return function(config) {
-    'use strict';
-    var VERSION = "1.1.6";
-    config = config || {};
-    initConfigDefaults();
-    initRequiredPolyfills();
-    function initConfigDefaults() {
-      if (config.escapeMode === undefined) {
-        config.escapeMode = true;
-      }
-      config.attributePrefix = config.attributePrefix || "_";
-      config.arrayAccessForm = config.arrayAccessForm || "none";
-      config.emptyNodeForm = config.emptyNodeForm || "text";
-      if (config.enableToStringFunc === undefined) {
-        config.enableToStringFunc = true;
-      }
-      config.arrayAccessFormPaths = config.arrayAccessFormPaths || [];
-      if (config.skipEmptyTextNodesForObj === undefined) {
-        config.skipEmptyTextNodesForObj = true;
-      }
-      if (config.stripWhitespaces === undefined) {
-        config.stripWhitespaces = true;
-      }
-      config.datetimeAccessFormPaths = config.datetimeAccessFormPaths || [];
-    }
-    var DOMNodeTypes = {
-      ELEMENT_NODE: 1,
-      TEXT_NODE: 3,
-      CDATA_SECTION_NODE: 4,
-      COMMENT_NODE: 8,
-      DOCUMENT_NODE: 9
-    };
-    function initRequiredPolyfills() {
-      function pad(number) {
-        var r = String(number);
-        if (r.length === 1) {
-          r = '0' + r;
-        }
-        return r;
-      }
-      if (typeof String.prototype.trim !== 'function') {
-        String.prototype.trim = function() {
-          return this.replace(/^\s+|^\n+|(\s|\n)+$/g, '');
-        };
-      }
-      if (typeof Date.prototype.toISOString !== 'function') {
-        Date.prototype.toISOString = function() {
-          return this.getUTCFullYear() + '-' + pad(this.getUTCMonth() + 1) + '-' + pad(this.getUTCDate()) + 'T' + pad(this.getUTCHours()) + ':' + pad(this.getUTCMinutes()) + ':' + pad(this.getUTCSeconds()) + '.' + String((this.getUTCMilliseconds() / 1000).toFixed(3)).slice(2, 5) + 'Z';
-        };
-      }
-    }
-    function getNodeLocalName(node) {
-      var nodeLocalName = node.localName;
-      if (nodeLocalName == null)
-        nodeLocalName = node.baseName;
-      if (nodeLocalName == null || nodeLocalName == "")
-        nodeLocalName = node.nodeName;
-      return nodeLocalName;
-    }
-    function getNodePrefix(node) {
-      return node.prefix;
-    }
-    function escapeXmlChars(str) {
-      if (typeof(str) == "string")
-        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;');
-      else
-        return str;
-    }
-    function unescapeXmlChars(str) {
-      return str.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#x27;/g, "'");
-    }
-    function toArrayAccessForm(obj, childName, path) {
-      switch (config.arrayAccessForm) {
-        case "property":
-          if (!(obj[childName] instanceof Array))
-            obj[childName + "_asArray"] = [obj[childName]];
-          else
-            obj[childName + "_asArray"] = obj[childName];
-          break;
-      }
-      if (!(obj[childName] instanceof Array) && config.arrayAccessFormPaths.length > 0) {
-        var idx = 0;
-        for (; idx < config.arrayAccessFormPaths.length; idx++) {
-          var arrayPath = config.arrayAccessFormPaths[idx];
-          if (typeof arrayPath === "string") {
-            if (arrayPath == path)
-              break;
-          } else if (arrayPath instanceof RegExp) {
-            if (arrayPath.test(path))
-              break;
-          } else if (typeof arrayPath === "function") {
-            if (arrayPath(obj, childName, path))
-              break;
-          }
-        }
-        if (idx != config.arrayAccessFormPaths.length) {
-          obj[childName] = [obj[childName]];
-        }
-      }
-    }
-    function fromXmlDateTime(prop) {
-      var bits = prop.split(/[-T:+Z]/g);
-      var d = new Date(bits[0], bits[1] - 1, bits[2]);
-      var secondBits = bits[5].split("\.");
-      d.setHours(bits[3], bits[4], secondBits[0]);
-      if (secondBits.length > 1)
-        d.setMilliseconds(secondBits[1]);
-      if (bits[6] && bits[7]) {
-        var offsetMinutes = bits[6] * 60 + Number(bits[7]);
-        var sign = /\d\d-\d\d:\d\d$/.test(prop) ? '-' : '+';
-        offsetMinutes = 0 + (sign == '-' ? -1 * offsetMinutes : offsetMinutes);
-        d.setMinutes(d.getMinutes() - offsetMinutes - d.getTimezoneOffset());
-      } else if (prop.indexOf("Z", prop.length - 1) !== -1) {
-        d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds()));
-      }
-      return d;
-    }
-    function checkFromXmlDateTimePaths(value, childName, fullPath) {
-      if (config.datetimeAccessFormPaths.length > 0) {
-        var path = fullPath.split("\.#")[0];
-        var idx = 0;
-        for (; idx < config.datetimeAccessFormPaths.length; idx++) {
-          var dtPath = config.datetimeAccessFormPaths[idx];
-          if (typeof dtPath === "string") {
-            if (dtPath == path)
-              break;
-          } else if (dtPath instanceof RegExp) {
-            if (dtPath.test(path))
-              break;
-          } else if (typeof dtPath === "function") {
-            if (dtPath(obj, childName, path))
-              break;
-          }
-        }
-        if (idx != config.datetimeAccessFormPaths.length) {
-          return fromXmlDateTime(value);
-        } else
-          return value;
-      } else
-        return value;
-    }
-    function parseDOMChildren(node, path) {
-      if (node.nodeType == DOMNodeTypes.DOCUMENT_NODE) {
-        var result = new Object;
-        var nodeChildren = node.childNodes;
-        for (var cidx = 0; cidx < nodeChildren.length; cidx++) {
-          var child = nodeChildren.item(cidx);
-          if (child.nodeType == DOMNodeTypes.ELEMENT_NODE) {
-            var childName = getNodeLocalName(child);
-            result[childName] = parseDOMChildren(child, childName);
-          }
-        }
-        return result;
-      } else if (node.nodeType == DOMNodeTypes.ELEMENT_NODE) {
-        var result = new Object;
-        result.__cnt = 0;
-        var nodeChildren = node.childNodes;
-        for (var cidx = 0; cidx < nodeChildren.length; cidx++) {
-          var child = nodeChildren.item(cidx);
-          var childName = getNodeLocalName(child);
-          if (child.nodeType != DOMNodeTypes.COMMENT_NODE) {
-            result.__cnt++;
-            if (result[childName] == null) {
-              result[childName] = parseDOMChildren(child, path + "." + childName);
-              toArrayAccessForm(result, childName, path + "." + childName);
-            } else {
-              if (result[childName] != null) {
-                if (!(result[childName] instanceof Array)) {
-                  result[childName] = [result[childName]];
-                  toArrayAccessForm(result, childName, path + "." + childName);
-                }
-              }
-              (result[childName])[result[childName].length] = parseDOMChildren(child, path + "." + childName);
-            }
-          }
-        }
-        for (var aidx = 0; aidx < node.attributes.length; aidx++) {
-          var attr = node.attributes.item(aidx);
-          result.__cnt++;
-          result[config.attributePrefix + attr.name] = attr.value;
-        }
-        var nodePrefix = getNodePrefix(node);
-        if (nodePrefix != null && nodePrefix != "") {
-          result.__cnt++;
-          result.__prefix = nodePrefix;
-        }
-        if (result["#text"] != null) {
-          result.__text = result["#text"];
-          if (result.__text instanceof Array) {
-            result.__text = result.__text.join("\n");
-          }
-          if (config.escapeMode)
-            result.__text = unescapeXmlChars(result.__text);
-          if (config.stripWhitespaces)
-            result.__text = result.__text.trim();
-          delete result["#text"];
-          if (config.arrayAccessForm == "property")
-            delete result["#text_asArray"];
-          result.__text = checkFromXmlDateTimePaths(result.__text, childName, path + "." + childName);
-        }
-        if (result["#cdata-section"] != null) {
-          result.__cdata = result["#cdata-section"];
-          delete result["#cdata-section"];
-          if (config.arrayAccessForm == "property")
-            delete result["#cdata-section_asArray"];
-        }
-        if (result.__cnt == 1 && result.__text != null) {
-          result = result.__text;
-        } else if (result.__cnt == 0 && config.emptyNodeForm == "text") {
-          result = '';
-        } else if (result.__cnt > 1 && result.__text != null && config.skipEmptyTextNodesForObj) {
-          if ((config.stripWhitespaces && result.__text == "") || (result.__text.trim() == "")) {
-            delete result.__text;
-          }
-        }
-        delete result.__cnt;
-        if (config.enableToStringFunc && (result.__text != null || result.__cdata != null)) {
-          result.toString = function() {
-            return (this.__text != null ? this.__text : '') + (this.__cdata != null ? this.__cdata : '');
-          };
-        }
-        return result;
-      } else if (node.nodeType == DOMNodeTypes.TEXT_NODE || node.nodeType == DOMNodeTypes.CDATA_SECTION_NODE) {
-        return node.nodeValue;
-      }
-    }
-    function startTag(jsonObj, element, attrList, closed) {
-      var resultStr = "<" + ((jsonObj != null && jsonObj.__prefix != null) ? (jsonObj.__prefix + ":") : "") + element;
-      if (attrList != null) {
-        for (var aidx = 0; aidx < attrList.length; aidx++) {
-          var attrName = attrList[aidx];
-          var attrVal = jsonObj[attrName];
-          if (config.escapeMode)
-            attrVal = escapeXmlChars(attrVal);
-          resultStr += " " + attrName.substr(config.attributePrefix.length) + "='" + attrVal + "'";
-        }
-      }
-      if (!closed)
-        resultStr += ">";
-      else
-        resultStr += "/>";
-      return resultStr;
-    }
-    function endTag(jsonObj, elementName) {
-      return "</" + (jsonObj.__prefix != null ? (jsonObj.__prefix + ":") : "") + elementName + ">";
-    }
-    function endsWith(str, suffix) {
-      return str.indexOf(suffix, str.length - suffix.length) !== -1;
-    }
-    function jsonXmlSpecialElem(jsonObj, jsonObjField) {
-      if ((config.arrayAccessForm == "property" && endsWith(jsonObjField.toString(), ("_asArray"))) || jsonObjField.toString().indexOf(config.attributePrefix) == 0 || jsonObjField.toString().indexOf("__") == 0 || (jsonObj[jsonObjField] instanceof Function))
-        return true;
-      else
-        return false;
-    }
-    function jsonXmlElemCount(jsonObj) {
-      var elementsCnt = 0;
-      if (jsonObj instanceof Object) {
-        for (var it in jsonObj) {
-          if (jsonXmlSpecialElem(jsonObj, it))
-            continue;
-          elementsCnt++;
-        }
-      }
-      return elementsCnt;
-    }
-    function parseJSONAttributes(jsonObj) {
-      var attrList = [];
-      if (jsonObj instanceof Object) {
-        for (var ait in jsonObj) {
-          if (ait.toString().indexOf("__") == -1 && ait.toString().indexOf(config.attributePrefix) == 0) {
-            attrList.push(ait);
-          }
-        }
-      }
-      return attrList;
-    }
-    function parseJSONTextAttrs(jsonTxtObj) {
-      var result = "";
-      if (jsonTxtObj.__cdata != null) {
-        result += "<![CDATA[" + jsonTxtObj.__cdata + "]]>";
-      }
-      if (jsonTxtObj.__text != null) {
-        if (config.escapeMode)
-          result += escapeXmlChars(jsonTxtObj.__text);
-        else
-          result += jsonTxtObj.__text;
-      }
-      return result;
-    }
-    function parseJSONTextObject(jsonTxtObj) {
-      var result = "";
-      if (jsonTxtObj instanceof Object) {
-        result += parseJSONTextAttrs(jsonTxtObj);
-      } else if (jsonTxtObj != null) {
-        if (config.escapeMode)
-          result += escapeXmlChars(jsonTxtObj);
-        else
-          result += jsonTxtObj;
-      }
-      return result;
-    }
-    function parseJSONArray(jsonArrRoot, jsonArrObj, attrList) {
-      var result = "";
-      if (jsonArrRoot.length == 0) {
-        result += startTag(jsonArrRoot, jsonArrObj, attrList, true);
-      } else {
-        for (var arIdx = 0; arIdx < jsonArrRoot.length; arIdx++) {
-          result += startTag(jsonArrRoot[arIdx], jsonArrObj, parseJSONAttributes(jsonArrRoot[arIdx]), false);
-          result += parseJSONObject(jsonArrRoot[arIdx]);
-          result += endTag(jsonArrRoot[arIdx], jsonArrObj);
-        }
-      }
-      return result;
-    }
-    function parseJSONObject(jsonObj) {
-      var result = "";
-      var elementsCnt = jsonXmlElemCount(jsonObj);
-      if (elementsCnt > 0) {
-        for (var it in jsonObj) {
-          if (jsonXmlSpecialElem(jsonObj, it))
-            continue;
-          var subObj = jsonObj[it];
-          var attrList = parseJSONAttributes(subObj);
-          if (subObj == null || subObj == undefined) {
-            result += startTag(subObj, it, attrList, true);
-          } else if (subObj instanceof Object) {
-            if (subObj instanceof Array) {
-              result += parseJSONArray(subObj, it, attrList);
-            } else if (subObj instanceof Date) {
-              result += startTag(subObj, it, attrList, false);
-              result += subObj.toISOString();
-              result += endTag(subObj, it);
-            } else {
-              var subObjElementsCnt = jsonXmlElemCount(subObj);
-              if (subObjElementsCnt > 0 || subObj.__text != null || subObj.__cdata != null) {
-                result += startTag(subObj, it, attrList, false);
-                result += parseJSONObject(subObj);
-                result += endTag(subObj, it);
-              } else {
-                result += startTag(subObj, it, attrList, true);
-              }
-            }
-          } else {
-            result += startTag(subObj, it, attrList, false);
-            result += parseJSONTextObject(subObj);
-            result += endTag(subObj, it);
-          }
-        }
-      }
-      result += parseJSONTextObject(jsonObj);
-      return result;
-    }
-    this.parseXmlString = function(xmlDocStr) {
-      var isIEParser = window.ActiveXObject || "ActiveXObject" in window;
-      if (xmlDocStr === undefined) {
-        return null;
-      }
-      var xmlDoc;
-      if (window.DOMParser) {
-        var parser = new window.DOMParser();
-        var parsererrorNS = null;
-        if (!isIEParser) {
-          try {
-            parsererrorNS = parser.parseFromString("INVALID", "text/xml").childNodes[0].namespaceURI;
-          } catch (err) {
-            parsererrorNS = null;
-          }
-        }
-        try {
-          xmlDoc = parser.parseFromString(xmlDocStr, "text/xml");
-          if (parsererrorNS != null && xmlDoc.getElementsByTagNameNS(parsererrorNS, "parsererror").length > 0) {
-            xmlDoc = null;
-          }
-        } catch (err) {
-          xmlDoc = null;
-        }
-      } else {
-        if (xmlDocStr.indexOf("<?") == 0) {
-          xmlDocStr = xmlDocStr.substr(xmlDocStr.indexOf("?>") + 2);
-        }
-        xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
-        xmlDoc.async = "false";
-        xmlDoc.loadXML(xmlDocStr);
-      }
-      return xmlDoc;
-    };
-    this.asArray = function(prop) {
-      if (prop instanceof Array)
-        return prop;
-      else
-        return [prop];
-    };
-    this.toXmlDateTime = function(dt) {
-      if (dt instanceof Date)
-        return dt.toISOString();
-      else if (typeof(dt) === 'number')
-        return new Date(dt).toISOString();
-      else
-        return null;
-    };
-    this.asDateTime = function(prop) {
-      if (typeof(prop) == "string") {
-        return fromXmlDateTime(prop);
-      } else
-        return prop;
-    };
-    this.xml2json = function(xmlDoc) {
-      return parseDOMChildren(xmlDoc);
-    };
-    this.xml_str2json = function(xmlDocStr) {
-      var xmlDoc = this.parseXmlString(xmlDocStr);
-      if (xmlDoc != null)
-        return this.xml2json(xmlDoc);
-      else
-        return null;
-    };
-    this.json2xml_str = function(jsonObj) {
-      return parseJSONObject(jsonObj);
-    };
-    this.json2xml = function(jsonObj) {
-      var xmlDocStr = this.json2xml_str(jsonObj);
-      return this.parseXmlString(xmlDocStr);
-    };
-    this.getVersion = function() {
-      return VERSION;
-    };
-  };
-});
-})();
-System.register("npm:process@0.10.1", ["npm:process@0.10.1/browser"], true, function(require, exports, module) {
-  var global = System.global,
+System.registerDynamic("npm:process@0.10.1.js", ["npm:process@0.10.1/browser.js"], true, function(require, exports, module) {
+  var global = this,
       __define = global.define;
   global.define = undefined;
-  module.exports = require("npm:process@0.10.1/browser");
+  module.exports = require("npm:process@0.10.1/browser.js");
   global.define = __define;
   return module.exports;
 });
 
-System.register("npm:eventemitter3@1.1.1", ["npm:eventemitter3@1.1.1/index"], true, function(require, exports, module) {
-  var global = System.global,
+System.registerDynamic("npm:eventemitter3@1.1.1.js", ["npm:eventemitter3@1.1.1/index.js"], true, function(require, exports, module) {
+  var global = this,
       __define = global.define;
   global.define = undefined;
-  module.exports = require("npm:eventemitter3@1.1.1/index");
+  module.exports = require("npm:eventemitter3@1.1.1/index.js");
   global.define = __define;
   return module.exports;
 });
 
-System.register("github:firebase/firebase-bower@2.2.7", ["github:firebase/firebase-bower@2.2.7/firebase"], true, function(require, exports, module) {
-  var global = System.global,
+System.registerDynamic("github:firebase/firebase-bower@2.2.7.js", ["github:firebase/firebase-bower@2.2.7/firebase.js"], true, function(require, exports, module) {
+  var global = this,
       __define = global.define;
   global.define = undefined;
-  module.exports = require("github:firebase/firebase-bower@2.2.7/firebase");
+  module.exports = require("github:firebase/firebase-bower@2.2.7/firebase.js");
   global.define = __define;
   return module.exports;
 });
 
-System.register("github:jspm/nodelibs-process@0.1.1/index", ["npm:process@0.10.1"], true, function(require, exports, module) {
-  var global = System.global,
+System.registerDynamic("github:jspm/nodelibs-process@0.1.1/index.js", ["npm:process@0.10.1.js"], true, function(require, exports, module) {
+  var global = this,
       __define = global.define;
   global.define = undefined;
-  module.exports = System._nodeRequire ? process : require("npm:process@0.10.1");
+  module.exports = System._nodeRequire ? process : require("npm:process@0.10.1.js");
   global.define = __define;
   return module.exports;
 });
 
-System.register("github:jspm/nodelibs-process@0.1.1", ["github:jspm/nodelibs-process@0.1.1/index"], true, function(require, exports, module) {
-  var global = System.global,
+System.registerDynamic("github:jspm/nodelibs-process@0.1.1.js", ["github:jspm/nodelibs-process@0.1.1/index.js"], true, function(require, exports, module) {
+  var global = this,
       __define = global.define;
   global.define = undefined;
-  module.exports = require("github:jspm/nodelibs-process@0.1.1/index");
+  module.exports = require("github:jspm/nodelibs-process@0.1.1/index.js");
   global.define = __define;
   return module.exports;
 });
 
-System.register("npm:lodash@3.9.3/index", ["github:jspm/nodelibs-process@0.1.1"], true, function(require, exports, module) {
-  var global = System.global,
+System.registerDynamic("npm:lodash@3.9.3/index.js", ["github:jspm/nodelibs-process@0.1.1.js"], true, function(require, exports, module) {
+  var global = this,
       __define = global.define;
   global.define = undefined;
   "format cjs";
@@ -12158,7 +11896,7 @@ System.register("npm:lodash@3.9.3/index", ["github:jspm/nodelibs-process@0.1.1"]
         }
         function baseGet(object, path, pathKey) {
           if (object == null) {
-            return ;
+            return;
           }
           if (pathKey !== undefined && pathKey in toObject(object)) {
             path = [pathKey];
@@ -12344,7 +12082,7 @@ System.register("npm:lodash@3.9.3/index", ["github:jspm/nodelibs-process@0.1.1"]
           while (length--) {
             if (stackA[length] == srcValue) {
               object[key] = stackB[length];
-              return ;
+              return;
             }
           }
           var value = object[key],
@@ -15408,7 +15146,7 @@ System.register("npm:lodash@3.9.3/index", ["github:jspm/nodelibs-process@0.1.1"]
         baseForOwn(LazyWrapper.prototype, function(func, methodName) {
           var lodashFunc = lodash[methodName];
           if (!lodashFunc) {
-            return ;
+            return;
           }
           var checkIteratee = /^(?:filter|map|reject)|While$/.test(methodName),
               retUnwrapped = /^(?:first|last)$/.test(methodName);
@@ -15508,29 +15246,29 @@ System.register("npm:lodash@3.9.3/index", ["github:jspm/nodelibs-process@0.1.1"]
         root._ = _;
       }
     }.call(this));
-  })(require("github:jspm/nodelibs-process@0.1.1"));
+  })(require("github:jspm/nodelibs-process@0.1.1.js"));
   global.define = __define;
   return module.exports;
 });
 
-System.register("npm:lodash@3.9.3", ["npm:lodash@3.9.3/index"], true, function(require, exports, module) {
-  var global = System.global,
+System.registerDynamic("npm:lodash@3.9.3.js", ["npm:lodash@3.9.3/index.js"], true, function(require, exports, module) {
+  var global = this,
       __define = global.define;
   global.define = undefined;
-  module.exports = require("npm:lodash@3.9.3/index");
+  module.exports = require("npm:lodash@3.9.3/index.js");
   global.define = __define;
   return module.exports;
 });
 
-System.register("core/DataSource", [], function($__export) {
+System.register("core/DataSource.js", [], function($__export) {
   "use strict";
-  var __moduleName = "core/DataSource";
+  var __moduleName = "core/DataSource.js";
   var DataSource;
   return {
     setters: [],
     execute: function() {
       'use strict';
-      DataSource = (function() {
+      DataSource = function() {
         function DataSource(path) {
           this._dataReference = null;
         }
@@ -15564,15 +15302,15 @@ System.register("core/DataSource", [], function($__export) {
           setChildRemovedCallback: function(callback) {},
           removeChildRemovedCallback: function() {}
         }, {});
-      }());
+      }();
       $__export("DataSource", DataSource);
     }
   };
 });
 
-System.register("github:Bizboard/arva-utils@master/ObjectHelper", ["npm:lodash@3.9.3"], function($__export) {
+System.register("github:Bizboard/arva-utils@master/ObjectHelper.js", ["npm:lodash@3.9.3.js"], function($__export) {
   "use strict";
-  var __moduleName = "github:Bizboard/arva-utils@master/ObjectHelper";
+  var __moduleName = "github:Bizboard/arva-utils@master/ObjectHelper.js";
   var _,
       ObjectHelper;
   return {
@@ -15580,7 +15318,7 @@ System.register("github:Bizboard/arva-utils@master/ObjectHelper", ["npm:lodash@3
       _ = $__m.default;
     }],
     execute: function() {
-      ObjectHelper = (function() {
+      ObjectHelper = function() {
         function ObjectHelper() {}
         return ($traceurRuntime.createClass)(ObjectHelper, {}, {
           hideMethodsAndPrivatePropertiesFromObject: function(object) {
@@ -15610,7 +15348,7 @@ System.register("github:Bizboard/arva-utils@master/ObjectHelper", ["npm:lodash@3
             while (!descriptor) {
               prototype = Object.getPrototypeOf(prototype);
               if (prototype.constructor.name === 'Object' || prototype.constructor.name === 'Array') {
-                return ;
+                return;
               }
               descriptor = Object.getOwnPropertyDescriptor(prototype, propName);
             }
@@ -15658,7 +15396,7 @@ System.register("github:Bizboard/arva-utils@master/ObjectHelper", ["npm:lodash@3
                 shadow = object.shadow;
               }
             } catch (error) {
-              return ;
+              return;
             }
             shadow[propName] = prop;
             Object.defineProperty(object, 'shadow', {
@@ -15798,20 +15536,20 @@ System.register("github:Bizboard/arva-utils@master/ObjectHelper", ["npm:lodash@3
             return result;
           }
         });
-      }());
+      }();
       $__export("ObjectHelper", ObjectHelper);
     }
   };
 });
 
-System.register("core/Model/snapshot", [], function($__export) {
+System.register("core/Model/snapshot.js", [], function($__export) {
   "use strict";
-  var __moduleName = "core/Model/snapshot";
+  var __moduleName = "core/Model/snapshot.js";
   var Snapshot;
   return {
     setters: [],
     execute: function() {
-      Snapshot = (function() {
+      Snapshot = function() {
         function Snapshot(dataSnapshot) {}
         return ($traceurRuntime.createClass)(Snapshot, {
           key: function() {},
@@ -15821,15 +15559,15 @@ System.register("core/Model/snapshot", [], function($__export) {
           forEach: function() {},
           numChildren: function() {}
         }, {});
-      }());
+      }();
       $__export("Snapshot", Snapshot);
     }
   };
 });
 
-System.register("github:Bizboard/arva-utils@master/Context", [], function($__export) {
+System.register("github:Bizboard/arva-utils@master/Context.js", [], function($__export) {
   "use strict";
-  var __moduleName = "github:Bizboard/arva-utils@master/Context";
+  var __moduleName = "github:Bizboard/arva-utils@master/Context.js";
   var contextContainer,
       Context;
   return {
@@ -15853,9 +15591,9 @@ System.register("github:Bizboard/arva-utils@master/Context", [], function($__exp
   };
 });
 
-System.register("github:Bizboard/di.js@master/util", [], function($__export) {
+System.register("github:Bizboard/di.js@master/util.js", [], function($__export) {
   "use strict";
-  var __moduleName = "github:Bizboard/di.js@master/util";
+  var __moduleName = "github:Bizboard/di.js@master/util.js";
   var ownKeys;
   function isUpperCase(char) {
     return char.toUpperCase() === char;
@@ -15892,9 +15630,9 @@ System.register("github:Bizboard/di.js@master/util", [], function($__export) {
   };
 });
 
-System.register("github:Bizboard/di.js@master/profiler", ["github:Bizboard/di.js@master/util"], function($__export) {
+System.register("github:Bizboard/di.js@master/profiler.js", ["github:Bizboard/di.js@master/util.js"], function($__export) {
   "use strict";
-  var __moduleName = "github:Bizboard/di.js@master/profiler";
+  var __moduleName = "github:Bizboard/di.js@master/profiler.js";
   var toString,
       IS_DEBUG,
       _global,
@@ -15943,7 +15681,7 @@ System.register("github:Bizboard/di.js@master/profiler", ["github:Bizboard/di.js
   }
   function profileInjector(injector, Injector) {
     if (!IS_DEBUG) {
-      return ;
+      return;
     }
     if (!_global.__di_dump__) {
       _global.__di_dump__ = {
@@ -15973,9 +15711,9 @@ System.register("github:Bizboard/di.js@master/profiler", ["github:Bizboard/di.js
   };
 });
 
-System.register("github:Bizboard/di.js@master/providers", ["github:Bizboard/di.js@master/annotations", "github:Bizboard/di.js@master/util"], function($__export) {
+System.register("github:Bizboard/di.js@master/providers.js", ["github:Bizboard/di.js@master/annotations.js", "github:Bizboard/di.js@master/util.js"], function($__export) {
   "use strict";
-  var __moduleName = "github:Bizboard/di.js@master/providers";
+  var __moduleName = "github:Bizboard/di.js@master/providers.js";
   var ClassProviderAnnotation,
       FactoryProviderAnnotation,
       SuperConstructorAnnotation,
@@ -16023,7 +15761,7 @@ System.register("github:Bizboard/di.js@master/providers", ["github:Bizboard/di.j
     }],
     execute: function() {
       EmptyFunction = Object.getPrototypeOf(Function);
-      ClassProvider = (function() {
+      ClassProvider = function() {
         function ClassProvider(clazz, params, isPromise) {
           this.provider = clazz;
           this.isPromise = isPromise;
@@ -16096,8 +15834,8 @@ System.register("github:Bizboard/di.js@master/providers", ["github:Bizboard/di.j
             return context;
           }
         }, {});
-      }());
-      FactoryProvider = (function() {
+      }();
+      FactoryProvider = function() {
         function FactoryProvider(factoryFunction, params, isPromise) {
           this.provider = factoryFunction;
           this.params = params;
@@ -16133,156 +15871,14 @@ System.register("github:Bizboard/di.js@master/providers", ["github:Bizboard/di.j
         return ($traceurRuntime.createClass)(FactoryProvider, {create: function(args) {
             return this.provider.apply(undefined, args);
           }}, {});
-      }());
+      }();
     }
   };
 });
 
-System.register("github:Bizboard/arva-utils@master/request/RequestClient", [], function($__export) {
+System.register("datasources/SharePoint/SharePointSnapshot.js", ["github:Bizboard/arva-utils@master/ObjectHelper.js", "core/Model/snapshot.js"], function($__export) {
   "use strict";
-  var __moduleName = "github:Bizboard/arva-utils@master/request/RequestClient";
-  function GetRequest(url) {
-    return new Promise(function(resolve, reject) {
-      var req = new XMLHttpRequest();
-      req.open('GET', url, true);
-      req.onload = function() {
-        if (req.status === 200) {
-          resolve(req.response);
-        } else {
-          reject(Error(req.statusText));
-        }
-      };
-      req.onerror = function() {
-        reject(Error('Network Error'));
-      };
-      req.send();
-    });
-  }
-  function PostRequest(options) {
-    if (!options) {
-      options = {};
-    }
-    if (!options.headers) {
-      options.headers = new Map();
-    }
-    if (!options.data) {
-      options.data = '';
-    }
-    return new Promise((function(resolve, reject) {
-      var req = new XMLHttpRequest();
-      req.open('POST', options.url, true);
-      var $__3 = true;
-      var $__4 = false;
-      var $__5 = undefined;
-      try {
-        for (var $__1 = void 0,
-            $__0 = (options.headers.entries())[$traceurRuntime.toProperty(Symbol.iterator)](); !($__3 = ($__1 = $__0.next()).done); $__3 = true) {
-          var entry = $__1.value;
-          req.setRequestHeader(entry[0], entry[1]);
-        }
-      } catch ($__6) {
-        $__4 = true;
-        $__5 = $__6;
-      } finally {
-        try {
-          if (!$__3 && $__0.return != null) {
-            $__0.return();
-          }
-        } finally {
-          if ($__4) {
-            throw $__5;
-          }
-        }
-      }
-      req.onload = function() {
-        if (req.status === 200) {
-          var responseDate = req.getResponseHeader('Date');
-          resolve({
-            response: req.response,
-            timestamp: responseDate
-          });
-        } else {
-          reject(Error(req.statusText));
-        }
-      };
-      req.onerror = function() {
-        reject(Error('Network Error'));
-      };
-      req.send(options.data);
-    }));
-  }
-  $__export("GetRequest", GetRequest);
-  $__export("PostRequest", PostRequest);
-  return {
-    setters: [],
-    execute: function() {
-    }
-  };
-});
-
-System.register("github:Bizboard/arva-utils@master/request/XmlParser", [], function($__export) {
-  "use strict";
-  var __moduleName = "github:Bizboard/arva-utils@master/request/XmlParser";
-  function ParseStringToXml(text) {
-    try {
-      var xml = null;
-      if (window.DOMParser) {
-        var parser = new DOMParser();
-        xml = parser.parseFromString(text, 'text/xml');
-        var found = xml.getElementsByTagName('parsererror');
-        if (!found || !found.length || !found[0].childNodes.length) {
-          return xml;
-        }
-        return null;
-      } else {
-        if (typeof ActiveXObject !== 'function') {
-          var ActiveXObject = (function() {});
-        }
-        xml = new ActiveXObject('Microsoft.XMLDOM');
-        xml.async = false;
-        xml.loadXML(text);
-        return xml;
-      }
-    } catch (e) {
-      console.log('Error parsing the string to xml.');
-    }
-  }
-  $__export("ParseStringToXml", ParseStringToXml);
-  return {
-    setters: [],
-    execute: function() {
-    }
-  };
-});
-
-System.register("github:Bizboard/arva-utils@master/request/UrlParser", [], function($__export) {
-  "use strict";
-  var __moduleName = "github:Bizboard/arva-utils@master/request/UrlParser";
-  function UrlParser(url) {
-    var e = /^([a-z][a-z0-9+.-]*):(?:\/\/((?:(?=((?:[a-z0-9-._~!$&'()*+,;=:]|%[0-9A-F]{2})*))(\3)@)?(?=(\[[0-9A-F:.]{2,}\]|(?:[a-z0-9-._~!$&'()*+,;=]|%[0-9A-F]{2})*))\5(?::(?=(\d*))\6)?)(\/(?=((?:[a-z0-9-._~!$&'()*+,;=:@\/]|%[0-9A-F]{2})*))\8)?|(\/?(?!\/)(?=((?:[a-z0-9-._~!$&'()*+,;=:@\/]|%[0-9A-F]{2})*))\10)?)(?:\?(?=((?:[a-z0-9-._~!$&'()*+,;=:@\/?]|%[0-9A-F]{2})*))\11)?(?:#(?=((?:[a-z0-9-._~!$&'()*+,;=:@\/?]|%[0-9A-F]{2})*))\12)?$/i;
-    if (url.match(e)) {
-      return {
-        url: RegExp['$&'],
-        protocol: RegExp.$1,
-        host: RegExp.$2,
-        path: RegExp.$8,
-        hash: RegExp.$12
-      };
-    } else {
-      return null;
-    }
-  }
-  $__export("UrlParser", UrlParser);
-  return {
-    setters: [],
-    execute: function() {
-    }
-  };
-});
-
-System.register("datasources/SharePoint/SharePointSnapshot", ["github:Bizboard/arva-utils@master/ObjectHelper", "core/Model/snapshot"], function($__export) {
-  "use strict";
-  var __moduleName = "datasources/SharePoint/SharePointSnapshot";
+  var __moduleName = "datasources/SharePoint/SharePointSnapshot.js";
   var ObjectHelper,
       Snapshot,
       SharePointSnapshot;
@@ -16293,7 +15889,7 @@ System.register("datasources/SharePoint/SharePointSnapshot", ["github:Bizboard/a
       Snapshot = $__m.Snapshot;
     }],
     execute: function() {
-      SharePointSnapshot = (function($__super) {
+      SharePointSnapshot = function($__super) {
         function SharePointSnapshot(dataSnapshot) {
           var dataSource = arguments[1] !== (void 0) ? arguments[1] : null;
           var kvpair = arguments[2] !== (void 0) ? arguments[2] : null;
@@ -16365,15 +15961,74 @@ System.register("datasources/SharePoint/SharePointSnapshot", ["github:Bizboard/a
               return 1;
           }
         }, {}, $__super);
-      }(Snapshot));
+      }(Snapshot);
       $__export("SharePointSnapshot", SharePointSnapshot);
     }
   };
 });
 
-System.register("github:Bizboard/di.js@master/annotations", ["github:Bizboard/di.js@master/util"], function($__export) {
+System.register("github:Bizboard/arva-utils@master/request/UrlParser.js", [], function($__export) {
   "use strict";
-  var __moduleName = "github:Bizboard/di.js@master/annotations";
+  var __moduleName = "github:Bizboard/arva-utils@master/request/UrlParser.js";
+  function UrlParser(url) {
+    var e = /^([a-z][a-z0-9+.-]*):(?:\/\/((?:(?=((?:[a-z0-9-._~!$&'()*+,;=:]|%[0-9A-F]{2})*))(\3)@)?(?=(\[[0-9A-F:.]{2,}\]|(?:[a-z0-9-._~!$&'()*+,;=]|%[0-9A-F]{2})*))\5(?::(?=(\d*))\6)?)(\/(?=((?:[a-z0-9-._~!$&'()*+,;=:@\/]|%[0-9A-F]{2})*))\8)?|(\/?(?!\/)(?=((?:[a-z0-9-._~!$&'()*+,;=:@\/]|%[0-9A-F]{2})*))\10)?)(?:\?(?=((?:[a-z0-9-._~!$&'()*+,;=:@\/?]|%[0-9A-F]{2})*))\11)?(?:#(?=((?:[a-z0-9-._~!$&'()*+,;=:@\/?]|%[0-9A-F]{2})*))\12)?$/i;
+    if (url.match(e)) {
+      return {
+        url: RegExp['$&'],
+        protocol: RegExp.$1,
+        host: RegExp.$2,
+        path: RegExp.$8,
+        hash: RegExp.$12
+      };
+    } else {
+      return null;
+    }
+  }
+  $__export("UrlParser", UrlParser);
+  return {
+    setters: [],
+    execute: function() {
+    }
+  };
+});
+
+System.register("github:Bizboard/arva-utils@master/BlobHelper.js", [], function($__export) {
+  "use strict";
+  var __moduleName = "github:Bizboard/arva-utils@master/BlobHelper.js";
+  var BlobHelper;
+  return {
+    setters: [],
+    execute: function() {
+      BlobHelper = function() {
+        function BlobHelper() {}
+        return ($traceurRuntime.createClass)(BlobHelper, {}, {base64toBlob: function(b64Data, contentType, sliceSize) {
+            contentType = contentType || '';
+            sliceSize = sliceSize || 512;
+            var byteCharacters = atob(b64Data);
+            var byteCharLength = byteCharacters.length;
+            var byteArrays = [];
+            for (var offset = 0; offset < byteCharLength; offset += sliceSize) {
+              var slice = byteCharacters.slice(offset, offset + sliceSize);
+              var sliceLength = slice.length;
+              var byteNumbers = new Array(sliceLength);
+              for (var i = 0; i < sliceLength; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+              }
+              var byteArray = new Uint8Array(byteNumbers);
+              byteArrays.push(byteArray);
+            }
+            var blob = new Blob(byteArrays, {type: contentType});
+            return blob;
+          }});
+      }();
+      $__export("BlobHelper", BlobHelper);
+    }
+  };
+});
+
+System.register("github:Bizboard/di.js@master/annotations.js", ["github:Bizboard/di.js@master/util.js"], function($__export) {
+  "use strict";
+  var __moduleName = "github:Bizboard/di.js@master/annotations.js";
   var isFunction,
       SuperConstructor,
       TransientScope,
@@ -16439,13 +16094,13 @@ System.register("github:Bizboard/di.js@master/annotations", ["github:Bizboard/di
           var annotation = $__2.value;
           {
             if (annotation instanceof Inject) {
-              annotation.tokens.forEach((function(token) {
+              annotation.tokens.forEach(function(token) {
                 collectedAnnotations.params.push({
                   token: token,
                   isPromise: annotation.isPromise,
                   isLazy: annotation.isLazy
                 });
-              }));
+              });
             }
             if (annotation instanceof Provide) {
               collectedAnnotations.provide.token = annotation.token;
@@ -16469,7 +16124,7 @@ System.register("github:Bizboard/di.js@master/annotations", ["github:Bizboard/di
       }
     }
     if (fn.parameters) {
-      fn.parameters.forEach((function(param, idx) {
+      fn.parameters.forEach(function(param, idx) {
         var $__11 = true;
         var $__12 = false;
         var $__13 = undefined;
@@ -16507,7 +16162,7 @@ System.register("github:Bizboard/di.js@master/annotations", ["github:Bizboard/di
             }
           }
         }
-      }));
+      });
     }
     return collectedAnnotations;
   }
@@ -16516,15 +16171,15 @@ System.register("github:Bizboard/di.js@master/annotations", ["github:Bizboard/di
       isFunction = $__m.isFunction;
     }],
     execute: function() {
-      SuperConstructor = (function() {
+      SuperConstructor = function() {
         function SuperConstructor() {}
         return ($traceurRuntime.createClass)(SuperConstructor, {}, {});
-      }());
-      TransientScope = (function() {
+      }();
+      TransientScope = function() {
         function TransientScope() {}
         return ($traceurRuntime.createClass)(TransientScope, {}, {});
-      }());
-      Inject = (function() {
+      }();
+      Inject = function() {
         function Inject() {
           for (var tokens = [],
               $__15 = 0; $__15 < arguments.length; $__15++)
@@ -16534,8 +16189,8 @@ System.register("github:Bizboard/di.js@master/annotations", ["github:Bizboard/di
           this.isLazy = false;
         }
         return ($traceurRuntime.createClass)(Inject, {}, {});
-      }());
-      InjectPromise = (function($__super) {
+      }();
+      InjectPromise = function($__super) {
         function InjectPromise() {
           for (var tokens = [],
               $__15 = 0; $__15 < arguments.length; $__15++)
@@ -16546,8 +16201,8 @@ System.register("github:Bizboard/di.js@master/annotations", ["github:Bizboard/di
           this.isLazy = false;
         }
         return ($traceurRuntime.createClass)(InjectPromise, {}, {}, $__super);
-      }(Inject));
-      InjectLazy = (function($__super) {
+      }(Inject);
+      InjectLazy = function($__super) {
         function InjectLazy() {
           for (var tokens = [],
               $__15 = 0; $__15 < arguments.length; $__15++)
@@ -16558,160 +16213,104 @@ System.register("github:Bizboard/di.js@master/annotations", ["github:Bizboard/di
           this.isLazy = true;
         }
         return ($traceurRuntime.createClass)(InjectLazy, {}, {}, $__super);
-      }(Inject));
-      Provide = (function() {
+      }(Inject);
+      Provide = function() {
         function Provide(token) {
           this.token = token;
           this.isPromise = false;
         }
         return ($traceurRuntime.createClass)(Provide, {}, {});
-      }());
-      ProvidePromise = (function($__super) {
+      }();
+      ProvidePromise = function($__super) {
         function ProvidePromise(token) {
           $traceurRuntime.superConstructor(ProvidePromise).call(this, token);
           this.token = token;
           this.isPromise = true;
         }
         return ($traceurRuntime.createClass)(ProvidePromise, {}, {}, $__super);
-      }(Provide));
-      ClassProvider = (function() {
+      }(Provide);
+      ClassProvider = function() {
         function ClassProvider() {}
         return ($traceurRuntime.createClass)(ClassProvider, {}, {});
-      }());
-      FactoryProvider = (function() {
+      }();
+      FactoryProvider = function() {
         function FactoryProvider() {}
         return ($traceurRuntime.createClass)(FactoryProvider, {}, {});
-      }());
+      }();
       $__export("annotate", annotate), $__export("hasAnnotation", hasAnnotation), $__export("readAnnotations", readAnnotations), $__export("SuperConstructor", SuperConstructor), $__export("TransientScope", TransientScope), $__export("Inject", Inject), $__export("InjectPromise", InjectPromise), $__export("InjectLazy", InjectLazy), $__export("Provide", Provide), $__export("ProvidePromise", ProvidePromise), $__export("ClassProvider", ClassProvider), $__export("FactoryProvider", FactoryProvider);
     }
   };
 });
 
-System.register("datasources/SharePoint/SoapClient", ["datasources/SharePoint/xml2js", "npm:lodash@3.9.3", "github:Bizboard/arva-utils@master/ObjectHelper", "github:Bizboard/arva-utils@master/request/RequestClient", "github:Bizboard/arva-utils@master/request/XmlParser"], function($__export) {
+System.register("github:Bizboard/SPSoapAdapter@master/SharePoint.js", ["npm:eventemitter3@1.1.1.js", "npm:lodash@3.9.3.js", "github:Bizboard/arva-utils@master/request/UrlParser.js", "github:Bizboard/arva-utils@master/BlobHelper.js"], function($__export) {
   "use strict";
-  var __moduleName = "datasources/SharePoint/SoapClient";
-  var XML2JS,
+  var __moduleName = "github:Bizboard/SPSoapAdapter@master/SharePoint.js";
+  var EventEmitter,
       _,
-      ObjectHelper,
-      PostRequest,
-      ParseStringToXml,
-      SoapClient;
+      UrlParser,
+      BlobHelper,
+      DEBUG_WORKER,
+      SPWorkers,
+      SharePoint;
   return {
     setters: [function($__m) {
-      XML2JS = $__m.default;
+      EventEmitter = $__m.default;
     }, function($__m) {
       _ = $__m.default;
     }, function($__m) {
-      ObjectHelper = $__m.ObjectHelper;
+      UrlParser = $__m.UrlParser;
     }, function($__m) {
-      PostRequest = $__m.PostRequest;
-    }, function($__m) {
-      ParseStringToXml = $__m.ParseStringToXml;
+      BlobHelper = $__m.BlobHelper;
     }],
     execute: function() {
-      SoapClient = (function() {
-        function SoapClient() {
-          ObjectHelper.bindAllMethods(this, this);
-          ObjectHelper.hideMethodsAndPrivatePropertiesFromObject(this);
-          ObjectHelper.hidePropertyFromObject(Object.getPrototypeOf(this), 'length');
+      DEBUG_WORKER = true;
+      SPWorkers = {};
+      SharePoint = function($__super) {
+        function SharePoint() {
+          var options = arguments[0] !== (void 0) ? arguments[0] : {};
+          $traceurRuntime.superConstructor(SharePoint).call(this);
+          var endpoint = UrlParser(options.endPoint);
+          if (!endpoint)
+            throw Error('Invalid configuration.');
+          this.workerId = endpoint.path;
+          if (DEBUG_WORKER) {
+            if (!SPWorkers[this.workerId]) {
+              SPWorkers[this.workerId] = new Worker('worker.js');
+              SPWorkers[this.workerId].onmessage = function(msg) {
+                if (msg.data.event === 'INVALIDSTATE') {
+                  console.log("Worker Error:", msg.data.result);
+                  delete SPWorkers[this.workerId];
+                  this.workerId = msg.data.result.endPoint;
+                } else {
+                  this.emit(msg.data.event, msg.data.result, msg.data.previousSiblingId);
+                }
+              }.bind(this);
+              SPWorkers[this.workerId].postMessage(['init', options]);
+            }
+          } else {}
         }
-        return ($traceurRuntime.createClass)(SoapClient, {
-          _applySoapTemplate: function(properties) {
-            return _.template('<?xml version="1.0" encoding="utf-8"?>' + '<soap:Envelope ' + '  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' + '  xmlns:xsd="http://www.w3.org/2001/XMLSchema" ' + '  xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">' + '<soap:Body>' + '<<%= method %> xmlns="http://schemas.microsoft.com/sharepoint/soap/">' + '<%= params %>' + '</<%= method %>>' + '</soap:Body>' + '</soap:Envelope>')(properties);
-          },
-          _serializeParams: function(params) {
-            if (!params || params.length == 0)
-              return "";
-            var data = {"root": params};
-            var creator = new XML2JS();
-            var payload = creator.json2xml_str(data);
-            return payload.replace("<root>", "").replace("</root>", "");
-          },
-          _handleError: function(error) {
-            return "Error!";
-          },
-          _handleSuccess: function(data) {
-            var nodes,
-                node,
-                rootnode,
-                name,
-                NODE_ELEMENT = 1,
-                attributes,
-                attribute,
-                results = [],
-                result,
-                root = '',
-                i,
-                j;
-            if (typeof(data.selectSingleNode) != "undefined")
-              rootnode = data.selectSingleNode("//rs:data");
-            else
-              rootnode = data.querySelector("data");
-            if (rootnode) {
-              nodes = rootnode.childNodes;
-            } else {
-              if (typeof(data.selectSingleNode) != "undefined") {
-                rootnode = data.selectSingleNode("//Result");
-                nodes = rootnode.selectNodes("//row");
-              } else {
-                rootnode = data.querySelector("Result");
-                nodes = rootnode.querySelectorAll("row");
-              }
+        return ($traceurRuntime.createClass)(SharePoint, {
+          set: function(model) {
+            var modelId = model.id;
+            if (!modelId || modelId === 0) {
+              model['_temporary-identifier'] = btoa(Math.floor((Math.random() * 10000000000000000)));
             }
-            for (i = 0; i < nodes.length; i += 1) {
-              node = nodes[i];
-              if (node.nodeType === NODE_ELEMENT) {
-                attributes = node.attributes;
-                result = {};
-                for (j = 0; j < attributes.length; j += 1) {
-                  attribute = attributes[j];
-                  name = attribute.name.replace('ows_', '');
-                  if (name == "ID") {
-                    name = "id";
-                    result[name] = attribute.value;
-                  } else if (!isNaN(attribute.value))
-                    result[name] = parseFloat(attribute.value);
-                  else
-                    result[name] = attribute.value;
-                }
-                if ((result.Hidden || '').toUpperCase() !== "TRUE") {
-                  results.push(result);
-                }
-              }
-            }
-            return results;
+            SPWorkers[this.workerId].postMessage(['set', model]);
+            return model;
           },
-          call: function(config) {
-            var request;
-            config = config || {};
-            request = {
-              url: config.url,
-              headers: config.headers,
-              data: this._applySoapTemplate({
-                method: config.method,
-                params: this._serializeParams(config.params)
-              })
-            };
-            var context = this;
-            return new Promise(function(resolve, reject) {
-              PostRequest(request).then(function(response) {
-                var xmlDocument = ParseStringToXml(response);
-                resolve(context._handleSuccess(xmlDocument));
-              }, function(error) {
-                reject(context._handleError(error));
-              });
-            });
+          remove: function(model) {
+            SPWorkers[this.workerId].postMessage(['remove', model]);
           }
-        }, {});
-      }());
-      $__export("SoapClient", SoapClient);
+        }, {}, $__super);
+      }(EventEmitter);
+      $__export("SharePoint", SharePoint);
     }
   };
 });
 
-System.register("core/Model/prioritisedObject", ["npm:lodash@3.9.3", "npm:eventemitter3@1.1.1", "github:Bizboard/arva-utils@master/ObjectHelper", "core/Model/snapshot", "core/DataSource"], function($__export) {
+System.register("core/Model/prioritisedObject.js", ["npm:lodash@3.9.3.js", "npm:eventemitter3@1.1.1.js", "github:Bizboard/arva-utils@master/ObjectHelper.js", "core/Model/snapshot.js", "core/DataSource.js"], function($__export) {
   "use strict";
-  var __moduleName = "core/Model/prioritisedObject";
+  var __moduleName = "core/Model/prioritisedObject.js";
   var _,
       EventEmitter,
       ObjectHelper,
@@ -16731,7 +16330,7 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.9.3", "npm:evente
       DataSource = $__m.DataSource;
     }],
     execute: function() {
-      PrioritisedObject = (function($__super) {
+      PrioritisedObject = function($__super) {
         function PrioritisedObject(dataSource) {
           var dataSnapshot = arguments[1] !== (void 0) ? arguments[1] : null;
           $traceurRuntime.superConstructor(PrioritisedObject).call(this);
@@ -16881,14 +16480,14 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.9.3", "npm:evente
           _buildFromDataSource: function(dataSource) {
             var $__0 = this;
             if (!dataSource)
-              return ;
+              return;
             var path = dataSource.path();
             var DataSource = Object.getPrototypeOf(dataSource).constructor;
             var newSource = new DataSource(path);
-            newSource.setValueChangedCallback((function(dataSnapshot) {
+            newSource.setValueChangedCallback(function(dataSnapshot) {
               newSource.removeValueChangedCallback();
               $__0._buildFromSnapshot(dataSnapshot);
-            }));
+            });
           },
           _onSetterTriggered: function() {
             if (!this._isBeingWrittenByDatasource) {
@@ -16898,7 +16497,7 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.9.3", "npm:evente
           _onChildValue: function(dataSnapshot, previousSiblingID) {
             if (_.isEqual(ObjectHelper.getEnumerableProperties(this), dataSnapshot.val())) {
               this.emit('value', this, previousSiblingID);
-              return ;
+              return;
             }
             this._isBeingWrittenByDatasource = true;
             this._buildFromSnapshot(dataSnapshot);
@@ -16915,15 +16514,15 @@ System.register("core/Model/prioritisedObject", ["npm:lodash@3.9.3", "npm:evente
             this.emit('removed', this, previousSiblingID);
           }
         }, {}, $__super);
-      }(EventEmitter));
+      }(EventEmitter);
       $__export("PrioritisedObject", PrioritisedObject);
     }
   };
 });
 
-System.register("github:Bizboard/di.js@master/injector", ["github:Bizboard/di.js@master/annotations", "github:Bizboard/di.js@master/util", "github:Bizboard/di.js@master/profiler", "github:Bizboard/di.js@master/providers"], function($__export) {
+System.register("github:Bizboard/di.js@master/injector.js", ["github:Bizboard/di.js@master/annotations.js", "github:Bizboard/di.js@master/util.js", "github:Bizboard/di.js@master/profiler.js", "github:Bizboard/di.js@master/providers.js"], function($__export) {
   "use strict";
-  var __moduleName = "github:Bizboard/di.js@master/injector";
+  var __moduleName = "github:Bizboard/di.js@master/injector.js";
   var annotate,
       readAnnotations,
       hasAnnotation,
@@ -16959,7 +16558,7 @@ System.register("github:Bizboard/di.js@master/injector", ["github:Bizboard/di.js
       createProviderFromFnOrClass = $__m.createProviderFromFnOrClass;
     }],
     execute: function() {
-      Injector = (function() {
+      Injector = function() {
         function Injector() {
           var modules = arguments[0] !== (void 0) ? arguments[0] : [];
           var parentInjector = arguments[1] !== (void 0) ? arguments[1] : null;
@@ -16974,11 +16573,11 @@ System.register("github:Bizboard/di.js@master/injector", ["github:Bizboard/di.js
         }
         return ($traceurRuntime.createClass)(Injector, {
           _collectProvidersWithAnnotation: function(annotationClass, collectedProviders) {
-            this._providers.forEach((function(provider, token) {
+            this._providers.forEach(function(provider, token) {
               if (!collectedProviders.has(token) && hasAnnotation(provider.provider, annotationClass)) {
                 collectedProviders.set(token, provider);
               }
-            }));
+            });
             if (this._parent) {
               this._parent._collectProvidersWithAnnotation(annotationClass, collectedProviders);
             }
@@ -17132,15 +16731,15 @@ System.register("github:Bizboard/di.js@master/injector", ["github:Bizboard/di.js
               throw new Error(("Cannot instantiate cyclic dependency!" + resolvingMsg));
             }
             resolving.push(token);
-            var delayingInstantiation = wantPromise && provider.params.some((function(param) {
+            var delayingInstantiation = wantPromise && provider.params.some(function(param) {
               return !param.isPromise;
-            }));
-            var args = provider.params.map((function(param) {
+            });
+            var args = provider.params.map(function(param) {
               if (delayingInstantiation) {
                 return $__0.get(param.token, resolving, true, param.isLazy);
               }
               return $__0.get(param.token, resolving, param.isPromise, param.isLazy);
-            }));
+            });
             if (delayingInstantiation) {
               var delayedResolving = resolving.slice();
               resolving.pop();
@@ -17216,90 +16815,71 @@ System.register("github:Bizboard/di.js@master/injector", ["github:Bizboard/di.js
             return new Injector(modules, this, forcedProviders, forceNewInstancesOf);
           }
         }, {});
-      }());
+      }();
       $__export("Injector", Injector);
     }
   };
 });
 
-System.register("datasources/SharePointSoapDataSource", ["github:firebase/firebase-bower@2.2.7", "github:Bizboard/di.js@master", "github:Bizboard/arva-utils@master/ObjectHelper", "core/DataSource", "datasources/SharePoint/SoapClient", "github:Bizboard/arva-utils@master/request/UrlParser", "datasources/SharePoint/SharePointSnapshot"], function($__export) {
+System.register("datasources/SharePointDataSource.js", ["github:Bizboard/di.js@master.js", "github:Bizboard/arva-utils@master/ObjectHelper.js", "core/DataSource.js", "datasources/SharePoint/SharePointSnapshot.js", "github:Bizboard/SPSoapAdapter@master/SharePoint.js", "github:Bizboard/arva-utils@master/request/UrlParser.js"], function($__export) {
   "use strict";
-  var __moduleName = "datasources/SharePointSoapDataSource";
-  var Firebase,
-      Provide,
+  var __moduleName = "datasources/SharePointDataSource.js";
+  var Provide,
       ObjectHelper,
       DataSource,
-      SoapClient,
-      UrlParser,
       SharePointSnapshot,
-      SharePointSoapDataSource;
+      SharePoint,
+      UrlParser,
+      SharePointDataSource;
   return {
     setters: [function($__m) {
-      Firebase = $__m.default;
-    }, function($__m) {
       Provide = $__m.Provide;
     }, function($__m) {
       ObjectHelper = $__m.ObjectHelper;
     }, function($__m) {
       DataSource = $__m.DataSource;
     }, function($__m) {
-      SoapClient = $__m.SoapClient;
+      SharePointSnapshot = $__m.SharePointSnapshot;
+    }, function($__m) {
+      SharePoint = $__m.SharePoint;
     }, function($__m) {
       UrlParser = $__m.UrlParser;
-    }, function($__m) {
-      SharePointSnapshot = $__m.SharePointSnapshot;
     }],
     execute: function() {
-      SharePointSoapDataSource = (function($__super) {
-        function SharePointSoapDataSource(path, credentials) {
-          $traceurRuntime.superConstructor(SharePointSoapDataSource).call(this, path);
+      SharePointDataSource = function($__super) {
+        function SharePointDataSource(path) {
+          $traceurRuntime.superConstructor(SharePointDataSource).call(this, path);
           this._dataReference = null;
           this._onValueCallback = null;
           this._onAddCallback = null;
           this._onChangeCallback = null;
           this._onMoveCallback = null;
           this._onRemoveCallback = null;
-          this._credentials = credentials;
           this._orginialPath = path;
           ObjectHelper.bindAllMethods(this, this);
           ObjectHelper.hideMethodsAndPrivatePropertiesFromObject(this);
           ObjectHelper.hidePropertyFromObject(Object.getPrototypeOf(this), 'length');
-          if (this.key().length == 0)
-            return ;
-          this._dataReference = new SoapClient();
-          this._updateDataSource();
+          if (this.key().length > 0) {
+            this._dataReference = new SharePoint({
+              endPoint: this._orginialPath,
+              listName: this.key()
+            });
+          }
         }
-        return ($traceurRuntime.createClass)(SharePointSoapDataSource, {
-          _updateDataSource: function() {
-            var $__0 = this;
-            var configuration = this._GetListItemsDefaultConfiguration;
-            configuration.url = this._ParsePath(this._orginialPath, this._GetListService);
-            configuration.params = {
-              "listName": this.key(),
-              "queryOptions": {"QueryOptions": {
-                  "IncludeMandatoryColumns": "FALSE",
-                  "ViewAttributes": {"_Scope": "RecursiveAll"}
-                }}
-            };
-            this._dataReference.call(configuration).then((function(data) {
-              var snapshot = new SharePointSnapshot(data, $__0);
-              $__0._notifyOnValue(snapshot);
-            }), (function(error) {
-              console.log(error);
-            }));
-          },
+        return ($traceurRuntime.createClass)(SharePointDataSource, {
           _notifyOnValue: function(snapshot) {
             if (this._onValueCallback) {
               this._onValueCallback(snapshot);
             }
           },
+          _ParseSelector: function(path, endPoint) {},
           _ParsePath: function(path, endPoint) {
             var url = UrlParser(path);
             if (!url)
               console.log("Invalid datasource path provided!");
             var pathParts = url.path.split('/');
             var newPath = url.protocol + "://" + url.host + "/";
-            for (var i = 0; i < pathParts.length - 1; i++)
+            for (var i = 0; i < pathParts.length; i++)
               newPath += pathParts[i] + "/";
             newPath += endPoint;
             return newPath;
@@ -17308,10 +16888,21 @@ System.register("datasources/SharePointSoapDataSource", ["github:firebase/fireba
             return true;
           },
           child: function(childName) {
-            var newPath = this._orginialPath + "/" + childName;
-            return new SharePointSoapDataSource(newPath);
+            var childPath = '';
+            if (childName.indexOf('http') > -1) {
+              childPath = childName.substring(1);
+            } else {
+              childPath += this._orginialPath + '/' + childName;
+            }
+            return new SharePointDataSource(childPath);
+          },
+          root: function() {
+            return '';
           },
           path: function() {
+            return this._orginialPath;
+          },
+          toString: function() {
             return this._orginialPath;
           },
           key: function() {
@@ -17327,116 +16918,11 @@ System.register("datasources/SharePointSoapDataSource", ["github:firebase/fireba
               return url.path.split('/').pop();
           },
           set: function(newData) {
-            var $__0 = this;
-            var configuration = this._UpdateListItemsDefaultConfiguration;
-            configuration.url = this._ParsePath(this._orginialPath, this._GetListService);
-            var fieldCollection = [];
-            var method = '';
-            var callback;
-            if (newData.id) {
-              fieldCollection.push({
-                "_Name": "ID",
-                "__text": newData.id
-              });
-              method = "Update";
-              callback = this._onChangeCallback;
-            } else {
-              fieldCollection.push({
-                "_Name": "ID",
-                "__text": 'New'
-              });
-              method = 'New';
-              callback = this._onAddCallback;
-            }
-            for (var prop in newData) {
-              if (prop == "id" || typeof(newData[prop]) == "undefined")
-                continue;
-              if (prop == "priority")
-                continue;
-              fieldCollection.push({
-                "_Name": prop,
-                "__text": newData[prop]
-              });
-            }
-            configuration.params = {
-              "listName": this.key(),
-              "updates": {"Batch": {
-                  "Method": {
-                    "Field": fieldCollection,
-                    "_ID": "1",
-                    "_Cmd": method
-                  },
-                  "_OnError": "Continue",
-                  "_ListVersion": "1",
-                  "_ViewName": ""
-                }}
-            };
-            this._dataReference.call(configuration).then((function(result) {
-              var $__5 = true;
-              var $__6 = false;
-              var $__7 = undefined;
-              try {
-                for (var $__3 = void 0,
-                    $__2 = (result)[$traceurRuntime.toProperty(Symbol.iterator)](); !($__5 = ($__3 = $__2.next()).done); $__5 = true) {
-                  var data = $__3.value;
-                  {
-                    var snapshot = new SharePointSnapshot(data, $__0);
-                    if (callback)
-                      callback(snapshot);
-                  }
-                }
-              } catch ($__8) {
-                $__6 = true;
-                $__7 = $__8;
-              } finally {
-                try {
-                  if (!$__5 && $__2.return != null) {
-                    $__2.return();
-                  }
-                } finally {
-                  if ($__6) {
-                    throw $__7;
-                  }
-                }
-              }
-            }), (function(error) {
-              console.log(error);
-            }));
-            return this;
+            this._dataReference.set(newData);
+            return this._dataReference;
           },
           remove: function(object) {
-            var $__0 = this;
-            var configuration = this._UpdateListItemsDefaultConfiguration;
-            configuration.url = this._ParsePath(this._orginialPath, this._GetListService);
-            var fieldCollection = [];
-            fieldCollection.push({
-              "_Name": "ID",
-              "__text": object.id
-            });
-            configuration.params = {
-              "listName": this.key(),
-              "updates": {"Batch": {
-                  "Method": {
-                    "Field": fieldCollection,
-                    "_ID": '1',
-                    "_Cmd": 'Delete'
-                  },
-                  "_OnError": 'Continue',
-                  "_ListVersion": '1',
-                  "_ViewName": ''
-                }}
-            };
-            this._dataReference.call(configuration).then((function() {
-              var snapshot = new SharePointSnapshot(null, $__0, {
-                key: object.id,
-                value: null
-              });
-              if ($__0._onRemoveCallback)
-                $__0._onRemoveCallback(snapshot);
-            }), (function(error) {
-              console.log(error);
-            }));
-            return this;
+            this._dataReference.remove(newData);
           },
           push: function(newData) {
             return this.set(newData);
@@ -17447,68 +16933,80 @@ System.register("datasources/SharePointSoapDataSource", ["github:firebase/fireba
           },
           setPriority: function(newPriority) {},
           setValueChangedCallback: function(callback) {
+            var $__0 = this;
             this._onValueCallback = callback;
+            var wrapper = function(data) {
+              var newChildSnapshot = new SharePointSnapshot(data, $__0);
+              $__0._onValueCallback(newChildSnapshot);
+            };
+            this._dataReference.on('value', wrapper.bind(this));
           },
           removeValueChangedCallback: function() {
-            this._onValueCallback = null;
+            if (this._onValueCallback) {
+              this._dataReference.off('value', this._onValueCallback);
+              this._onValueCallback = null;
+            }
           },
           setChildAddedCallback: function(callback) {
+            var $__0 = this;
             this._onAddCallback = callback;
+            var wrapper = function(data, previousSiblingId) {
+              var newChildSnapshot = new SharePointSnapshot(data, $__0);
+              $__0._onAddCallback(newChildSnapshot, previousSiblingId);
+            };
+            this._dataReference.on('child_added', wrapper.bind(this));
           },
           removeChildAddedCallback: function() {
-            this._onAddCallback = null;
+            if (this._onAddCallback) {
+              this._dataReference.off('child_added', this._onAddCallback);
+              this._onAddCallback = null;
+            }
           },
           setChildChangedCallback: function(callback) {
+            var $__0 = this;
             this._onChangeCallback = callback;
+            var wrapper = function(data, previousSiblingId) {
+              var newChildSnapshot = new SharePointSnapshot(data, $__0);
+              $__0._onChangeCallback(newChildSnapshot, previousSiblingId);
+            };
+            this._dataReference.on('child_changed', wrapper.bind(this));
           },
           removeChildChangedCallback: function() {
-            this._onChangeCallback = null;
+            if (this._onChangeCallback) {
+              this._dataReference.off('child_changed', this._onChangeCallback);
+              this._onChangeCallback = null;
+            }
           },
           setChildMovedCallback: function(callback) {},
           removeChildMovedCallback: function() {},
           setChildRemovedCallback: function(callback) {
+            var $__0 = this;
             this._onRemoveCallback = callback;
+            var wrapper = function(data) {
+              var removedChildSnapshot = new SharePointSnapshot(data, $__0);
+              $__0._onRemoveCallback(removedChildSnapshot);
+            };
+            this._dataReference.on('child_removed', wrapper.bind(this));
           },
           removeChildRemovedCallback: function() {
-            this._onRemoveCallback = null;
-          },
-          get _UpdateListItemsDefaultConfiguration() {
-            return {
-              url: '',
-              service: 'Lists',
-              method: 'UpdateListItems',
-              params: '',
-              headers: new Map([['SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/UpdateListItems'], ['Content-Type', 'text/xml']])
-            };
-          },
-          get _GetListItemsDefaultConfiguration() {
-            return {
-              url: '',
-              service: 'Lists',
-              method: 'GetListItems',
-              params: '',
-              headers: new Map([['SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/GetListItems'], ['Content-Type', 'text/xml']])
-            };
-          },
-          get _GetListService() {
-            return '_vti_bin/Lists.asmx';
-          },
-          get _GetUserGroupService() {
-            return '_vti_bin/UserGroup.asmx';
+            if (this._onRemoveCallback) {
+              this._dataReference.off('child_removed', this._onRemoveCallback);
+              this._onRemoveCallback = null;
+            }
           }
         }, {}, $__super);
-      }(DataSource));
-      $__export("SharePointSoapDataSource", SharePointSoapDataSource);
-      Object.defineProperty(SharePointSoapDataSource, "annotations", {get: function() {
+      }(DataSource);
+      $__export("SharePointDataSource", SharePointDataSource);
+      Object.defineProperty(SharePointDataSource, "annotations", {get: function() {
           return [new Provide(DataSource)];
         }});
     }
   };
 });
 
-System.register("github:Bizboard/di.js@master/index", ["github:Bizboard/di.js@master/injector", "github:Bizboard/di.js@master/annotations"], function($__export) {
+System.register("github:Bizboard/di.js@master/index.js", ["github:Bizboard/di.js@master/injector.js", "github:Bizboard/di.js@master/annotations.js"], function($__export) {
   "use strict";
-  var __moduleName = "github:Bizboard/di.js@master/index";
+  var __moduleName = "github:Bizboard/di.js@master/index.js";
   return {
     setters: [function($__m) {
       $__export("Injector", $__m.Injector);
@@ -17528,14 +17026,14 @@ System.register("github:Bizboard/di.js@master/index", ["github:Bizboard/di.js@ma
   };
 });
 
-System.register("github:Bizboard/di.js@master", ["github:Bizboard/di.js@master/index"], function($__export) {
+System.register("github:Bizboard/di.js@master.js", ["github:Bizboard/di.js@master/index.js"], function($__export) {
   "use strict";
-  var __moduleName = "github:Bizboard/di.js@master";
+  var __moduleName = "github:Bizboard/di.js@master.js";
   var $__exportNames = {};
   return {
     setters: [function($__m) {
       Object.keys($__m).forEach(function(p) {
-        if (!$__exportNames[p])
+        if (p !== 'default' && !$__exportNames[p])
           $__export(p, $__m[p]);
       });
     }],
@@ -17543,9 +17041,9 @@ System.register("github:Bizboard/di.js@master", ["github:Bizboard/di.js@master/i
   };
 });
 
-System.register("datasources/FirebaseDataSource", ["github:Bizboard/arva-utils@master/ObjectHelper", "core/DataSource", "github:firebase/firebase-bower@2.2.7", "github:Bizboard/di.js@master"], function($__export) {
+System.register("datasources/FirebaseDataSource.js", ["github:Bizboard/arva-utils@master/ObjectHelper.js", "core/DataSource.js", "github:firebase/firebase-bower@2.2.7.js", "github:Bizboard/di.js@master.js"], function($__export) {
   "use strict";
-  var __moduleName = "datasources/FirebaseDataSource";
+  var __moduleName = "datasources/FirebaseDataSource.js";
   var ObjectHelper,
       DataSource,
       Firebase,
@@ -17564,7 +17062,7 @@ System.register("datasources/FirebaseDataSource", ["github:Bizboard/arva-utils@m
       annotate = $__m.annotate;
     }],
     execute: function() {
-      FirebaseDataSource = (function($__super) {
+      FirebaseDataSource = function($__super) {
         function FirebaseDataSource(path) {
           var options = arguments[1] !== (void 0) ? arguments[1] : {orderBy: '.priority'};
           $traceurRuntime.superConstructor(FirebaseDataSource).call(this, path);
@@ -17646,9 +17144,9 @@ System.register("datasources/FirebaseDataSource", ["github:Bizboard/arva-utils@m
           setChildAddedCallback: function(callback) {
             var $__0 = this;
             this._onAddCallback = callback;
-            var wrapper = (function(newChildSnapshot, prevChildName) {
+            var wrapper = function(newChildSnapshot, prevChildName) {
               $__0._onAddCallback(newChildSnapshot, prevChildName);
-            });
+            };
             if (this.options.orderBy && this.options.orderBy == '.priority') {
               this._dataReference.orderByPriority().on('child_added', wrapper.bind(this));
             } else if (this.options.orderBy && this.options.orderBy == '.value') {
@@ -17668,9 +17166,9 @@ System.register("datasources/FirebaseDataSource", ["github:Bizboard/arva-utils@m
           setChildChangedCallback: function(callback) {
             var $__0 = this;
             this._onChangeCallback = callback;
-            var wrapper = (function(newChildSnapshot, prevChildName) {
+            var wrapper = function(newChildSnapshot, prevChildName) {
               $__0._onChangeCallback(newChildSnapshot, prevChildName);
-            });
+            };
             if (this.options.orderBy && this.options.orderBy == '.priority') {
               this._dataReference.orderByPriority().on('child_changed', wrapper.bind(this));
             } else if (this.options.orderBy && this.options.orderBy == '.value') {
@@ -17690,9 +17188,9 @@ System.register("datasources/FirebaseDataSource", ["github:Bizboard/arva-utils@m
           setChildMovedCallback: function(callback) {
             var $__0 = this;
             this._onMoveCallback = callback;
-            this._dataReference.on('child_moved', (function(newChildSnapshot, prevChildName) {
+            this._dataReference.on('child_moved', function(newChildSnapshot, prevChildName) {
               $__0._onMoveCallback(newChildSnapshot, prevChildName);
-            }));
+            });
           },
           removeChildMovedCallback: function() {
             if (this._onMoveCallback) {
@@ -17711,16 +17209,16 @@ System.register("datasources/FirebaseDataSource", ["github:Bizboard/arva-utils@m
             }
           }
         }, {}, $__super);
-      }(DataSource));
+      }(DataSource);
       $__export("FirebaseDataSource", FirebaseDataSource);
       annotate(FirebaseDataSource, new Provide(DataSource));
     }
   };
 });
 
-System.register("core/Model", ["npm:lodash@3.9.3", "core/Model/prioritisedObject", "core/DataSource", "github:Bizboard/arva-utils@master/ObjectHelper", "github:Bizboard/arva-utils@master/Context"], function($__export) {
+System.register("core/Model.js", ["npm:lodash@3.9.3.js", "core/Model/prioritisedObject.js", "core/DataSource.js", "github:Bizboard/arva-utils@master/ObjectHelper.js", "github:Bizboard/arva-utils@master/Context.js"], function($__export) {
   "use strict";
-  var __moduleName = "core/Model";
+  var __moduleName = "core/Model.js";
   var _,
       PrioritisedObject,
       DataSource,
@@ -17740,7 +17238,7 @@ System.register("core/Model", ["npm:lodash@3.9.3", "core/Model/prioritisedObject
       Context = $__m.Context;
     }],
     execute: function() {
-      Model = (function($__super) {
+      Model = function($__super) {
         function Model(id) {
           var data = arguments[1] !== (void 0) ? arguments[1] : null;
           var options = arguments[2] !== (void 0) ? arguments[2] : {};
@@ -17819,9 +17317,9 @@ System.register("core/Model", ["npm:lodash@3.9.3", "core/Model/prioritisedObject
                     if (descriptor && descriptor.get) {
                       var value = this[name];
                       delete this[name];
-                      ObjectHelper.addPropertyToObject(this, name, value, true, true, (function() {
+                      ObjectHelper.addPropertyToObject(this, name, value, true, true, function() {
                         $__0._onSetterTriggered();
-                      }));
+                      });
                     }
                   }
                 }
@@ -17842,15 +17340,15 @@ System.register("core/Model", ["npm:lodash@3.9.3", "core/Model/prioritisedObject
               prototype = Object.getPrototypeOf(prototype);
             }
           }}, {}, $__super);
-      }(PrioritisedObject));
+      }(PrioritisedObject);
       $__export("Model", Model);
     }
   };
 });
 
-System.register("main", ["core/DataSource", "core/Model", "datasources/FirebaseDataSource", "datasources/SharePointSoapDataSource"], function($__export) {
+System.register("main.js", ["core/DataSource.js", "core/Model.js", "datasources/FirebaseDataSource.js", "datasources/SharePointDataSource.js"], function($__export) {
   "use strict";
-  var __moduleName = "main";
+  var __moduleName = "main.js";
   var $__exportNames = {};
   var $__exportNames = {};
   var $__exportNames = {};
@@ -17858,22 +17356,22 @@ System.register("main", ["core/DataSource", "core/Model", "datasources/FirebaseD
   return {
     setters: [function($__m) {
       Object.keys($__m).forEach(function(p) {
-        if (!$__exportNames[p])
+        if (p !== 'default' && !$__exportNames[p])
           $__export(p, $__m[p]);
       });
     }, function($__m) {
       Object.keys($__m).forEach(function(p) {
-        if (!$__exportNames[p])
+        if (p !== 'default' && !$__exportNames[p])
           $__export(p, $__m[p]);
       });
     }, function($__m) {
       Object.keys($__m).forEach(function(p) {
-        if (!$__exportNames[p])
+        if (p !== 'default' && !$__exportNames[p])
           $__export(p, $__m[p]);
       });
     }, function($__m) {
       Object.keys($__m).forEach(function(p) {
-        if (!$__exportNames[p])
+        if (p !== 'default' && !$__exportNames[p])
           $__export(p, $__m[p]);
       });
     }],
@@ -17881,109 +17379,8 @@ System.register("main", ["core/DataSource", "core/Model", "datasources/FirebaseD
   };
 });
 
-(function() {
-  var loader = System;
-  if (typeof indexOf == 'undefined')
-    indexOf = Array.prototype.indexOf;
-
-  function readGlobalProperty(p, value) {
-    var pParts = p.split('.');
-    while (pParts.length)
-      value = value[pParts.shift()];
-    return value;
-  }
-
-  var ignoredGlobalProps = ['sessionStorage', 'localStorage', 'clipboardData', 'frames', 'external'];
-
-  var hasOwnProperty = loader.global.hasOwnProperty;
-
-  function iterateGlobals(callback) {
-    if (Object.keys)
-      Object.keys(loader.global).forEach(callback);
-    else
-      for (var g in loader.global) {
-        if (!hasOwnProperty.call(loader.global, g))
-          continue;
-        callback(g);
-      }
-  }
-
-  function forEachGlobal(callback) {
-    iterateGlobals(function(globalName) {
-      if (indexOf.call(ignoredGlobalProps, globalName) != -1)
-        return;
-      try {
-        var value = loader.global[globalName];
-      }
-      catch(e) {
-        ignoredGlobalProps.push(globalName);
-      }
-      callback(globalName, value);
-    });
-  }
-
-  var moduleGlobals = {};
-
-  var globalSnapshot;
-
-  loader.set('@@global-helpers', loader.newModule({
-    prepareGlobal: function(moduleName, deps) {
-      // first, we add all the dependency modules to the global
-      for (var i = 0; i < deps.length; i++) {
-        var moduleGlobal = moduleGlobals[deps[i]];
-        if (moduleGlobal)
-          for (var m in moduleGlobal)
-            loader.global[m] = moduleGlobal[m];
-      }
-
-      // now store a complete copy of the global object
-      // in order to detect changes
-      globalSnapshot = {};
-      
-      forEachGlobal(function(name, value) {
-        globalSnapshot[name] = value;
-      });
-    },
-    retrieveGlobal: function(moduleName, exportName, init) {
-      var singleGlobal;
-      var multipleExports;
-      var exports = {};
-
-      // run init
-      if (init)
-        singleGlobal = init.call(loader.global);
-
-      // check for global changes, creating the globalObject for the module
-      // if many globals, then a module object for those is created
-      // if one global, then that is the module directly
-      else if (exportName) {
-        var firstPart = exportName.split('.')[0];
-        singleGlobal = readGlobalProperty(exportName, loader.global);
-        exports[firstPart] = loader.global[firstPart];
-      }
-
-      else {
-        forEachGlobal(function(name, value) {
-          if (globalSnapshot[name] === value)
-            return;
-          if (typeof value === 'undefined')
-            return;
-          exports[name] = value;
-          if (typeof singleGlobal !== 'undefined') {
-            if (!multipleExports && singleGlobal !== value)
-              multipleExports = true;
-          }
-          else {
-            singleGlobal = value;
-          }
-        });
-      }
-
-      moduleGlobals[moduleName] = exports;
-
-      return multipleExports ? exports : singleGlobal;
-    }
-  }));
-})();
+})
+(function(factory) {
+  factory();
 });
 //# sourceMappingURL=arva-ds.js.map
