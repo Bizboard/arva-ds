@@ -10,7 +10,7 @@
  */
 
 
-export * from 'core/DataSource';
-export * from 'core/Model';
-export * from 'datasources/FirebaseDataSource';
-export * from 'datasources/SharePointDataSource';
+export * from './core/DataSource';
+export * from './core/Model';
+export * from './datasources/FirebaseDataSource';
+export * from './datasources/SharePointDataSource';
