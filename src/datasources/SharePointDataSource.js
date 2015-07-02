@@ -20,7 +20,7 @@ import {UrlParser}                  from 'arva-utils/request/UrlParser';
 export class SharePointDataSource extends DataSource {
 
     /** @param {String} path **/
-    constructor(path) {
+    constructor(path, options = {}) {
         super(path);
 
         this._dataReference = null;
@@ -30,6 +30,7 @@ export class SharePointDataSource extends DataSource {
         this._onMoveCallback = null;
         this._onRemoveCallback = null;
         this._orginialPath = path;
+        this.options = options;
 
         /* Bind all local methods to the current object instance, so we can refer to "this"
          * in the methods as expected, even when they're called from event handlers.        */
@@ -46,12 +47,25 @@ export class SharePointDataSource extends DataSource {
         // don't initialize this datasource when there is no path selected to
         // retrieve data from.
         if (this.key().length > 0) {
-
-            // bind the soap adapter against the datasource with configuration
-            this._dataReference = new SharePoint({
+            let configuration = {
                 endPoint: this._orginialPath,
                 listName: this.key()
-            });
+            };
+
+            if (this.options.query) {
+                configuration.query = this.options.query;
+            }
+
+            if (this.options.orderBy) {
+                configuration.orderBy = this.options.orderBy;
+            }
+
+            if (this.options.limit) {
+                configuration.limit = this.options.limit;
+            }
+
+            // bind the soap adapter against the datasource with configuration
+            this._dataReference = new SharePoint(configuration);
         }
     }
 
@@ -102,7 +116,12 @@ export class SharePointDataSource extends DataSource {
             childPath += this._orginialPath + '/' + childName;
         }
 
-        return new SharePointDataSource(childPath);
+        if (this.options) {
+            return new SharePointDataSource(childPath, this.options);
+        }
+        else {
+            return new SharePointDataSource(childPath);
+        }
     }
 
     root() {
