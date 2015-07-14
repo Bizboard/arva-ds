@@ -39,6 +39,14 @@ export class FirebaseDataSource extends DataSource {
         ObjectHelper.bindAllMethods(this, this);
     }
 
+    /**
+     * Returns the full path to this dataSource's source on the remote storage provider (Firebase).
+     * @returns {String}
+     */
+    toString() {
+        return this._dataReference.toString();
+    }
+
 
     /**
      * Returns a datasource reference to the given child branch of the current datasource.
@@ -89,10 +97,10 @@ export class FirebaseDataSource extends DataSource {
     }
 
     /**
-    * Writes newData with given priority (ordering) to the path this dataSource was constructed with.
-    * @param {Object} newData
-    * @param {String|Number} priority
-    */
+     * Writes newData with given priority (ordering) to the path this dataSource was constructed with.
+     * @param {Object} newData
+     * @param {String|Number} priority
+     */
     setWithPriority(newData, priority) {
         return this._dataReference.setWithPriority(newData, priority);
     }

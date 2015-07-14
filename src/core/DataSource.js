@@ -27,6 +27,12 @@ export class DataSource {
     get inheritable() { return false; }
 
     /**
+     * Returns the full path to this dataSource's source on the remote storage provider.
+     * @returns {String}
+     */
+    toString() { }
+
+    /**
      * Returns a datasource reference to the given child branch of the current datasouce.
      * @param {String} childName
      */
