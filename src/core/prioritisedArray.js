@@ -13,7 +13,7 @@
 import EventEmitter                 from 'eventemitter3';
 import {Context}                    from 'arva-utils/Context.js';
 import {ObjectHelper}               from 'arva-utils/ObjectHelper.js';
-import {DataSource}                 from 'DataSource.js';
+import {DataSource}                 from './DataSource.js';
 import {SharePointDataSource}       from '../datasources/SharePointDataSource.js';
 
 
