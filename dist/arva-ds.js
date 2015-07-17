@@ -15888,9 +15888,9 @@ System.register("github:Bizboard/arva-utils@master/BlobHelper.js", [], function(
   };
 });
 
-System.register("core/Model/snapshot.js", [], function($__export) {
+System.register("core/Snapshot.js", [], function($__export) {
   "use strict";
-  var __moduleName = "core/Model/snapshot.js";
+  var __moduleName = "core/Snapshot.js";
   var Snapshot;
   return {
     setters: [],
@@ -16193,7 +16193,7 @@ System.register("github:Bizboard/SPSoapAdapter@master/SharePoint.js", ["npm:even
   };
 });
 
-System.register("datasources/SharePoint/SharePointSnapshot.js", ["github:Bizboard/arva-utils@master/ObjectHelper.js", "core/Model/snapshot.js"], function($__export) {
+System.register("datasources/SharePoint/SharePointSnapshot.js", ["github:Bizboard/arva-utils@master/ObjectHelper.js", "core/Snapshot.js"], function($__export) {
   "use strict";
   var __moduleName = "datasources/SharePoint/SharePointSnapshot.js";
   var ObjectHelper,
@@ -16585,9 +16585,9 @@ System.register("github:Bizboard/di.js@master/injector.js", ["github:Bizboard/di
   };
 });
 
-System.register("core/Model/prioritisedObject.js", ["npm:lodash@3.9.3.js", "npm:eventemitter3@1.1.1.js", "github:Bizboard/arva-utils@master/ObjectHelper.js"], function($__export) {
+System.register("core/PrioritisedObject.js", ["npm:lodash@3.9.3.js", "npm:eventemitter3@1.1.1.js", "github:Bizboard/arva-utils@master/ObjectHelper.js"], function($__export) {
   "use strict";
-  var __moduleName = "core/Model/prioritisedObject.js";
+  var __moduleName = "core/PrioritisedObject.js";
   var _,
       EventEmitter,
       ObjectHelper,
@@ -17264,7 +17264,7 @@ System.register("github:Bizboard/arva-utils@master/Context.js", ["github:Bizboar
   };
 });
 
-System.register("core/Model.js", ["npm:lodash@3.9.3.js", "github:Bizboard/arva-utils@master/Context.js", "github:Bizboard/arva-utils@master/ObjectHelper.js", "core/Model/prioritisedObject.js", "core/DataSource.js"], function($__export) {
+System.register("core/Model.js", ["npm:lodash@3.9.3.js", "github:Bizboard/arva-utils@master/Context.js", "github:Bizboard/arva-utils@master/ObjectHelper.js", "core/PrioritisedObject.js", "core/DataSource.js"], function($__export) {
   "use strict";
   var __moduleName = "core/Model.js";
   var _,

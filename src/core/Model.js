@@ -12,7 +12,7 @@
 import _                    from 'lodash';
 import {Context}            from 'arva-utils/Context.js';
 import {ObjectHelper}       from 'arva-utils/ObjectHelper.js';
-import {PrioritisedObject}  from './Model/prioritisedObject.js';
+import {PrioritisedObject}  from './PrioritisedObject.js';
 import {DataSource}         from './DataSource.js';
 
 export class Model extends PrioritisedObject {

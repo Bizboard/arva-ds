@@ -10,7 +10,7 @@
  */
 
 import {ObjectHelper}               from 'arva-utils/ObjectHelper.js';
-import {Snapshot}                   from '../../core/snapshot.js';
+import {Snapshot}                   from '../../core/Snapshot.js';
 
 export class SharePointSnapshot extends Snapshot {
 
