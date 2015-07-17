@@ -10,10 +10,10 @@
  */
 
 import _                    from 'lodash';
-import {PrioritisedObject}  from './Model/prioritisedObject';
-import {DataSource}         from './DataSource';
-import {ObjectHelper}       from 'arva-utils/ObjectHelper';
-import {Context}            from 'arva-utils/Context';
+import {Context}            from 'arva-utils/Context.js';
+import {ObjectHelper}       from 'arva-utils/ObjectHelper.js';
+import {PrioritisedObject}  from './Model/prioritisedObject.js';
+import {DataSource}         from './DataSource.js';
 
 export class Model extends PrioritisedObject {
 
@@ -28,6 +28,7 @@ export class Model extends PrioritisedObject {
      * @param {Object} options Optional: Additional options. Currently used is "dataSnapshot", which if present is used
      *                          to fetch the initial model data. If not present, the model will add a one-time
      *                          subscription to the dataSource to fetch initial data.
+     * @returns {Model} Model Instance.
      */
     constructor(id, data = null, options = {}) {
 
@@ -40,8 +41,7 @@ export class Model extends PrioritisedObject {
             super(options.dataSource, options.dataSnapshot);
         } else if (options.dataSnapshot) {
             super(dataSource.child(options.dataSnapshot.ref().path.toString()), options.dataSnapshot);
-        }
-        else {
+        } else {
             super();
         }
 
@@ -50,7 +50,7 @@ export class Model extends PrioritisedObject {
         this._replaceModelAccessorsWithDatabinding();
 
 
-        /* Calculate path to model in dataSource */
+        /* Calculate path to model in dataSource, used if no dataSource or path are given. */
         let modelName = Object.getPrototypeOf(this).constructor.name;
         let pathRoot = modelName + 's';
 
@@ -61,9 +61,13 @@ export class Model extends PrioritisedObject {
             this.id = id;
             this.enableChangeListener();
 
-            if (options.dataSource) { this._dataSource = options.dataSource; }
-            else if (options.path) { this._dataSource = dataSource.child(options.path).child(id); }
-            else { this._dataSource = dataSource.child(pathRoot).child(id); }
+            if (options.dataSource) {
+                this._dataSource = options.dataSource;
+            } else if (options.path) {
+                this._dataSource = dataSource.child(options.path).child(id);
+            } else {
+                this._dataSource = dataSource.child(pathRoot).child(id);
+            }
         } else {
             /* No id is present, check if we have a dataSnapshot we can extract it from.
              * If we can't, generate a random one by pushing a new entry to the dataSource. */
@@ -71,9 +75,11 @@ export class Model extends PrioritisedObject {
                 id = options.dataSnapshot.key();
                 this._dataSource = dataSource.child(pathRoot).child(id);
             } else {
-                if (options.dataSource) this._dataSource = options.dataSource.push(data);
-                else if (options.path) this._dataSource = dataSource.child(options.path).push(data);
-                else {
+                if (options.dataSource) {
+                    this._dataSource = options.dataSource.push(data);
+                } else if (options.path) {
+                    this._dataSource = dataSource.child(options.path).push(data);
+                } else {
                     this._dataSource = dataSource.child(pathRoot).push(data);
                 }
 
@@ -91,20 +97,14 @@ export class Model extends PrioritisedObject {
         }
 
         /* Write local data to model, if any data is present. */
-        if (data) {
-            this.transaction(() => {
-                for (let name in data) {
-
-                    // only map properties that exists on our model
-                    if (Object.getOwnPropertyDescriptor(this, name)) {
-                        let value = data[name];
-                        this[name] = value;
-                    }
-                }
-            });
-        }
+        this._writeLocalDataToModel(data);
     }
 
+    /**
+     * Replaces all getters/setters defined on the model implementation with properties that trigger update events to the dataSource.
+     * @returns {void}
+     * @private
+     */
     _replaceModelAccessorsWithDatabinding() {
         let prototype = Object.getPrototypeOf(this);
 
@@ -117,11 +117,33 @@ export class Model extends PrioritisedObject {
                 if (descriptor && descriptor.get) {
                     let value = this[name];
                     delete this[name];
-                    ObjectHelper.addPropertyToObject(this, name, value, true, true, () => {this._onSetterTriggered()});
+                    ObjectHelper.addPropertyToObject(this, name, value, true, true, () => { this._onSetterTriggered(); });
                 }
             }
 
             prototype = Object.getPrototypeOf(prototype);
+        }
+    }
+
+    /**
+     * Writes data, if present, to the Model's dataSource. Uses a transaction, meaning that only one update is triggered to the dataSource,
+     * even though multiple fields change.
+     * @param {Object} data Data to write, can be null.
+     * @returns {void}
+     * @private
+     */
+    _writeLocalDataToModel(data) {
+        if (data) {
+            this.transaction(() => {
+                for (let name in data) {
+
+                    // only map properties that exists on our model
+                    if (Object.getOwnPropertyDescriptor(this, name)) {
+                        let value = data[name];
+                        this[name] = value;
+                    }
+                }
+            });
         }
     }
 }

@@ -9,8 +9,8 @@
 
  */
 
-import {ObjectHelper}               from 'arva-utils/ObjectHelper';
-import {Snapshot}                   from '../../core/Model/snapshot';
+import {ObjectHelper}               from 'arva-utils/ObjectHelper.js';
+import {Snapshot}                   from '../../core/Model/snapshot.js';
 
 export class SharePointSnapshot extends Snapshot {
 

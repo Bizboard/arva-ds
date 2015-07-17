@@ -31,6 +31,7 @@ System.config({
       "xml2js": "npm:xml2js@0.4.9"
     },
     "github:Bizboard/arva-utils@master": {
+      "di": "github:Bizboard/di.js@master",
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "lodash": "npm:lodash@3.9.3",
       "path": "github:jspm/nodelibs-path@0.1.0"

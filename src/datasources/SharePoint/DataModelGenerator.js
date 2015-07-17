@@ -10,11 +10,11 @@
  */
 
 import _                    from 'lodash';
-import XML2JS               from './xml2js';
-import {PostRequest}        from 'arva-utils/request/RequestClient';
-import {ObjectHelper}       from 'arva-utils/ObjectHelper';
-import {UrlParser}          from 'arva-utils/request/UrlParser';
-import {ParseStringToXml}   from 'arva-utils/request/XmlParser';
+import XML2JS               from './xml2js.js';
+import {PostRequest}        from 'arva-utils/request/RequestClient.js';
+import {UrlParser}          from 'arva-utils/request/UrlParser.js';
+import {ParseStringToXml}   from 'arva-utils/request/XmlParser.js';
+import {ObjectHelper}       from 'arva-utils/ObjectHelper.js';
 
 
 export class DataModelGenerator {
