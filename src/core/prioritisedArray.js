@@ -27,7 +27,7 @@ export class PrioritisedArray extends Array {
         return Object.keys(this).length;
     }
 
-    set length(value) { throw new Error(`Can't set property length of PrioritisedArray to value '${value}', property is calculated dynamically.`); }
+    set length(value) { return value; }
 
 
     /**
@@ -252,11 +252,11 @@ export class PrioritisedArray extends Array {
                  * whenever it's not a datasource, we assume the model should instantiate a new
                  * datasource to bind the model */
 
-                if (child.ref() instanceof DataSource) {
-                    options.dataSource = child.ref();
+                if (dataSnapshot.ref() instanceof DataSource) {
+                    options.dataSource = dataSnapshot.ref();
                 } else {
-                    var rootPath = child.ref().root().toString();
-                    options.path = child.ref().toString().replace(rootPath, '/');
+                    var rootPath = dataSnapshot.ref().root().toString();
+                    options.path = dataSnapshot.ref().toString().replace(rootPath, '/');
                 }
 
                 let newModel = new this._dataType(child.key(), child.val(), options);
