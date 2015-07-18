@@ -58,7 +58,7 @@ export class FirebaseDataSource extends DataSource {
      * @param {Object} options Optional: additional options to pass to new DataSource instance.
      * @returns {DataSource} New dataSource instance pointing to the given child branch.
      */
-    child(childName, options = null) {
+    child(childName, options = {}) {
         return new FirebaseDataSource(this._dataReference.child(childName).toString(), options);
     }
 
