@@ -247,13 +247,14 @@ export class PrioritisedArray extends Array {
             function (child) {
                 /* Create a new instance of the given data type and prefill it with the snapshot data. */
                 let options = {dataSnapshot: child};
+                let childRef = this._dataSource.child(child.key());
 
                 /* whenever the ref() is a datasource, we can bind that source to the model.
                  * whenever it's not a datasource, we assume the model should instantiate a new
                  * datasource to bind the model */
 
-                if (dataSnapshot.ref() instanceof DataSource) {
-                    options.dataSource = dataSnapshot.ref();
+                if (childRef instanceof DataSource) {
+                    options.dataSource = childRef;
                 } else {
                     var rootPath = dataSnapshot.ref().root().toString();
                     options.path = dataSnapshot.ref().toString().replace(rootPath, '/');
@@ -322,7 +323,7 @@ export class PrioritisedArray extends Array {
     _onChildAdded(snapshot, prevSiblingId) {
         let id = snapshot.key();
         var rootPath = snapshot.ref().root().toString();
-        let model = this.add(new this._dataType(id, null, {dataSnapshot: snapshot, path: snapshot.ref().toString().replace(rootPath, '/')}), prevSiblingId);
+        let model = this.add(new this._dataType(id, null, {dataSnapshot: snapshot, dataSource: this._dataSource.child(id)}), prevSiblingId);
 
         if (!this._dataSource.ready) {
             this._dataSource.ready = true;

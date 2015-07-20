@@ -35,11 +35,11 @@ export class Model extends PrioritisedObject {
         /* Retrieve dataSource from the DI context */
         let dataSource = Context.getContext().get(DataSource);
 
-        if (options.path) {
-            super(dataSource.child(options.path + '/' + id || ''), options.dataSnapshot);
-        } else if (options.dataSource) {
+        if(options.dataSource){
             super(options.dataSource, options.dataSnapshot);
-        } else if (options.dataSnapshot) {
+        } else if(options.path) {
+            super(dataSource.child(options.path + '/' + id || ''), options.dataSnapshot);
+        } else if(options.dataSnapshot){
             super(dataSource.child(options.dataSnapshot.ref().path.toString()), options.dataSnapshot);
         } else {
             super();
