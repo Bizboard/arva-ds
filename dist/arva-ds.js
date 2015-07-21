@@ -15595,9 +15595,9 @@ System.register("github:Bizboard/di.js@master/providers.js", ["github:Bizboard/d
   };
 });
 
-System.register("github:Bizboard/arva-utils@master/ObjectHelper.js", ["npm:lodash@3.9.3.js"], function($__export) {
+System.register("github:Bizboard/arva-utils@1.0.0-beta-1/ObjectHelper.js", ["npm:lodash@3.9.3.js"], function($__export) {
   "use strict";
-  var __moduleName = "github:Bizboard/arva-utils@master/ObjectHelper.js";
+  var __moduleName = "github:Bizboard/arva-utils@1.0.0-beta-1/ObjectHelper.js";
   var _,
       ObjectHelper;
   return {
@@ -15753,7 +15753,7 @@ System.register("github:Bizboard/arva-utils@master/ObjectHelper.js", ["npm:lodas
                 {
                   var value = rootObject[name];
                   if (value !== null && value !== undefined && typeof value !== 'function') {
-                    if (typeof value == 'object') {
+                    if (typeof value === 'object') {
                       result[name] = ObjectHelper.getEnumerableProperties(value);
                     } else {
                       result[name] = value;
@@ -15791,7 +15791,7 @@ System.register("github:Bizboard/arva-utils@master/ObjectHelper.js", ["npm:lodas
                   if (descriptor && descriptor.enumerable) {
                     var value$__16 = rootObject[name$__15];
                     if (value$__16 !== null && value$__16 !== undefined && typeof value$__16 !== 'function') {
-                      if (typeof value$__16 == 'object') {
+                      if (typeof value$__16 === 'object') {
                         result[name$__15] = ObjectHelper.getEnumerableProperties(value$__16);
                       } else {
                         result[name$__15] = value$__16;
@@ -15829,9 +15829,9 @@ System.register("github:Bizboard/arva-utils@master/ObjectHelper.js", ["npm:lodas
   };
 });
 
-System.register("github:Bizboard/arva-utils@master/request/UrlParser.js", [], function($__export) {
+System.register("github:Bizboard/arva-utils@1.0.0-beta-1/request/UrlParser.js", [], function($__export) {
   "use strict";
-  var __moduleName = "github:Bizboard/arva-utils@master/request/UrlParser.js";
+  var __moduleName = "github:Bizboard/arva-utils@1.0.0-beta-1/request/UrlParser.js";
   function UrlParser(url) {
     var e = /^([a-z][a-z0-9+.-]*):(?:\/\/((?:(?=((?:[a-z0-9-._~!$&'()*+,;=:]|%[0-9A-F]{2})*))(\3)@)?(?=(\[[0-9A-F:.]{2,}\]|(?:[a-z0-9-._~!$&'()*+,;=]|%[0-9A-F]{2})*))\5(?::(?=(\d*))\6)?)(\/(?=((?:[a-z0-9-._~!$&'()*+,;=:@\/]|%[0-9A-F]{2})*))\8)?|(\/?(?!\/)(?=((?:[a-z0-9-._~!$&'()*+,;=:@\/]|%[0-9A-F]{2})*))\10)?)(?:\?(?=((?:[a-z0-9-._~!$&'()*+,;=:@\/?]|%[0-9A-F]{2})*))\11)?(?:#(?=((?:[a-z0-9-._~!$&'()*+,;=:@\/?]|%[0-9A-F]{2})*))\12)?$/i;
     if (url.match(e)) {
@@ -15854,9 +15854,9 @@ System.register("github:Bizboard/arva-utils@master/request/UrlParser.js", [], fu
   };
 });
 
-System.register("github:Bizboard/arva-utils@master/BlobHelper.js", [], function($__export) {
+System.register("github:Bizboard/arva-utils@1.0.0-beta-1/BlobHelper.js", [], function($__export) {
   "use strict";
-  var __moduleName = "github:Bizboard/arva-utils@master/BlobHelper.js";
+  var __moduleName = "github:Bizboard/arva-utils@1.0.0-beta-1/BlobHelper.js";
   var BlobHelper;
   return {
     setters: [],
@@ -16127,7 +16127,7 @@ System.register("github:Bizboard/di.js@master/annotations.js", ["github:Bizboard
   };
 });
 
-System.register("github:Bizboard/SPSoapAdapter@master/SharePoint.js", ["npm:eventemitter3@1.1.1.js", "npm:lodash@3.9.3.js", "github:Bizboard/arva-utils@master/request/UrlParser.js", "github:Bizboard/arva-utils@master/BlobHelper.js"], function($__export) {
+System.register("github:Bizboard/SPSoapAdapter@master/SharePoint.js", ["npm:eventemitter3@1.1.1.js", "npm:lodash@3.9.3.js", "github:Bizboard/arva-utils@1.0.0-beta-1/request/UrlParser.js", "github:Bizboard/arva-utils@1.0.0-beta-1/BlobHelper.js"], function($__export) {
   "use strict";
   var __moduleName = "github:Bizboard/SPSoapAdapter@master/SharePoint.js";
   var EventEmitter,
@@ -16193,7 +16193,7 @@ System.register("github:Bizboard/SPSoapAdapter@master/SharePoint.js", ["npm:even
   };
 });
 
-System.register("datasources/SharePoint/SharePointSnapshot.js", ["github:Bizboard/arva-utils@master/ObjectHelper.js", "core/Snapshot.js"], function($__export) {
+System.register("datasources/SharePoint/SharePointSnapshot.js", ["github:Bizboard/arva-utils@1.0.0-beta-1/ObjectHelper.js", "core/Snapshot.js"], function($__export) {
   "use strict";
   var __moduleName = "datasources/SharePoint/SharePointSnapshot.js";
   var ObjectHelper,
@@ -16585,7 +16585,7 @@ System.register("github:Bizboard/di.js@master/injector.js", ["github:Bizboard/di
   };
 });
 
-System.register("core/PrioritisedObject.js", ["npm:lodash@3.9.3.js", "npm:eventemitter3@1.1.1.js", "github:Bizboard/arva-utils@master/ObjectHelper.js"], function($__export) {
+System.register("core/PrioritisedObject.js", ["npm:lodash@3.9.3.js", "npm:eventemitter3@1.1.1.js", "github:Bizboard/arva-utils@1.0.0-beta-1/ObjectHelper.js"], function($__export) {
   "use strict";
   var __moduleName = "core/PrioritisedObject.js";
   var _,
@@ -16790,7 +16790,7 @@ System.register("core/PrioritisedObject.js", ["npm:lodash@3.9.3.js", "npm:evente
   };
 });
 
-System.register("datasources/FirebaseDataSource.js", ["github:Bizboard/di.js@master.js", "github:firebase/firebase-bower@2.2.7.js", "core/DataSource.js", "github:Bizboard/arva-utils@master/ObjectHelper.js"], function($__export) {
+System.register("datasources/FirebaseDataSource.js", ["github:Bizboard/di.js@master.js", "github:firebase/firebase-bower@2.2.7.js", "core/DataSource.js", "github:Bizboard/arva-utils@1.0.0-beta-1/ObjectHelper.js"], function($__export) {
   "use strict";
   var __moduleName = "datasources/FirebaseDataSource.js";
   var Provide,
@@ -16833,7 +16833,7 @@ System.register("datasources/FirebaseDataSource.js", ["github:Bizboard/di.js@mas
             return this._dataReference.toString();
           },
           child: function(childName) {
-            var options = arguments[1] !== (void 0) ? arguments[1] : null;
+            var options = arguments[1] !== (void 0) ? arguments[1] : {};
             return new FirebaseDataSource(this._dataReference.child(childName).toString(), options);
           },
           path: function() {
@@ -16965,7 +16965,7 @@ System.register("datasources/FirebaseDataSource.js", ["github:Bizboard/di.js@mas
   };
 });
 
-System.register("datasources/SharePointDataSource.js", ["github:Bizboard/di.js@master.js", "github:Bizboard/arva-utils@master/ObjectHelper.js", "github:Bizboard/arva-utils@master/request/UrlParser.js", "core/DataSource.js", "github:Bizboard/SPSoapAdapter@master/SharePoint.js", "datasources/SharePoint/SharePointSnapshot.js"], function($__export) {
+System.register("datasources/SharePointDataSource.js", ["github:Bizboard/di.js@master.js", "github:Bizboard/arva-utils@1.0.0-beta-1/ObjectHelper.js", "github:Bizboard/arva-utils@1.0.0-beta-1/request/UrlParser.js", "core/DataSource.js", "github:Bizboard/SPSoapAdapter@master/SharePoint.js", "datasources/SharePoint/SharePointSnapshot.js"], function($__export) {
   "use strict";
   var __moduleName = "datasources/SharePointDataSource.js";
   var Provide,
@@ -17228,9 +17228,9 @@ System.register("github:Bizboard/di.js@master.js", ["github:Bizboard/di.js@maste
   };
 });
 
-System.register("github:Bizboard/arva-utils@master/Context.js", ["github:Bizboard/di.js@master.js"], function($__export) {
+System.register("github:Bizboard/arva-utils@1.0.0-beta-1/Context.js", ["github:Bizboard/di.js@master.js"], function($__export) {
   "use strict";
-  var __moduleName = "github:Bizboard/arva-utils@master/Context.js";
+  var __moduleName = "github:Bizboard/arva-utils@1.0.0-beta-1/Context.js";
   var Injector,
       contextContainer,
       Context;
@@ -17264,7 +17264,7 @@ System.register("github:Bizboard/arva-utils@master/Context.js", ["github:Bizboar
   };
 });
 
-System.register("core/Model.js", ["npm:lodash@3.9.3.js", "github:Bizboard/arva-utils@master/Context.js", "github:Bizboard/arva-utils@master/ObjectHelper.js", "core/PrioritisedObject.js", "core/DataSource.js"], function($__export) {
+System.register("core/Model.js", ["npm:lodash@3.9.3.js", "github:Bizboard/arva-utils@1.0.0-beta-1/Context.js", "github:Bizboard/arva-utils@1.0.0-beta-1/ObjectHelper.js", "core/PrioritisedObject.js", "core/DataSource.js"], function($__export) {
   "use strict";
   var __moduleName = "core/Model.js";
   var _,
