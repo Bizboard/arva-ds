@@ -35,11 +35,11 @@ export class Model extends PrioritisedObject {
         /* Retrieve dataSource from the DI context */
         let dataSource = Context.getContext().get(DataSource);
 
-        if(options.dataSource){
+        if (options.dataSource) {
             super(options.dataSource, options.dataSnapshot);
-        } else if(options.path) {
+        } else if (options.path) {
             super(dataSource.child(options.path + '/' + id || ''), options.dataSnapshot);
-        } else if(options.dataSnapshot){
+        } else if (options.dataSnapshot) {
             super(dataSource.child(options.dataSnapshot.ref().path.toString()), options.dataSnapshot);
         } else {
             super();
@@ -134,17 +134,26 @@ export class Model extends PrioritisedObject {
      */
     _writeLocalDataToModel(data) {
         if (data) {
-            this.transaction(() => {
-                for (let name in data) {
-
-                    // only map properties that exists on our model
-                    if (Object.getOwnPropertyDescriptor(this, name)) {
-                        let value = data[name];
-                        this[name] = value;
-                    }
+            let isDataDifferent = false;
+            for (let name in data) {
+                if (Object.getOwnPropertyDescriptor(this, name) && this[name] !== data[name]) {
+                    isDataDifferent = true;
+                    break;
                 }
-            });
+            }
+
+            if (isDataDifferent) {
+                this.transaction(function () {
+                    for (let name in data) {
+
+                        // only map properties that exists on our model
+                        if (Object.getOwnPropertyDescriptor(this, name)) {
+                            let value = data[name];
+                            this[name] = value;
+                        }
+                    }
+                }.bind(this));
+            }
         }
     }
 }
-

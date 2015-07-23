@@ -164,13 +164,9 @@ export class PrioritisedArray extends Array {
                     });
                 }
 
-            } else {
-                /* TODO: change to throw exception */
-                console.log('Tried to append an object with the same ID as one already present.');
             }
         } else if (model instanceof Object) {
             /* Let's try to parse the object using property reflection */
-            /* retrieve dataSource from the DI context */
             var options = {dataSource: this._dataSource};
             let newModel = new this._dataType(null, model, options);
             this.add(newModel);

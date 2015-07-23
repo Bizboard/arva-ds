@@ -17291,10 +17291,10 @@ System.register("core/Model.js", ["npm:lodash@3.9.3.js", "github:Bizboard/arva-u
           var data = arguments[1] !== (void 0) ? arguments[1] : null;
           var options = arguments[2] !== (void 0) ? arguments[2] : {};
           var dataSource = Context.getContext().get(DataSource);
-          if (options.path) {
-            $traceurRuntime.superConstructor(Model).call(this, dataSource.child(options.path + '/' + id || ''), options.dataSnapshot);
-          } else if (options.dataSource) {
+          if (options.dataSource) {
             $traceurRuntime.superConstructor(Model).call(this, options.dataSource, options.dataSnapshot);
+          } else if (options.path) {
+            $traceurRuntime.superConstructor(Model).call(this, dataSource.child(options.path + '/' + id || ''), options.dataSnapshot);
           } else if (options.dataSnapshot) {
             $traceurRuntime.superConstructor(Model).call(this, dataSource.child(options.dataSnapshot.ref().path.toString()), options.dataSnapshot);
           } else {
@@ -17380,16 +17380,24 @@ System.register("core/Model.js", ["npm:lodash@3.9.3.js", "github:Bizboard/arva-u
             }
           },
           _writeLocalDataToModel: function(data) {
-            var $__0 = this;
             if (data) {
-              this.transaction(function() {
-                for (var name in data) {
-                  if (Object.getOwnPropertyDescriptor($__0, name)) {
-                    var value = data[name];
-                    $__0[name] = value;
-                  }
+              var isDataDifferent = false;
+              for (var name in data) {
+                if (Object.getOwnPropertyDescriptor(this, name) && this[name] !== data[name]) {
+                  isDataDifferent = true;
+                  break;
                 }
-              });
+              }
+              if (isDataDifferent) {
+                this.transaction(function() {
+                  for (var name in data) {
+                    if (Object.getOwnPropertyDescriptor(this, name)) {
+                      var value = data[name];
+                      this[name] = value;
+                    }
+                  }
+                }.bind(this));
+              }
             }
           }
         }, {}, $__super);
