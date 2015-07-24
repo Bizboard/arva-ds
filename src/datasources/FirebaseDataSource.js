@@ -125,12 +125,37 @@ export class FirebaseDataSource extends DataSource {
     }
 
     /**
+     * Orders the DataSource's childs by the value in child[key].
+     * @param {String} childKey Key of the field to order by.
+     * @returns {DataSource} New dataSource instance.
+     */
+    orderByChild(childKey) {
+        return new FirebaseDataSource(this._dataReference.orderByChild(childKey));
+    }
+
+    /**
+     * Orders the DataSource's childs by their key names, ignoring their priority.
+     * @returns {DataSource} New dataSource instance.
+     */
+    orderByKey() {
+        return new FirebaseDataSource(this._dataReference.orderByKey());
+    }
+
+    /**
+     * Orders the DataSource's childs by their values, ignoring their priority.
+     * @returns {DataSource} New dataSource instance.
+     */
+    orderByValue() {
+        return new FirebaseDataSource(this._dataReference.orderByValue());
+    }
+
+    /**
      * Returns a new dataSource reference that will limit the subscription to only the first given amount items.
      * @param {Number} amount Amount of items to limit the dataSource to.
      * @returns {DataSource} New dataSource instance.
      */
     limitToFirst(amount) {
-        return this._dataReference.limitToFirst(amount);
+        return new FirebaseDataSource(this._dataReference.limitToFirst(amount));
     }
 
     /**
@@ -139,7 +164,7 @@ export class FirebaseDataSource extends DataSource {
      * @returns {DataSource} New dataSource instance.
      */
     limitToLast(amount) {
-        return this._dataReference.limitToLast(amount);
+        return new FirebaseDataSource(this._dataReference.limitToLast(amount));
     }
 
     /**
@@ -207,7 +232,19 @@ export class FirebaseDataSource extends DataSource {
      **/
     setValueChangedCallback(callback) {
         this._onValueCallback = callback;
-        this._dataReference.on('value', this._onValueCallback);
+        let wrapper = (newChildSnapshot, prevChildName) => {
+            this._onValueCallback(newChildSnapshot, prevChildName);
+        };
+
+        if (this.options.orderBy && this.options.orderBy === '.priority') {
+            this._dataReference.orderByPriority().on('value', wrapper.bind(this));
+        } else if (this.options.orderBy && this.options.orderBy === '.value') {
+            this._dataReference.orderByValue().on('value', wrapper.bind(this));
+        } else if (this.options.orderBy && this.options.orderBy !== '') {
+            this._dataReference.orderByChild(this.options.orderBy).on('value', wrapper.bind(this));
+        } else {
+            this._dataReference.on('value', wrapper.bind(this));
+        }
     }
 
     /**

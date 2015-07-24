@@ -16857,11 +16857,20 @@ System.register("datasources/FirebaseDataSource.js", ["github:Bizboard/di.js@mas
           setPriority: function(newPriority) {
             return this._dataReference.setPriority(newPriority);
           },
+          orderByChild: function(childKey) {
+            return new FirebaseDataSource(this._dataReference.orderByChild(childKey));
+          },
+          orderByKey: function() {
+            return new FirebaseDataSource(this._dataReference.orderByKey());
+          },
+          orderByValue: function() {
+            return new FirebaseDataSource(this._dataReference.orderByValue());
+          },
           limitToFirst: function(amount) {
-            return this._dataReference.limitToFirst(amount);
+            return new FirebaseDataSource(this._dataReference.limitToFirst(amount));
           },
           limitToLast: function(amount) {
-            return this._dataReference.limitToLast(amount);
+            return new FirebaseDataSource(this._dataReference.limitToLast(amount));
           },
           authWithOAuthToken: function(provider, credentials, onComplete, options) {
             return this._dataReference.authWithOAuthToken(provider, credentials, onComplete, options);
@@ -16879,8 +16888,20 @@ System.register("datasources/FirebaseDataSource.js", ["github:Bizboard/di.js@mas
             return this._dataReference.unauth();
           },
           setValueChangedCallback: function(callback) {
+            var $__0 = this;
             this._onValueCallback = callback;
-            this._dataReference.on('value', this._onValueCallback);
+            var wrapper = function(newChildSnapshot, prevChildName) {
+              $__0._onValueCallback(newChildSnapshot, prevChildName);
+            };
+            if (this.options.orderBy && this.options.orderBy === '.priority') {
+              this._dataReference.orderByPriority().on('value', wrapper.bind(this));
+            } else if (this.options.orderBy && this.options.orderBy === '.value') {
+              this._dataReference.orderByValue().on('value', wrapper.bind(this));
+            } else if (this.options.orderBy && this.options.orderBy !== '') {
+              this._dataReference.orderByChild(this.options.orderBy).on('value', wrapper.bind(this));
+            } else {
+              this._dataReference.on('value', wrapper.bind(this));
+            }
           },
           removeValueChangedCallback: function() {
             if (this._onValueCallback) {
