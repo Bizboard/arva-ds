@@ -318,7 +318,9 @@ export class PrioritisedArray extends Array {
      */
     _onChildAdded(snapshot, prevSiblingId) {
         let id = snapshot.key();
-        var rootPath = snapshot.ref().root().toString();
+
+        if(this._findIndexById(id) >= 0) { /* Child already exists. */ return; }
+        
         let model = this.add(new this._dataType(id, null, {dataSnapshot: snapshot, dataSource: this._dataSource.child(id)}), prevSiblingId);
 
         if (!this._dataSource.ready) {
