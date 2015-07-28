@@ -232,18 +232,15 @@ export class FirebaseDataSource extends DataSource {
      **/
     setValueChangedCallback(callback) {
         this._onValueCallback = callback;
-        let wrapper = (newChildSnapshot, prevChildName) => {
-            this._onValueCallback(newChildSnapshot, prevChildName);
-        };
 
         if (this.options.orderBy && this.options.orderBy === '.priority') {
-            this._dataReference.orderByPriority().on('value', wrapper.bind(this));
+            this._dataReference.orderByPriority().on('value', this._onValueCallback.bind(this));
         } else if (this.options.orderBy && this.options.orderBy === '.value') {
-            this._dataReference.orderByValue().on('value', wrapper.bind(this));
+            this._dataReference.orderByValue().on('value', this._onValueCallback.bind(this));
         } else if (this.options.orderBy && this.options.orderBy !== '') {
-            this._dataReference.orderByChild(this.options.orderBy).on('value', wrapper.bind(this));
+            this._dataReference.orderByChild(this.options.orderBy).on('value', this._onValueCallback.bind(this));
         } else {
-            this._dataReference.on('value', wrapper.bind(this));
+            this._dataReference.on('value', this._onValueCallback.bind(this));
         }
     }
 
