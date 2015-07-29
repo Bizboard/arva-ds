@@ -164,6 +164,7 @@ export class PrioritisedArray extends Array {
                     });
                 }
 
+                this._eventEmitter.emit('child_added', model, prevSiblingId);
             }
         } else if (model instanceof Object) {
             /* Let's try to parse the object using property reflection */
@@ -320,7 +321,8 @@ export class PrioritisedArray extends Array {
         let id = snapshot.key();
 
         if(this._findIndexById(id) >= 0) { /* Child already exists. */ return; }
-        
+
+        var rootPath = snapshot.ref().root().toString();
         let model = this.add(new this._dataType(id, null, {dataSnapshot: snapshot, dataSource: this._dataSource.child(id)}), prevSiblingId);
 
         if (!this._dataSource.ready) {
