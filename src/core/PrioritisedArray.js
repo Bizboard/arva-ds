@@ -10,6 +10,7 @@
 
  */
 
+import _                            from 'lodash';
 import EventEmitter                 from 'eventemitter3';
 import {Context}                    from 'arva-utils/Context.js';
 import {ObjectHelper}               from 'arva-utils/ObjectHelper.js';
@@ -27,7 +28,9 @@ export class PrioritisedArray extends Array {
         return Object.keys(this).length;
     }
 
-    set length(value) { return value; }
+    set length(value) {
+        return value;
+    }
 
 
     /**
@@ -39,7 +42,7 @@ export class PrioritisedArray extends Array {
      * @param {Object} options Optional: options to pass to the dataSource if none is provided and a new one is constructed.
      * @returns {PrioritisedArray} PrioritisedArray instance.
      */
-    constructor(dataType, dataSource = null, dataSnapshot = null, options = null) {
+    constructor(dataType, dataSource = null, dataSnapshot = null, options = null, modelOptions = {}) {
         super();
         /**** Callbacks ****/
         this._valueChangedCallback = null;
@@ -48,6 +51,7 @@ export class PrioritisedArray extends Array {
         this._dataType = dataType;
         this._dataSource = dataSource;
         this._isBeingReordered = false;
+        this._modelOptions = modelOptions;
         /* Flag to determine when we're reordering so we don't listen to move updates */
         this._eventEmitter = new EventEmitter();
 
@@ -109,7 +113,9 @@ export class PrioritisedArray extends Array {
      */
     on(event, handler, context) {
         /* If we're already ready, fire immediately */
-        if (event === 'ready' && this._dataSource && this._dataSource.ready) { handler.call(context, this); }
+        if (event === 'ready' && this._dataSource && this._dataSource.ready) {
+            handler.call(context, this);
+        }
 
         /* If we already have children stored locally when the subscriber calls this method,
          * fire their callback for all pre-existing children. */
@@ -163,7 +169,7 @@ export class PrioritisedArray extends Array {
         } else if (model instanceof Object) {
             /* Let's try to parse the object using property reflection */
             var options = {dataSource: this._dataSource};
-            let newModel = new this._dataType(null, model, options);
+            let newModel = new this._dataType(null, model, _.extend(this._modelOptions, options));
             this.add(newModel);
         } else {
             /* TODO: change to throw exception */
@@ -251,7 +257,7 @@ export class PrioritisedArray extends Array {
                     options.path = dataSnapshot.ref().toString().replace(rootPath, '/');
                 }
 
-                let newModel = new this._dataType(child.key(), child.val(), options);
+                let newModel = new this._dataType(child.key(), child.val(), _.extend(this._modelOptions, options));
                 this.add(newModel);
 
                 /* If this is the last child, fire a ready event */
@@ -286,127 +292,132 @@ export class PrioritisedArray extends Array {
         let newSource = new DataSourceConstructor(path, options);
         newSource.setValueChangedCallback((dataSnapshot) => {
             newSource.removeValueChangedCallback();
-            this._buildFromSnapshot(dataSnapshot);
-            this._registerCallbacks(newSource);
-        });
+        this._buildFromSnapshot(dataSnapshot);
+        this._registerCallbacks(newSource);
+    });
+}
+
+/**
+ * Registers the added, moved, changed, and removed callbacks to the given DataSource.
+ * @param {DataSource} dataSource DataSource to register callbacks on.
+ * @return {void}
+ * @private
+ */
+_registerCallbacks(dataSource) {
+    dataSource.setChildAddedCallback(this._onChildAdded);
+    dataSource.setChildMovedCallback(this._onChildMoved);
+    dataSource.setChildChangedCallback(this._onChildChanged);
+    dataSource.setChildRemovedCallback(this._onChildRemoved);
+}
+
+/**
+ * Called by dataSource when a new child is added.
+ * @param {Snapshot} snapshot Snapshot of the added child.
+ * @param {String} prevSiblingId ID of the model preceding the added model.
+ * @returns {void}
+ * @private
+ */
+_onChildAdded(snapshot, prevSiblingId) {
+    let id = snapshot.key();
+
+    if (this._findIndexById(id) >= 0) { /* Child already exists. */
+        return;
     }
 
-    /**
-     * Registers the added, moved, changed, and removed callbacks to the given DataSource.
-     * @param {DataSource} dataSource DataSource to register callbacks on.
-     * @return {void}
-     * @private
-     */
-    _registerCallbacks(dataSource) {
-        dataSource.setChildAddedCallback(this._onChildAdded);
-        dataSource.setChildMovedCallback(this._onChildMoved);
-        dataSource.setChildChangedCallback(this._onChildChanged);
-        dataSource.setChildRemovedCallback(this._onChildRemoved);
-    }
+    var rootPath = snapshot.ref().root().toString();
+    let model = this.add(new this._dataType(id, null, {
+        dataSnapshot: snapshot,
+        dataSource: this._dataSource.child(id)
+    }), prevSiblingId);
 
-    /**
-     * Called by dataSource when a new child is added.
-     * @param {Snapshot} snapshot Snapshot of the added child.
-     * @param {String} prevSiblingId ID of the model preceding the added model.
-     * @returns {void}
-     * @private
-     */
-    _onChildAdded(snapshot, prevSiblingId) {
+    if (!this._dataSource.ready) {
+        this._dataSource.ready = true;
+        this._eventEmitter.emit('ready');
+    }
+    this._eventEmitter.emit('value', this);
+}
+
+/**
+ * Called by dataSource when a child is changed.
+ * @param {Snapshot} snapshot Snapshot of the added child.
+ * @param {String} prevSiblingId ID of the model preceding the added model.
+ * @returns {void}
+ * @private
+ */
+_onChildChanged(snapshot, prevSiblingId) {
+    let id = snapshot.key();
+    let changedModel = new this._dataType(id, null, {dataSnapshot: snapshot, dataSource: snapshot.ref()});
+
+    let previousPosition = this._findIndexById(id);
+    this.remove(previousPosition);
+
+    let newPosition = this._findIndexById(prevSiblingId) + 1;
+    this.insertAt(changedModel, newPosition);
+
+    this._eventEmitter.emit('child_changed', changedModel, prevSiblingId);
+    this._eventEmitter.emit('value', this);
+}
+
+/**
+ * Called by dataSource when a child is moved, which changes its priority.
+ * @param {Snapshot} snapshot Snapshot of the added child.
+ * @param {String} prevSiblingId ID of the model preceding the added model.
+ * @returns {void}
+ * @private
+ */
+_onChildMoved(snapshot, prevSiblingId) {
+    /* Ignore priority updates whilst we're reordering to avoid floods */
+    if (!this._isBeingReordered) {
+
         let id = snapshot.key();
-
-        if(this._findIndexById(id) >= 0) { /* Child already exists. */ return; }
-
-        var rootPath = snapshot.ref().root().toString();
-        let model = this.add(new this._dataType(id, null, {dataSnapshot: snapshot, dataSource: this._dataSource.child(id)}), prevSiblingId);
-
-        if (!this._dataSource.ready) {
-            this._dataSource.ready = true;
-            this._eventEmitter.emit('ready');
-        }
-        this._eventEmitter.emit('value', this);
-    }
-
-    /**
-     * Called by dataSource when a child is changed.
-     * @param {Snapshot} snapshot Snapshot of the added child.
-     * @param {String} prevSiblingId ID of the model preceding the added model.
-     * @returns {void}
-     * @private
-     */
-    _onChildChanged(snapshot, prevSiblingId) {
-        let id = snapshot.key();
-        let changedModel = new this._dataType(id, null, {dataSnapshot: snapshot, dataSource: snapshot.ref()});
-
         let previousPosition = this._findIndexById(id);
+        let tempModel = this[previousPosition];
         this.remove(previousPosition);
 
         let newPosition = this._findIndexById(prevSiblingId) + 1;
-        this.insertAt(changedModel, newPosition);
+        this.insertAt(tempModel, newPosition);
 
-        this._eventEmitter.emit('child_changed', changedModel, prevSiblingId);
+
+        let model = this[newPosition];
+
+        this._eventEmitter.emit('child_moved', model, previousPosition);
         this._eventEmitter.emit('value', this);
     }
+}
 
-    /**
-     * Called by dataSource when a child is moved, which changes its priority.
-     * @param {Snapshot} snapshot Snapshot of the added child.
-     * @param {String} prevSiblingId ID of the model preceding the added model.
-     * @returns {void}
-     * @private
-     */
-    _onChildMoved(snapshot, prevSiblingId) {
-        /* Ignore priority updates whilst we're reordering to avoid floods */
-        if (!this._isBeingReordered) {
+/**
+ * Called by dataSource when a child is removed.
+ * @param {Snapshot} oldSnapshot Snapshot of the added child.
+ * @returns {void}
+ * @private
+ */
+_onChildRemoved(oldSnapshot) {
+    /* TODO: figure out if we can use the snapshot's priority as our array index reliably, to avoid big loops. */
+    let id = oldSnapshot.key();
+    let position = this._findIndexById(id);
+    let model = this[position];
 
-            let id = snapshot.key();
-            let previousPosition = this._findIndexById(id);
-            let tempModel = this[previousPosition];
-            this.remove(previousPosition);
+    if (position !== -1) {
+        this.remove(position);
 
-            let newPosition = this._findIndexById(prevSiblingId) + 1;
-            this.insertAt(tempModel, newPosition);
+        this._eventEmitter.emit('child_removed', model);
+        this._eventEmitter.emit('value', this);
+    }
+}
 
-
-            let model = this[newPosition];
-
-            this._eventEmitter.emit('child_moved', model, previousPosition);
-            this._eventEmitter.emit('value', this);
+/**
+ * Searches for the index in the PrioritisedArray of a model that has an id equal to the given id.
+ * @param {Number} id Id field of the model we're looking for
+ * @returns {Number} Zero-based index if found, -1 otherwise
+ * @private
+ */
+_findIndexById(id) {
+    for (let i = 0; i < this.length; i++) {
+        if (this[i].id === id) {
+            return (i);
         }
     }
-
-    /**
-     * Called by dataSource when a child is removed.
-     * @param {Snapshot} oldSnapshot Snapshot of the added child.
-     * @returns {void}
-     * @private
-     */
-    _onChildRemoved(oldSnapshot) {
-        /* TODO: figure out if we can use the snapshot's priority as our array index reliably, to avoid big loops. */
-        let id = oldSnapshot.key();
-        let position = this._findIndexById(id);
-        let model = this[position];
-
-        if (position !== -1) {
-            this.remove(position);
-
-            this._eventEmitter.emit('child_removed', model);
-            this._eventEmitter.emit('value', this);
-        }
-    }
-
-    /**
-     * Searches for the index in the PrioritisedArray of a model that has an id equal to the given id.
-     * @param {Number} id Id field of the model we're looking for
-     * @returns {Number} Zero-based index if found, -1 otherwise
-     * @private
-     */
-    _findIndexById(id) {
-        for (let i = 0; i < this.length; i++) {
-            if (this[i].id === id) {
-                return (i);
-            }
-        }
-        return -1;
-    }
+    return -1;
+}
 
 }
