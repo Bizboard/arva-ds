@@ -34,16 +34,7 @@ export class Model extends PrioritisedObject {
 
         /* Retrieve dataSource from the DI context */
         let dataSource = Context.getContext().get(DataSource);
-
-        if (options.dataSource) {
-            super(options.dataSource, options.dataSnapshot);
-        } else if (options.path) {
-            super(dataSource.child(options.path + '/' + id || ''), options.dataSnapshot);
-        } else if (options.dataSnapshot) {
-            super(dataSource.child(options.dataSnapshot.ref().path.toString()), options.dataSnapshot);
-        } else {
-            super();
-        }
+        super();
 
         /* Replace all stub data fields of any subclass of Model with databinding accessors.
          * This causes changes to be synched to and from the dataSource. */
@@ -54,42 +45,28 @@ export class Model extends PrioritisedObject {
         let modelName = Object.getPrototypeOf(this).constructor.name;
         let pathRoot = modelName + 's';
 
-
-        /* If an id is present, use it to locate our model. */
-        if (id) {
-            this.disableChangeListener();
-            this.id = id;
-            this.enableChangeListener();
-
-            if (options.dataSource) {
-                this._dataSource = options.dataSource;
-            } else if (options.path) {
-                this._dataSource = dataSource.child(options.path).child(id);
-            } else {
-                this._dataSource = dataSource.child(pathRoot).child(id);
-            }
+        if(options.dataSource && id) {
+            this._dataSource = options.dataSource;
+        } else if(options.dataSource) {
+            /* No id is present, generate a random one by pushing a new entry to the dataSource. */
+            this._dataSource = options.dataSource.push(data);
+        } else if(options.path && id) {
+            this._dataSource = dataSource.child(options.path + '/' + id || '')
+        } else if(options.dataSnapshot){
+            this._dataSource = dataSource.child(options.dataSnapshot.ref().path.toString());
+        } else if (id) {
+            /* If an id is present, use it to locate our model. */
+            this._dataSource = dataSource.child(pathRoot).child(id);
         } else {
-            /* No id is present, check if we have a dataSnapshot we can extract it from.
-             * If we can't, generate a random one by pushing a new entry to the dataSource. */
-            if (options.dataSnapshot) {
-                id = options.dataSnapshot.key();
-                this._dataSource = dataSource.child(pathRoot).child(id);
+            /* No id is present, generate a random one by pushing a new entry to the dataSource. */
+            if (options.path) {
+                this._dataSource = dataSource.child(options.path).push(data);
             } else {
-                if (options.dataSource) {
-                    this._dataSource = options.dataSource.push(data);
-                } else if (options.path) {
-                    this._dataSource = dataSource.child(options.path).push(data);
-                } else {
-                    this._dataSource = dataSource.child(pathRoot).push(data);
-                }
-
-                this.disableChangeListener();
-                this.id = this._dataSource.key();
-                this.enableChangeListener();
+                this._dataSource = dataSource.child(pathRoot).push(data);
             }
         }
 
-        /* Construct core PrioritisedObject */
+        /* Re-construct core PrioritisedObject with new dataSource */
         if (options.dataSnapshot) {
             this._buildFromSnapshot(options.dataSnapshot);
         } else {
