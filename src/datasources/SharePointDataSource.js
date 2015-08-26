@@ -133,7 +133,7 @@ export class SharePointDataSource extends DataSource {
      */
     set(newData) {
         this._dataReference.set(newData);
-        return this._dataReference;
+        return this;
     }
 
     /**
@@ -152,7 +152,8 @@ export class SharePointDataSource extends DataSource {
      * @returns {void}
      */
     push(newData) {
-        return this.set(newData);
+        let pushedData = this._dataReference.set(newData);
+        return new SharePointDataSource(this.path()).child(pushedData['_temporary-identifier']);
     }
 
     /**
@@ -318,13 +319,13 @@ export class SharePointDataSource extends DataSource {
      * @param {Function} callback Callback function to call when a child is moved.
      * @returns {void}
      **/
-    setChildMovedCallback(callback) { throw new Error('Not implemented'); }
+    setChildMovedCallback(callback) { console.warn('Not implemented'); }
 
     /**
      * Removes the callback set to trigger when dataSource moves a data element.
      * @returns {void}
      **/
-    removeChildMovedCallback() { throw new Error('Not implemented'); }
+    removeChildMovedCallback() { console.warn('Not implemented'); }
 
     /**
      * Set the callback triggered when dataSource removes a data element.
