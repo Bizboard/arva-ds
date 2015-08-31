@@ -242,13 +242,11 @@ export class SharePointDataSource extends DataSource {
      * @returns {void}
      **/
     setValueChangedCallback(callback) {
-        this._onValueCallback = callback;
-
-        let wrapper = (data) => {
+        this._onValueCallback = (data) => {
             let newChildSnapshot = new SharePointSnapshot(data, this);
-            this._onValueCallback(newChildSnapshot);
+            callback(newChildSnapshot);
         };
-        this._dataReference.on('value', wrapper.bind(this));
+        this._dataReference.on('value', this._onValueCallback);
     }
 
     /**
@@ -268,13 +266,11 @@ export class SharePointDataSource extends DataSource {
      * @returns {void}
      **/
     setChildAddedCallback(callback) {
-        this._onAddCallback = callback;
-
-        let wrapper = (data, previousSiblingId) => {
+        this._onAddCallback = (data, previousSiblingId) => {
             let newChildSnapshot = new SharePointSnapshot(data, this);
-            this._onAddCallback(newChildSnapshot, previousSiblingId);
+            callback(newChildSnapshot, previousSiblingId);
         };
-        this._dataReference.on('child_added', wrapper.bind(this));
+        this._dataReference.on('child_added', this._onAddCallback);
     }
 
     /**
@@ -294,13 +290,11 @@ export class SharePointDataSource extends DataSource {
      * @returns {void}
      **/
     setChildChangedCallback(callback) {
-        this._onChangeCallback = callback;
-
-        let wrapper = (data, previousSiblingId) => {
+        this._onChangeCallback = (data, previousSiblingId) => {
             let newChildSnapshot = new SharePointSnapshot(data, this);
-            this._onChangeCallback(newChildSnapshot, previousSiblingId);
+            callback(newChildSnapshot, previousSiblingId);
         };
-        this._dataReference.on('child_changed', wrapper.bind(this));
+        this._dataReference.on('child_changed', this._onChangeCallback);
     }
 
     /**
@@ -333,14 +327,12 @@ export class SharePointDataSource extends DataSource {
      * @returns {void}
      **/
     setChildRemovedCallback(callback) {
-        this._onRemoveCallback = callback;
-
-        let wrapper = (data) => {
+        this._onRemoveCallback = (data) => {
             let removedChildSnapshot = new SharePointSnapshot(data, this);
-            this._onRemoveCallback(removedChildSnapshot);
+            callback(removedChildSnapshot);
         };
 
-        this._dataReference.on('child_removed', wrapper.bind(this));
+        this._dataReference.on('child_removed', this._onRemoveCallback);
     }
 
     /**
