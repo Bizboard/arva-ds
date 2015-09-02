@@ -17074,13 +17074,14 @@ System.register("datasources/SharePointDataSource.js", ["github:Bizboard/di.js@m
           },
           set: function(newData) {
             this._dataReference.set(newData);
-            return this._dataReference;
+            return this;
           },
           remove: function(object) {
             this._dataReference.remove(object);
           },
           push: function(newData) {
-            return this.set(newData);
+            var pushedData = this._dataReference.set(newData);
+            return new SharePointDataSource(this.path()).child(pushedData['_temporary-identifier']);
           },
           setWithPriority: function(newData, priority) {
             newData.priority = priority;
@@ -17112,12 +17113,11 @@ System.register("datasources/SharePointDataSource.js", ["github:Bizboard/di.js@m
           },
           setValueChangedCallback: function(callback) {
             var $__0 = this;
-            this._onValueCallback = callback;
-            var wrapper = function(data) {
+            this._onValueCallback = function(data) {
               var newChildSnapshot = new SharePointSnapshot(data, $__0);
-              $__0._onValueCallback(newChildSnapshot);
+              callback(newChildSnapshot);
             };
-            this._dataReference.on('value', wrapper.bind(this));
+            this._dataReference.on('value', this._onValueCallback);
           },
           removeValueChangedCallback: function() {
             if (this._onValueCallback) {
@@ -17127,12 +17127,11 @@ System.register("datasources/SharePointDataSource.js", ["github:Bizboard/di.js@m
           },
           setChildAddedCallback: function(callback) {
             var $__0 = this;
-            this._onAddCallback = callback;
-            var wrapper = function(data, previousSiblingId) {
+            this._onAddCallback = function(data, previousSiblingId) {
               var newChildSnapshot = new SharePointSnapshot(data, $__0);
-              $__0._onAddCallback(newChildSnapshot, previousSiblingId);
+              callback(newChildSnapshot, previousSiblingId);
             };
-            this._dataReference.on('child_added', wrapper.bind(this));
+            this._dataReference.on('child_added', this._onAddCallback);
           },
           removeChildAddedCallback: function() {
             if (this._onAddCallback) {
@@ -17142,12 +17141,11 @@ System.register("datasources/SharePointDataSource.js", ["github:Bizboard/di.js@m
           },
           setChildChangedCallback: function(callback) {
             var $__0 = this;
-            this._onChangeCallback = callback;
-            var wrapper = function(data, previousSiblingId) {
+            this._onChangeCallback = function(data, previousSiblingId) {
               var newChildSnapshot = new SharePointSnapshot(data, $__0);
-              $__0._onChangeCallback(newChildSnapshot, previousSiblingId);
+              callback(newChildSnapshot, previousSiblingId);
             };
-            this._dataReference.on('child_changed', wrapper.bind(this));
+            this._dataReference.on('child_changed', this._onChangeCallback);
           },
           removeChildChangedCallback: function() {
             if (this._onChangeCallback) {
@@ -17156,19 +17154,18 @@ System.register("datasources/SharePointDataSource.js", ["github:Bizboard/di.js@m
             }
           },
           setChildMovedCallback: function(callback) {
-            throw new Error('Not implemented');
+            console.warn('Not implemented');
           },
           removeChildMovedCallback: function() {
-            throw new Error('Not implemented');
+            console.warn('Not implemented');
           },
           setChildRemovedCallback: function(callback) {
             var $__0 = this;
-            this._onRemoveCallback = callback;
-            var wrapper = function(data) {
+            this._onRemoveCallback = function(data) {
               var removedChildSnapshot = new SharePointSnapshot(data, $__0);
-              $__0._onRemoveCallback(removedChildSnapshot);
+              callback(removedChildSnapshot);
             };
-            this._dataReference.on('child_removed', wrapper.bind(this));
+            this._dataReference.on('child_removed', this._onRemoveCallback);
           },
           removeChildRemovedCallback: function() {
             if (this._onRemoveCallback) {
@@ -17308,44 +17305,25 @@ System.register("core/Model.js", ["npm:lodash@3.9.3.js", "github:Bizboard/arva-u
           var data = arguments[1] !== (void 0) ? arguments[1] : null;
           var options = arguments[2] !== (void 0) ? arguments[2] : {};
           var dataSource = Context.getContext().get(DataSource);
-          if (options.dataSource) {
-            $traceurRuntime.superConstructor(Model).call(this, options.dataSource, options.dataSnapshot);
-          } else if (options.path) {
-            $traceurRuntime.superConstructor(Model).call(this, dataSource.child(options.path + '/' + id || ''), options.dataSnapshot);
-          } else if (options.dataSnapshot) {
-            $traceurRuntime.superConstructor(Model).call(this, dataSource.child(options.dataSnapshot.ref().path.toString()), options.dataSnapshot);
-          } else {
-            $traceurRuntime.superConstructor(Model).call(this);
-          }
+          $traceurRuntime.superConstructor(Model).call(this);
           this._replaceModelAccessorsWithDatabinding();
           var modelName = Object.getPrototypeOf(this).constructor.name;
           var pathRoot = modelName + 's';
-          if (id) {
-            this.disableChangeListener();
-            this.id = id;
-            this.enableChangeListener();
-            if (options.dataSource) {
-              this._dataSource = options.dataSource;
-            } else if (options.path) {
-              this._dataSource = dataSource.child(options.path).child(id);
-            } else {
-              this._dataSource = dataSource.child(pathRoot).child(id);
-            }
+          if (options.dataSource && id) {
+            this._dataSource = options.dataSource;
+          } else if (options.dataSource) {
+            this._dataSource = options.dataSource.push(data);
+          } else if (options.path && id) {
+            this._dataSource = dataSource.child(options.path + '/' + id || '');
+          } else if (options.dataSnapshot) {
+            this._dataSource = dataSource.child(options.dataSnapshot.ref().path.toString());
+          } else if (id) {
+            this._dataSource = dataSource.child(pathRoot).child(id);
           } else {
-            if (options.dataSnapshot) {
-              id = options.dataSnapshot.key();
-              this._dataSource = dataSource.child(pathRoot).child(id);
+            if (options.path) {
+              this._dataSource = dataSource.child(options.path).push(data);
             } else {
-              if (options.dataSource) {
-                this._dataSource = options.dataSource.push(data);
-              } else if (options.path) {
-                this._dataSource = dataSource.child(options.path).push(data);
-              } else {
-                this._dataSource = dataSource.child(pathRoot).push(data);
-              }
-              this.disableChangeListener();
-              this.id = this._dataSource.key();
-              this.enableChangeListener();
+              this._dataSource = dataSource.child(pathRoot).push(data);
             }
           }
           if (options.dataSnapshot) {
