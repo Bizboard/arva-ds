@@ -109,9 +109,9 @@ export class DataModelGenerator {
     _getListCreationRequest(listName, listDescription) {
         // rough configuration object
         let params = {
-                listName: listName,
-                description: listDescription,
-                templateID: '100'
+            listName: listName,
+            description: listDescription,
+            templateID: '100'
         };
 
         return {
@@ -159,7 +159,7 @@ export class DataModelGenerator {
                 .then(
                 (result)=> {
                     // exists, so let's return handle
-                    resolve(result);
+                    resolve(result.response);
                 },
                 (error) => {
                     // exists, so let's create
@@ -168,7 +168,7 @@ export class DataModelGenerator {
                     PostRequest(newListRequest)
                         .then(
                         (result)=> {
-                            resolve(result);
+                            resolve(result.response);
                         },
                         (error) => {
                             reject(error);
@@ -242,10 +242,10 @@ export class DataModelGenerator {
 
                     // end with resolving all lookup creations
                     .then((result) => {
-                            resolve(result);
-                        }, (error) => {
-                            reject(result);
-                        });
+                        resolve(result.response);
+                    }, (error) => {
+                        reject(result);
+                    });
             }
         });
     }
@@ -318,11 +318,11 @@ export class DataModelGenerator {
             '  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
             '  xmlns:xsd="http://www.w3.org/2001/XMLSchema" ' +
             '  xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">' +
-                '<soap:Body>' +
-                    '<<%= method %> xmlns="http://schemas.microsoft.com/sharepoint/soap/">' +
-                    '<%= params %>' +
-                    '</<%= method %>>' +
-                '</soap:Body>' +
+            '<soap:Body>' +
+            '<<%= method %> xmlns="http://schemas.microsoft.com/sharepoint/soap/">' +
+            '<%= params %>' +
+            '</<%= method %>>' +
+            '</soap:Body>' +
             '</soap:Envelope>')(properties);
     }
 

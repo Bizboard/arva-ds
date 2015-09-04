@@ -153,7 +153,7 @@ export class SharePointDataSource extends DataSource {
      */
     push(newData) {
         let pushedData = this._dataReference.set(newData);
-        return new SharePointDataSource(this.path()).child(pushedData['_temporary-identifier']);
+        return new SharePointDataSource(this.path()).child(`${pushedData['_temporary-identifier']}`);
     }
 
     /**
