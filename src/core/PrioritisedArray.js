@@ -127,7 +127,7 @@ export class PrioritisedArray extends Array {
             }
         }
 
-        return this._eventEmitter.on(event, handler, context);
+        this._eventEmitter.on(event, handler, context);
     }
 
     /**
@@ -342,7 +342,7 @@ export class PrioritisedArray extends Array {
         let changedModel = new this._dataType(id, null, {dataSnapshot: snapshot, dataSource: snapshot.ref()});
 
         let previousPosition = this._findIndexById(id);
-        if(previousPosition < 0) {
+        if (previousPosition < 0) {
             /* The model doesn't exist, so we won't emit a changed event. */
             return;
         }
@@ -350,7 +350,7 @@ export class PrioritisedArray extends Array {
         let oldModel = this[previousPosition];
         let oldProperties = ObjectHelper.getEnumerableProperties(oldModel);
         let newProperties = ObjectHelper.getEnumerableProperties(changedModel);
-        if(_.isEqual(oldProperties, newProperties)) {
+        if (_.isEqual(oldProperties, newProperties)) {
             /* The model wasn't changed, so we won't emit a changed event in the PrioritisedArray. */
             return;
         }

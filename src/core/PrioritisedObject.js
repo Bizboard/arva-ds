@@ -109,6 +109,7 @@ export class PrioritisedObject extends EventEmitter {
      */
     on(event, handler, context = this) {
         let haveListeners = this.listeners(event, true);
+        super.on(event, handler, context);
 
         switch (event) {
             case 'ready':
@@ -136,8 +137,6 @@ export class PrioritisedObject extends EventEmitter {
             default:
                 break;
         }
-
-        super.on(event, handler, context);
     }
 
     /**
@@ -289,7 +288,7 @@ export class PrioritisedObject extends EventEmitter {
      */
     _onChildValue(dataSnapshot, previousSiblingID) {
 
-        /* If the new dataSource data is equal to what we have locallly,
+        /* If the new dataSource data is equal to what we have locally,
          * this is an update triggered by a local change having been pushed
          * to the remote dataSource. We can ignore it.
          */
