@@ -74,7 +74,7 @@ export class PrioritisedArray extends Array {
             dataSource = Context.getContext().get(DataSource);
 
             if (options) {
-                dataSource = dataSource.child(path, options);
+                dataSource = dataSource.child(options.path || path, options);
             } else {
                 dataSource = dataSource.child(path);
             }
@@ -99,7 +99,7 @@ export class PrioritisedArray extends Array {
      */
     once(event, handler, context = this) {
         return this.on(event, function () {
-            handler.call(context, arguments);
+            handler.call(context, ...arguments);
             this.off(event, handler, context);
         }, this);
     }
