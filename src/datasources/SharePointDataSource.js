@@ -313,13 +313,17 @@ export class SharePointDataSource extends DataSource {
      * @param {Function} callback Callback function to call when a child is moved.
      * @returns {void}
      **/
-    setChildMovedCallback(callback) { console.warn('Not implemented'); }
+    setChildMovedCallback(callback) {
+        console.warn('Not implemented');
+    }
 
     /**
      * Removes the callback set to trigger when dataSource moves a data element.
      * @returns {void}
      **/
-    removeChildMovedCallback() { console.warn('Not implemented'); }
+    removeChildMovedCallback() {
+        console.warn('Not implemented');
+    }
 
     /**
      * Set the callback triggered when dataSource removes a data element.

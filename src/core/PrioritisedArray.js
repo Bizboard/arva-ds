@@ -240,6 +240,7 @@ export class PrioritisedArray extends Array {
         if (numChildren === 0) {
             this._dataSource.ready = true;
             this._eventEmitter.emit('ready');
+            this._eventEmitter.emit('value', this);
         }
 
         dataSnapshot.forEach(
