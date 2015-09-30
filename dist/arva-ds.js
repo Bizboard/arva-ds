@@ -15291,6 +15291,7 @@ System.register("core/DataSource.js", [], function($__export) {
           authWithOAuthToken: function(provider, credentials, onComplete, options) {},
           authWithCustomToken: function(authToken, onComplete, options) {},
           authWithPassword: function(credentials, onComplete, options) {},
+          authAnonymously: function(onComplete, options) {},
           getAuth: function() {},
           unauth: function() {},
           setValueChangedCallback: function(callback) {},
@@ -16272,10 +16273,13 @@ System.register("datasources/SharePoint/SharePointSnapshot.js", ["github:Bizboar
             }
           },
           numChildren: function() {
-            if (this._data instanceof Array)
+            if (this._data instanceof Array) {
               return this._data.length;
-            else
-              return 1;
+            } else if (this._data instanceof Object) {
+              return ObjectHelper.getEnumerableProperties(this._data).length;
+            } else {
+              return 0;
+            }
           }
         }, {}, $__super);
       }(Snapshot);
@@ -16655,6 +16659,7 @@ System.register("core/PrioritisedObject.js", ["npm:lodash@3.9.3.js", "npm:evente
           on: function(event, handler) {
             var context = arguments[2] !== (void 0) ? arguments[2] : this;
             var haveListeners = this.listeners(event, true);
+            $traceurRuntime.superGet(this, PrioritisedObject.prototype, "on").call(this, event, handler, context);
             switch (event) {
               case 'ready':
                 if (this._dataSource && this._dataSource.ready) {
@@ -16686,7 +16691,6 @@ System.register("core/PrioritisedObject.js", ["npm:lodash@3.9.3.js", "npm:evente
               default:
                 break;
             }
-            $traceurRuntime.superGet(this, PrioritisedObject.prototype, "on").call(this, event, handler, context);
           },
           off: function(event, handler, context) {
             if (event && (handler || context)) {
@@ -16880,6 +16884,9 @@ System.register("datasources/FirebaseDataSource.js", ["github:Bizboard/di.js@mas
           },
           authWithPassword: function(credentials, onComplete, options) {
             return this._dataReference.authWithPassword(credentials, onComplete, options);
+          },
+          authAnonymously: function(onComplete, options) {
+            return this._dataReference.authAnonymously(onComplete, options);
           },
           getAuth: function() {
             return this._dataReference.getAuth();
@@ -17081,7 +17088,7 @@ System.register("datasources/SharePointDataSource.js", ["github:Bizboard/di.js@m
           },
           push: function(newData) {
             var pushedData = this._dataReference.set(newData);
-            return new SharePointDataSource(this.path()).child(pushedData['_temporary-identifier']);
+            return new SharePointDataSource(this.path()).child(("" + pushedData['_temporary-identifier']));
           },
           setWithPriority: function(newData, priority) {
             newData.priority = priority;
@@ -17103,6 +17110,9 @@ System.register("datasources/SharePointDataSource.js", ["github:Bizboard/di.js@m
             throw new Error('Not implemented');
           },
           authWithPassword: function(credentials, onComplete, options) {
+            throw new Error('Not implemented');
+          },
+          authAnonymously: function(onComplete, options) {
             throw new Error('Not implemented');
           },
           getAuth: function() {

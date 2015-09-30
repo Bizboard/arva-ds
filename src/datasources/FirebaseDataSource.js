@@ -208,6 +208,18 @@ export class FirebaseDataSource extends DataSource {
     }
 
     /**
+     * Authenticates all instances of this DataSource as an anonymous user.
+     * @param {Function} onComplete Callback, executed when login is completed either successfully or erroneously.
+     * On error, first argument is error message.
+     * On success, the first argument is null, and the second argument is an object containing the fields uid, provider, auth, and expires.
+     * @param {Object} options Optional, additional client arguments, such as configuring session persistence.
+     * @returns {void}
+     */
+    authAnonymously(onComplete, options) {
+        return this._dataReference.authAnonymously(onComplete, options);
+    }
+
+    /**
      * Fetches the current user's authentication state.
      * If the user is authenticated, returns an object containing at least the fields uid, provider, auth, and expires.
      * If the user is not authenticated, returns null.
