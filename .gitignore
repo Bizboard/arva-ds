@@ -1,4 +1,3 @@
-# Created by .ignore support plugin (hsz.mobi)
-/jspm_packages/*
-/node_modules/*
-/.idea/workspace.xml
+/jspm_packages/
+/node_modules/
+/.idea/

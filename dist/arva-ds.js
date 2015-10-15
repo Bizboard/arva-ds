@@ -3857,7 +3857,7 @@ System = curSystem; })();
             return module;
           },
           'import': function() {
-            throw new TypeError('Dynamic System.import calls are not supported for SFX bundles.');
+            throw new TypeError('Dynamic System.import calls are not supported for SFX bundles. Rather use a named bundle.');
           }
         };
         System.set('@empty', {});
@@ -15267,7 +15267,6 @@ System.register("core/DataSource.js", [], function($__export) {
   return {
     setters: [],
     execute: function() {
-      'use strict';
       DataSource = function() {
         function DataSource(path) {
           this._dataReference = null;
@@ -15276,7 +15275,10 @@ System.register("core/DataSource.js", [], function($__export) {
           get inheritable() {
             return false;
           },
-          child: function(childName) {},
+          toString: function() {},
+          child: function(childName) {
+            var options = arguments[1] !== (void 0) ? arguments[1] : null;
+          },
           path: function() {},
           key: function() {},
           set: function(newData) {},
@@ -15289,6 +15291,7 @@ System.register("core/DataSource.js", [], function($__export) {
           authWithOAuthToken: function(provider, credentials, onComplete, options) {},
           authWithCustomToken: function(authToken, onComplete, options) {},
           authWithPassword: function(credentials, onComplete, options) {},
+          authAnonymously: function(onComplete, options) {},
           getAuth: function() {},
           unauth: function() {},
           setValueChangedCallback: function(callback) {},
@@ -15304,289 +15307,6 @@ System.register("core/DataSource.js", [], function($__export) {
         }, {});
       }();
       $__export("DataSource", DataSource);
-    }
-  };
-});
-
-System.register("github:Bizboard/arva-utils@master/ObjectHelper.js", ["npm:lodash@3.9.3.js"], function($__export) {
-  "use strict";
-  var __moduleName = "github:Bizboard/arva-utils@master/ObjectHelper.js";
-  var _,
-      ObjectHelper;
-  return {
-    setters: [function($__m) {
-      _ = $__m.default;
-    }],
-    execute: function() {
-      ObjectHelper = function() {
-        function ObjectHelper() {}
-        return ($traceurRuntime.createClass)(ObjectHelper, {}, {
-          hideMethodsAndPrivatePropertiesFromObject: function(object) {
-            for (var propName in object) {
-              var prototype = Object.getPrototypeOf(object);
-              var descriptor = prototype ? Object.getOwnPropertyDescriptor(prototype, propName) : undefined;
-              if (descriptor && (descriptor.get || descriptor.set) && !propName.startsWith('_')) {
-                continue;
-              }
-              var property = object[propName];
-              if (typeof property === 'function' || propName.startsWith('_')) {
-                ObjectHelper.hidePropertyFromObject(object, propName);
-              }
-            }
-          },
-          hideMethodsFromObject: function(object) {
-            for (var propName in object) {
-              var property = object[propName];
-              if (typeof property === 'function') {
-                ObjectHelper.hidePropertyFromObject(object, propName);
-              }
-            }
-          },
-          hidePropertyFromObject: function(object, propName) {
-            var prototype = object;
-            var descriptor = Object.getOwnPropertyDescriptor(object, propName);
-            while (!descriptor) {
-              prototype = Object.getPrototypeOf(prototype);
-              if (prototype.constructor.name === 'Object' || prototype.constructor.name === 'Array') {
-                return;
-              }
-              descriptor = Object.getOwnPropertyDescriptor(prototype, propName);
-            }
-            descriptor.enumerable = false;
-            Object.defineProperty(prototype, propName, descriptor);
-            Object.defineProperty(object, propName, descriptor);
-          },
-          hideAllPropertiesFromObject: function(object) {
-            for (var propName in object) {
-              ObjectHelper.hidePropertyFromObject(object, propName);
-            }
-          },
-          addHiddenPropertyToObject: function(object, propName, prop) {
-            var writable = arguments[3] !== (void 0) ? arguments[3] : true;
-            var useAccessors = arguments[4] !== (void 0) ? arguments[4] : true;
-            return ObjectHelper.addPropertyToObject(object, propName, prop, false, writable, undefined, useAccessors);
-          },
-          addPropertyToObject: function(object, propName, prop) {
-            var enumerable = arguments[3] !== (void 0) ? arguments[3] : true;
-            var writable = arguments[4] !== (void 0) ? arguments[4] : true;
-            var setCallback = arguments[5] !== (void 0) ? arguments[5] : null;
-            var useAccessors = arguments[6] !== (void 0) ? arguments[6] : true;
-            if (!writable || !useAccessors) {
-              var descriptor = {
-                enumerable: enumerable,
-                writable: writable,
-                value: prop
-              };
-              Object.defineProperty(object, propName, descriptor);
-            } else {
-              ObjectHelper.addGetSetPropertyWithShadow(object, propName, prop, enumerable, writable, setCallback);
-            }
-          },
-          addGetSetPropertyWithShadow: function(object, propName, prop) {
-            var enumerable = arguments[3] !== (void 0) ? arguments[3] : true;
-            var writable = arguments[4] !== (void 0) ? arguments[4] : true;
-            var setCallback = arguments[5] !== (void 0) ? arguments[5] : null;
-            ObjectHelper.buildPropertyShadow(object, propName, prop);
-            ObjectHelper.buildGetSetProperty(object, propName, enumerable, writable, setCallback);
-          },
-          buildPropertyShadow: function(object, propName, prop) {
-            var shadow = {};
-            try {
-              if ('shadow' in object) {
-                shadow = object.shadow;
-              }
-            } catch (error) {
-              return;
-            }
-            shadow[propName] = prop;
-            Object.defineProperty(object, 'shadow', {
-              writable: true,
-              configurable: true,
-              enumerable: false,
-              value: shadow
-            });
-          },
-          buildGetSetProperty: function(object, propName) {
-            var enumerable = arguments[2] !== (void 0) ? arguments[2] : true;
-            var writable = arguments[3] !== (void 0) ? arguments[3] : true;
-            var setCallback = arguments[4] !== (void 0) ? arguments[4] : null;
-            var descriptor = {
-              enumerable: enumerable,
-              configurable: true,
-              get: function() {
-                return object.shadow[propName];
-              },
-              set: function(value) {
-                if (writable) {
-                  object.shadow[propName] = value;
-                  if (setCallback && typeof setCallback === 'function') {
-                    setCallback({
-                      propertyName: propName,
-                      newValue: value
-                    });
-                  }
-                } else {
-                  throw new ReferenceError('Attempted to write to non-writable property ' + propName + '.');
-                }
-              }
-            };
-            Object.defineProperty(object, propName, descriptor);
-          },
-          bindAllMethods: function(object, bindTarget) {
-            var methodNames = ObjectHelper.getMethodNames(object);
-            methodNames.forEach(function(name) {
-              object[name] = object[name].bind(bindTarget);
-            });
-          },
-          getMethodNames: function(object) {
-            var methodNames = arguments[1] !== (void 0) ? arguments[1] : [];
-            var propNames = Object.getOwnPropertyNames(object).filter(function(c) {
-              return typeof object[c] === 'function';
-            });
-            methodNames = methodNames.concat(propNames);
-            var prototype = Object.getPrototypeOf(object);
-            if (prototype.constructor.name !== 'Object' && prototype.constructor.name !== 'Array') {
-              return ObjectHelper.getMethodNames(prototype, methodNames);
-            }
-            return methodNames;
-          },
-          getEnumerableProperties: function(object) {
-            return ObjectHelper.getPrototypeEnumerableProperties(object, object);
-          },
-          getPrototypeEnumerableProperties: function(rootObject, prototype) {
-            var result = {};
-            var propNames = Object.keys(prototype);
-            var $__4 = true;
-            var $__5 = false;
-            var $__6 = undefined;
-            try {
-              for (var $__2 = void 0,
-                  $__1 = (propNames.values())[$traceurRuntime.toProperty(Symbol.iterator)](); !($__4 = ($__2 = $__1.next()).done); $__4 = true) {
-                var name = $__2.value;
-                {
-                  var value = rootObject[name];
-                  if (value !== null && value !== undefined && typeof value !== 'function') {
-                    if (typeof value == 'object') {
-                      result[name] = ObjectHelper.getEnumerableProperties(value);
-                    } else {
-                      result[name] = value;
-                    }
-                  }
-                }
-              }
-            } catch ($__7) {
-              $__5 = true;
-              $__6 = $__7;
-            } finally {
-              try {
-                if (!$__4 && $__1.return != null) {
-                  $__1.return();
-                }
-              } finally {
-                if ($__5) {
-                  throw $__6;
-                }
-              }
-            }
-            var descriptorNames = Object.getOwnPropertyNames(prototype);
-            descriptorNames = descriptorNames.filter(function(name) {
-              return propNames.indexOf(name) < 0;
-            });
-            var $__11 = true;
-            var $__12 = false;
-            var $__13 = undefined;
-            try {
-              for (var $__9 = void 0,
-                  $__8 = (descriptorNames.values())[$traceurRuntime.toProperty(Symbol.iterator)](); !($__11 = ($__9 = $__8.next()).done); $__11 = true) {
-                var name$__15 = $__9.value;
-                {
-                  var descriptor = Object.getOwnPropertyDescriptor(prototype, name$__15);
-                  if (descriptor && descriptor.enumerable) {
-                    var value$__16 = rootObject[name$__15];
-                    if (value$__16 !== null && value$__16 !== undefined && typeof value$__16 !== 'function') {
-                      if (typeof value$__16 == 'object') {
-                        result[name$__15] = ObjectHelper.getEnumerableProperties(value$__16);
-                      } else {
-                        result[name$__15] = value$__16;
-                      }
-                    }
-                  }
-                }
-              }
-            } catch ($__14) {
-              $__12 = true;
-              $__13 = $__14;
-            } finally {
-              try {
-                if (!$__11 && $__8.return != null) {
-                  $__8.return();
-                }
-              } finally {
-                if ($__12) {
-                  throw $__13;
-                }
-              }
-            }
-            var superPrototype = Object.getPrototypeOf(prototype);
-            var ignorableTypes = ['Object', 'Array', 'EventEmitter'];
-            if (ignorableTypes.indexOf(superPrototype.constructor.name) === -1) {
-              var prototypeEnumerables = ObjectHelper.getPrototypeEnumerableProperties(rootObject, superPrototype);
-              _.merge(result, prototypeEnumerables);
-            }
-            return result;
-          }
-        });
-      }();
-      $__export("ObjectHelper", ObjectHelper);
-    }
-  };
-});
-
-System.register("core/Model/snapshot.js", [], function($__export) {
-  "use strict";
-  var __moduleName = "core/Model/snapshot.js";
-  var Snapshot;
-  return {
-    setters: [],
-    execute: function() {
-      Snapshot = function() {
-        function Snapshot(dataSnapshot) {}
-        return ($traceurRuntime.createClass)(Snapshot, {
-          key: function() {},
-          val: function() {},
-          ref: function() {},
-          getPriority: function() {},
-          forEach: function() {},
-          numChildren: function() {}
-        }, {});
-      }();
-      $__export("Snapshot", Snapshot);
-    }
-  };
-});
-
-System.register("github:Bizboard/arva-utils@master/Context.js", [], function($__export) {
-  "use strict";
-  var __moduleName = "github:Bizboard/arva-utils@master/Context.js";
-  var contextContainer,
-      Context;
-  return {
-    setters: [],
-    execute: function() {
-      contextContainer = {};
-      Context = {
-        getContext: function() {
-          var contextName = arguments[0] !== (void 0) ? arguments[0] : null;
-          if (contextName)
-            return contextContainer[contextName];
-          else
-            return contextContainer['Default'];
-        },
-        setContext: function(contextName, context) {
-          contextContainer[contextName] = context;
-        }
-      };
-      $__export("Context", Context);
     }
   };
 });
@@ -15876,100 +15596,243 @@ System.register("github:Bizboard/di.js@master/providers.js", ["github:Bizboard/d
   };
 });
 
-System.register("datasources/SharePoint/SharePointSnapshot.js", ["github:Bizboard/arva-utils@master/ObjectHelper.js", "core/Model/snapshot.js"], function($__export) {
+System.register("github:Bizboard/arva-utils@1.0.0-beta-1/ObjectHelper.js", ["npm:lodash@3.9.3.js"], function($__export) {
   "use strict";
-  var __moduleName = "datasources/SharePoint/SharePointSnapshot.js";
-  var ObjectHelper,
-      Snapshot,
-      SharePointSnapshot;
+  var __moduleName = "github:Bizboard/arva-utils@1.0.0-beta-1/ObjectHelper.js";
+  var _,
+      ObjectHelper;
   return {
     setters: [function($__m) {
-      ObjectHelper = $__m.ObjectHelper;
-    }, function($__m) {
-      Snapshot = $__m.Snapshot;
+      _ = $__m.default;
     }],
     execute: function() {
-      SharePointSnapshot = function($__super) {
-        function SharePointSnapshot(dataSnapshot) {
-          var dataSource = arguments[1] !== (void 0) ? arguments[1] : null;
-          var kvpair = arguments[2] !== (void 0) ? arguments[2] : null;
-          $traceurRuntime.superConstructor(SharePointSnapshot).call(this);
-          this._data = dataSnapshot;
-          this._dataSource = dataSource;
-          this._kvpair = kvpair;
-          ObjectHelper.bindAllMethods(this, this);
-        }
-        return ($traceurRuntime.createClass)(SharePointSnapshot, {
-          key: function() {
-            if (this._kvpair)
-              return this._kvpair.key;
-            else if (this._data instanceof Array && this._data.length == 1)
-              return this._data[0].id;
-            else if (this._data instanceof Object)
-              return this._data.id;
-          },
-          val: function() {
-            if (this._kvpair)
-              return this._kvpair.value;
-            else
-              return this._data;
-          },
-          ref: function() {
-            return this._dataSource;
-          },
-          getPriority: function() {},
-          forEach: function(callback) {
-            if (this._data instanceof Array) {
-              var $__4 = true;
-              var $__5 = false;
-              var $__6 = undefined;
-              try {
-                for (var $__2 = void 0,
-                    $__1 = (this._data)[$traceurRuntime.toProperty(Symbol.iterator)](); !($__4 = ($__2 = $__1.next()).done); $__4 = true) {
-                  var object = $__2.value;
-                  {
-                    callback(new SharePointSnapshot(object, this._dataSource));
-                  }
-                }
-              } catch ($__7) {
-                $__5 = true;
-                $__6 = $__7;
-              } finally {
-                try {
-                  if (!$__4 && $__1.return != null) {
-                    $__1.return();
-                  }
-                } finally {
-                  if ($__5) {
-                    throw $__6;
-                  }
-                }
+      ObjectHelper = function() {
+        function ObjectHelper() {}
+        return ($traceurRuntime.createClass)(ObjectHelper, {}, {
+          hideMethodsAndPrivatePropertiesFromObject: function(object) {
+            for (var propName in object) {
+              var prototype = Object.getPrototypeOf(object);
+              var descriptor = prototype ? Object.getOwnPropertyDescriptor(prototype, propName) : undefined;
+              if (descriptor && (descriptor.get || descriptor.set) && !propName.startsWith('_')) {
+                continue;
               }
-            } else if (this._data instanceof Object) {
-              for (var key in this._data) {
-                callback(new SharePointSnapshot(object, this._dataSource, {
-                  key: key,
-                  value: this._data[key]
-                }));
+              var property = object[propName];
+              if (typeof property === 'function' || propName.startsWith('_')) {
+                ObjectHelper.hidePropertyFromObject(object, propName);
               }
             }
           },
-          numChildren: function() {
-            if (this._data instanceof Array)
-              return this._data.length;
-            else
-              return 1;
+          hideMethodsFromObject: function(object) {
+            for (var propName in object) {
+              var property = object[propName];
+              if (typeof property === 'function') {
+                ObjectHelper.hidePropertyFromObject(object, propName);
+              }
+            }
+          },
+          hidePropertyFromObject: function(object, propName) {
+            var prototype = object;
+            var descriptor = Object.getOwnPropertyDescriptor(object, propName);
+            while (!descriptor) {
+              prototype = Object.getPrototypeOf(prototype);
+              if (prototype.constructor.name === 'Object' || prototype.constructor.name === 'Array') {
+                return;
+              }
+              descriptor = Object.getOwnPropertyDescriptor(prototype, propName);
+            }
+            descriptor.enumerable = false;
+            Object.defineProperty(prototype, propName, descriptor);
+            Object.defineProperty(object, propName, descriptor);
+          },
+          hideAllPropertiesFromObject: function(object) {
+            for (var propName in object) {
+              ObjectHelper.hidePropertyFromObject(object, propName);
+            }
+          },
+          addHiddenPropertyToObject: function(object, propName, prop) {
+            var writable = arguments[3] !== (void 0) ? arguments[3] : true;
+            var useAccessors = arguments[4] !== (void 0) ? arguments[4] : true;
+            return ObjectHelper.addPropertyToObject(object, propName, prop, false, writable, undefined, useAccessors);
+          },
+          addPropertyToObject: function(object, propName, prop) {
+            var enumerable = arguments[3] !== (void 0) ? arguments[3] : true;
+            var writable = arguments[4] !== (void 0) ? arguments[4] : true;
+            var setCallback = arguments[5] !== (void 0) ? arguments[5] : null;
+            var useAccessors = arguments[6] !== (void 0) ? arguments[6] : true;
+            if (!writable || !useAccessors) {
+              var descriptor = {
+                enumerable: enumerable,
+                writable: writable,
+                value: prop
+              };
+              Object.defineProperty(object, propName, descriptor);
+            } else {
+              ObjectHelper.addGetSetPropertyWithShadow(object, propName, prop, enumerable, writable, setCallback);
+            }
+          },
+          addGetSetPropertyWithShadow: function(object, propName, prop) {
+            var enumerable = arguments[3] !== (void 0) ? arguments[3] : true;
+            var writable = arguments[4] !== (void 0) ? arguments[4] : true;
+            var setCallback = arguments[5] !== (void 0) ? arguments[5] : null;
+            ObjectHelper.buildPropertyShadow(object, propName, prop);
+            ObjectHelper.buildGetSetProperty(object, propName, enumerable, writable, setCallback);
+          },
+          buildPropertyShadow: function(object, propName, prop) {
+            var shadow = {};
+            try {
+              if ('shadow' in object) {
+                shadow = object.shadow;
+              }
+            } catch (error) {
+              return;
+            }
+            shadow[propName] = prop;
+            Object.defineProperty(object, 'shadow', {
+              writable: true,
+              configurable: true,
+              enumerable: false,
+              value: shadow
+            });
+          },
+          buildGetSetProperty: function(object, propName) {
+            var enumerable = arguments[2] !== (void 0) ? arguments[2] : true;
+            var writable = arguments[3] !== (void 0) ? arguments[3] : true;
+            var setCallback = arguments[4] !== (void 0) ? arguments[4] : null;
+            var descriptor = {
+              enumerable: enumerable,
+              configurable: true,
+              get: function() {
+                return object.shadow[propName];
+              },
+              set: function(value) {
+                if (writable) {
+                  object.shadow[propName] = value;
+                  if (setCallback && typeof setCallback === 'function') {
+                    setCallback({
+                      propertyName: propName,
+                      newValue: value
+                    });
+                  }
+                } else {
+                  throw new ReferenceError('Attempted to write to non-writable property ' + propName + '.');
+                }
+              }
+            };
+            Object.defineProperty(object, propName, descriptor);
+          },
+          bindAllMethods: function(object, bindTarget) {
+            var methodNames = ObjectHelper.getMethodNames(object);
+            methodNames.forEach(function(name) {
+              object[name] = object[name].bind(bindTarget);
+            });
+          },
+          getMethodNames: function(object) {
+            var methodNames = arguments[1] !== (void 0) ? arguments[1] : [];
+            var propNames = Object.getOwnPropertyNames(object).filter(function(c) {
+              return typeof object[c] === 'function';
+            });
+            methodNames = methodNames.concat(propNames);
+            var prototype = Object.getPrototypeOf(object);
+            if (prototype.constructor.name !== 'Object' && prototype.constructor.name !== 'Array') {
+              return ObjectHelper.getMethodNames(prototype, methodNames);
+            }
+            return methodNames;
+          },
+          getEnumerableProperties: function(object) {
+            return ObjectHelper.getPrototypeEnumerableProperties(object, object);
+          },
+          getPrototypeEnumerableProperties: function(rootObject, prototype) {
+            var result = {};
+            var propNames = Object.keys(prototype);
+            var $__4 = true;
+            var $__5 = false;
+            var $__6 = undefined;
+            try {
+              for (var $__2 = void 0,
+                  $__1 = (propNames.values())[$traceurRuntime.toProperty(Symbol.iterator)](); !($__4 = ($__2 = $__1.next()).done); $__4 = true) {
+                var name = $__2.value;
+                {
+                  var value = rootObject[name];
+                  if (value !== null && value !== undefined && typeof value !== 'function') {
+                    if (typeof value === 'object') {
+                      result[name] = ObjectHelper.getEnumerableProperties(value);
+                    } else {
+                      result[name] = value;
+                    }
+                  }
+                }
+              }
+            } catch ($__7) {
+              $__5 = true;
+              $__6 = $__7;
+            } finally {
+              try {
+                if (!$__4 && $__1.return != null) {
+                  $__1.return();
+                }
+              } finally {
+                if ($__5) {
+                  throw $__6;
+                }
+              }
+            }
+            var descriptorNames = Object.getOwnPropertyNames(prototype);
+            descriptorNames = descriptorNames.filter(function(name) {
+              return propNames.indexOf(name) < 0;
+            });
+            var $__11 = true;
+            var $__12 = false;
+            var $__13 = undefined;
+            try {
+              for (var $__9 = void 0,
+                  $__8 = (descriptorNames.values())[$traceurRuntime.toProperty(Symbol.iterator)](); !($__11 = ($__9 = $__8.next()).done); $__11 = true) {
+                var name$__15 = $__9.value;
+                {
+                  var descriptor = Object.getOwnPropertyDescriptor(prototype, name$__15);
+                  if (descriptor && descriptor.enumerable) {
+                    var value$__16 = rootObject[name$__15];
+                    if (value$__16 !== null && value$__16 !== undefined && typeof value$__16 !== 'function') {
+                      if (typeof value$__16 === 'object') {
+                        result[name$__15] = ObjectHelper.getEnumerableProperties(value$__16);
+                      } else {
+                        result[name$__15] = value$__16;
+                      }
+                    }
+                  }
+                }
+              }
+            } catch ($__14) {
+              $__12 = true;
+              $__13 = $__14;
+            } finally {
+              try {
+                if (!$__11 && $__8.return != null) {
+                  $__8.return();
+                }
+              } finally {
+                if ($__12) {
+                  throw $__13;
+                }
+              }
+            }
+            var superPrototype = Object.getPrototypeOf(prototype);
+            var ignorableTypes = ['Object', 'Array', 'EventEmitter'];
+            if (ignorableTypes.indexOf(superPrototype.constructor.name) === -1) {
+              var prototypeEnumerables = ObjectHelper.getPrototypeEnumerableProperties(rootObject, superPrototype);
+              _.merge(result, prototypeEnumerables);
+            }
+            return result;
           }
-        }, {}, $__super);
-      }(Snapshot);
-      $__export("SharePointSnapshot", SharePointSnapshot);
+        });
+      }();
+      $__export("ObjectHelper", ObjectHelper);
     }
   };
 });
 
-System.register("github:Bizboard/arva-utils@master/request/UrlParser.js", [], function($__export) {
+System.register("github:Bizboard/arva-utils@1.0.0-beta-1/request/UrlParser.js", [], function($__export) {
   "use strict";
-  var __moduleName = "github:Bizboard/arva-utils@master/request/UrlParser.js";
+  var __moduleName = "github:Bizboard/arva-utils@1.0.0-beta-1/request/UrlParser.js";
   function UrlParser(url) {
     var e = /^([a-z][a-z0-9+.-]*):(?:\/\/((?:(?=((?:[a-z0-9-._~!$&'()*+,;=:]|%[0-9A-F]{2})*))(\3)@)?(?=(\[[0-9A-F:.]{2,}\]|(?:[a-z0-9-._~!$&'()*+,;=]|%[0-9A-F]{2})*))\5(?::(?=(\d*))\6)?)(\/(?=((?:[a-z0-9-._~!$&'()*+,;=:@\/]|%[0-9A-F]{2})*))\8)?|(\/?(?!\/)(?=((?:[a-z0-9-._~!$&'()*+,;=:@\/]|%[0-9A-F]{2})*))\10)?)(?:\?(?=((?:[a-z0-9-._~!$&'()*+,;=:@\/?]|%[0-9A-F]{2})*))\11)?(?:#(?=((?:[a-z0-9-._~!$&'()*+,;=:@\/?]|%[0-9A-F]{2})*))\12)?$/i;
     if (url.match(e)) {
@@ -15992,9 +15855,9 @@ System.register("github:Bizboard/arva-utils@master/request/UrlParser.js", [], fu
   };
 });
 
-System.register("github:Bizboard/arva-utils@master/BlobHelper.js", [], function($__export) {
+System.register("github:Bizboard/arva-utils@1.0.0-beta-1/BlobHelper.js", [], function($__export) {
   "use strict";
-  var __moduleName = "github:Bizboard/arva-utils@master/BlobHelper.js";
+  var __moduleName = "github:Bizboard/arva-utils@1.0.0-beta-1/BlobHelper.js";
   var BlobHelper;
   return {
     setters: [],
@@ -16022,6 +15885,29 @@ System.register("github:Bizboard/arva-utils@master/BlobHelper.js", [], function(
           }});
       }();
       $__export("BlobHelper", BlobHelper);
+    }
+  };
+});
+
+System.register("core/Snapshot.js", [], function($__export) {
+  "use strict";
+  var __moduleName = "core/Snapshot.js";
+  var Snapshot;
+  return {
+    setters: [],
+    execute: function() {
+      Snapshot = function() {
+        function Snapshot(dataSnapshot) {}
+        return ($traceurRuntime.createClass)(Snapshot, {
+          key: function() {},
+          val: function() {},
+          ref: function() {},
+          getPriority: function() {},
+          forEach: function() {},
+          numChildren: function() {}
+        }, {});
+      }();
+      $__export("Snapshot", Snapshot);
     }
   };
 });
@@ -16242,7 +16128,7 @@ System.register("github:Bizboard/di.js@master/annotations.js", ["github:Bizboard
   };
 });
 
-System.register("github:Bizboard/SPSoapAdapter@master/SharePoint.js", ["npm:eventemitter3@1.1.1.js", "npm:lodash@3.9.3.js", "github:Bizboard/arva-utils@master/request/UrlParser.js", "github:Bizboard/arva-utils@master/BlobHelper.js"], function($__export) {
+System.register("github:Bizboard/SPSoapAdapter@master/SharePoint.js", ["npm:eventemitter3@1.1.1.js", "npm:lodash@3.9.3.js", "github:Bizboard/arva-utils@1.0.0-beta-1/request/UrlParser.js", "github:Bizboard/arva-utils@1.0.0-beta-1/BlobHelper.js"], function($__export) {
   "use strict";
   var __moduleName = "github:Bizboard/SPSoapAdapter@master/SharePoint.js";
   var EventEmitter,
@@ -16308,214 +16194,96 @@ System.register("github:Bizboard/SPSoapAdapter@master/SharePoint.js", ["npm:even
   };
 });
 
-System.register("core/Model/prioritisedObject.js", ["npm:lodash@3.9.3.js", "npm:eventemitter3@1.1.1.js", "github:Bizboard/arva-utils@master/ObjectHelper.js", "core/Model/snapshot.js", "core/DataSource.js"], function($__export) {
+System.register("datasources/SharePoint/SharePointSnapshot.js", ["github:Bizboard/arva-utils@1.0.0-beta-1/ObjectHelper.js", "core/Snapshot.js"], function($__export) {
   "use strict";
-  var __moduleName = "core/Model/prioritisedObject.js";
-  var _,
-      EventEmitter,
-      ObjectHelper,
+  var __moduleName = "datasources/SharePoint/SharePointSnapshot.js";
+  var ObjectHelper,
       Snapshot,
-      DataSource,
-      PrioritisedObject;
+      SharePointSnapshot;
   return {
     setters: [function($__m) {
-      _ = $__m.default;
-    }, function($__m) {
-      EventEmitter = $__m.default;
-    }, function($__m) {
       ObjectHelper = $__m.ObjectHelper;
     }, function($__m) {
       Snapshot = $__m.Snapshot;
-    }, function($__m) {
-      DataSource = $__m.DataSource;
     }],
     execute: function() {
-      PrioritisedObject = function($__super) {
-        function PrioritisedObject(dataSource) {
-          var dataSnapshot = arguments[1] !== (void 0) ? arguments[1] : null;
-          $traceurRuntime.superConstructor(PrioritisedObject).call(this);
-          this._valueChangedCallback = null;
-          this._id = dataSource ? dataSource.key() : 0;
-          this._events = this._events || [];
+      SharePointSnapshot = function($__super) {
+        function SharePointSnapshot(dataSnapshot) {
+          var dataSource = arguments[1] !== (void 0) ? arguments[1] : null;
+          var kvpair = arguments[2] !== (void 0) ? arguments[2] : null;
+          $traceurRuntime.superConstructor(SharePointSnapshot).call(this);
+          this._data = dataSnapshot;
           this._dataSource = dataSource;
-          this._priority = 0;
-          this._isBeingWrittenByDatasource = false;
+          this._kvpair = kvpair;
           ObjectHelper.bindAllMethods(this, this);
-          ObjectHelper.hideMethodsAndPrivatePropertiesFromObject(this);
-          ObjectHelper.hidePropertyFromObject(this, 'id');
-          ObjectHelper.hidePropertyFromObject(this, 'priority');
-          if (dataSnapshot) {
-            this._buildFromSnapshot(dataSnapshot);
-          } else {
-            this._buildFromDataSource(dataSource);
-          }
         }
-        return ($traceurRuntime.createClass)(PrioritisedObject, {
-          get id() {
-            return this._id;
+        return ($traceurRuntime.createClass)(SharePointSnapshot, {
+          key: function() {
+            if (this._kvpair)
+              return this._kvpair.key;
+            else if (this._data instanceof Array && this._data.length == 1)
+              return this._data[0].id;
+            else if (this._data instanceof Object)
+              return this._data.id;
           },
-          set id(value) {
-            this._id = value;
-          },
-          get priority() {
-            return this._priority;
-          },
-          set priority(value) {
-            if (this._priority !== value) {
-              this._priority = value;
-              this._dataSource.setPriority(value);
-            }
-          },
-          get _inheritable() {
-            if (!this._dataSource)
-              return false;
-            return this._dataSource.inheritable;
-          },
-          remove: function() {
-            this.off();
-            if (this._dataSource.inheritable)
-              this._dataSource.remove(this);
+          val: function() {
+            if (this._kvpair)
+              return this._kvpair.value;
             else
-              this._dataSource.remove();
-            delete this;
+              return this._data;
           },
-          once: function(event, fn) {
-            var context = arguments[2] !== (void 0) ? arguments[2] : this;
-            return this.on(event, function() {
-              fn.call(context, arguments);
-              this.off(event, fn, context);
-            }, this);
+          ref: function() {
+            return this._dataSource;
           },
-          on: function(event, fn) {
-            var context = arguments[2] !== (void 0) ? arguments[2] : this;
-            var haveListeners = this.listeners(event, true);
-            switch (event) {
-              case 'ready':
-                if (this._dataSource && this._dataSource.ready) {
-                  fn.call(context, this);
+          getPriority: function() {},
+          forEach: function(callback) {
+            if (this._data instanceof Array) {
+              var $__4 = true;
+              var $__5 = false;
+              var $__6 = undefined;
+              try {
+                for (var $__2 = void 0,
+                    $__1 = (this._data)[$traceurRuntime.toProperty(Symbol.iterator)](); !($__4 = ($__2 = $__1.next()).done); $__4 = true) {
+                  var object = $__2.value;
+                  {
+                    callback(new SharePointSnapshot(object, this._dataSource));
+                  }
                 }
-                break;
-              case 'value':
-                if (!haveListeners) {
-                  this._dataSource.setValueChangedCallback(this._onChildValue);
-                } else {
-                  fn.call(context, this);
+              } catch ($__7) {
+                $__5 = true;
+                $__6 = $__7;
+              } finally {
+                try {
+                  if (!$__4 && $__1.return != null) {
+                    $__1.return();
+                  }
+                } finally {
+                  if ($__5) {
+                    throw $__6;
+                  }
                 }
-                break;
-              case 'added':
-                if (!haveListeners) {
-                  this._dataSource.setChildAddedCallback(this._onChildAdded);
-                }
-                break;
-              case 'moved':
-                if (!haveListeners) {
-                  this._dataSource.setChildMovedCallback(this._onChildMoved);
-                }
-                break;
-              case 'removed':
-                if (!haveListeners) {
-                  this._dataSource.setChildRemovedCallback(this._onChildRemoved);
-                }
-                break;
+              }
+            } else if (this._data instanceof Object) {
+              for (var key in this._data) {
+                callback(new SharePointSnapshot(object, this._dataSource, {
+                  key: key,
+                  value: this._data[key]
+                }));
+              }
             }
-            $traceurRuntime.superGet(this, PrioritisedObject.prototype, "on").call(this, event, fn, context);
           },
-          off: function(event, fn, context) {
-            if (event && (fn || context)) {
-              $traceurRuntime.superGet(this, PrioritisedObject.prototype, "removeListener").call(this, event, fn, context);
+          numChildren: function() {
+            if (this._data instanceof Array) {
+              return this._data.length;
+            } else if (this._data instanceof Object) {
+              return ObjectHelper.getEnumerableProperties(this._data).length;
             } else {
-              $traceurRuntime.superGet(this, PrioritisedObject.prototype, "removeAllListeners").call(this, event);
+              return 0;
             }
-            if (!this.listeners(event, true)) {
-              switch (event) {
-                case 'ready':
-                  break;
-                case 'value':
-                  this._dataSource.removeValueChangedCallback();
-                  break;
-                case 'added':
-                  this._dataSource.removeChildAddedCallback();
-                  break;
-                case 'moved':
-                  this._dataSource.removeChildMovedCallback();
-                  break;
-                case 'removed':
-                  this._dataSource.removeChildRemovedCallback();
-                  break;
-              }
-            }
-          },
-          transaction: function(method) {
-            this.disableChangeListener();
-            method();
-            this.enableChangeListener();
-            this._onSetterTriggered();
-          },
-          disableChangeListener: function() {
-            this._isBeingWrittenByDatasource = true;
-          },
-          enableChangeListener: function() {
-            this._isBeingWrittenByDatasource = false;
-          },
-          _buildFromSnapshot: function(dataSnapshot) {
-            this._priority = dataSnapshot.getPriority();
-            var data = dataSnapshot.val();
-            var numChildren = dataSnapshot.numChildren(),
-                currentChild = 1;
-            if (!this._id) {
-              this._id = dataSnapshot.key();
-            }
-            if (numChildren === 0) {
-              this._dataSource.ready = true;
-              this.emit('ready');
-            }
-            for (var key in data) {
-              if (Object.getOwnPropertyDescriptor(this, key)) {
-                ObjectHelper.addPropertyToObject(this, key, data[key], true, true, this._onSetterTriggered);
-              }
-            }
-            this._dataSource.ready = true;
-            this.emit('ready');
-          },
-          _buildFromDataSource: function(dataSource) {
-            var $__0 = this;
-            if (!dataSource)
-              return;
-            var path = dataSource.path();
-            var DataSource = Object.getPrototypeOf(dataSource).constructor;
-            var newSource = new DataSource(path);
-            newSource.setValueChangedCallback(function(dataSnapshot) {
-              newSource.removeValueChangedCallback();
-              $__0._buildFromSnapshot(dataSnapshot);
-            });
-          },
-          _onSetterTriggered: function() {
-            if (!this._isBeingWrittenByDatasource) {
-              this._dataSource.setWithPriority(ObjectHelper.getEnumerableProperties(this), this._priority);
-            }
-          },
-          _onChildValue: function(dataSnapshot, previousSiblingID) {
-            if (_.isEqual(ObjectHelper.getEnumerableProperties(this), dataSnapshot.val())) {
-              this.emit('value', this, previousSiblingID);
-              return;
-            }
-            this._isBeingWrittenByDatasource = true;
-            this._buildFromSnapshot(dataSnapshot);
-            this._isBeingWrittenByDatasource = false;
-            this.emit('value', this, previousSiblingID);
-          },
-          _onChildAdded: function(dataSnapshot, previousSiblingID) {
-            this.emit('added', this, previousSiblingID);
-          },
-          _onChildMoved: function(dataSnapshot, previousSiblingID) {
-            this.emit('moved', this, previousSiblingID);
-          },
-          _onChildRemoved: function(dataSnapshot, previousSiblingID) {
-            this.emit('removed', this, previousSiblingID);
           }
         }, {}, $__super);
-      }(EventEmitter);
-      $__export("PrioritisedObject", PrioritisedObject);
+      }(Snapshot);
+      $__export("SharePointSnapshot", SharePointSnapshot);
     }
   };
 });
@@ -16821,125 +16589,322 @@ System.register("github:Bizboard/di.js@master/injector.js", ["github:Bizboard/di
   };
 });
 
-System.register("datasources/SharePointDataSource.js", ["github:Bizboard/di.js@master.js", "github:Bizboard/arva-utils@master/ObjectHelper.js", "core/DataSource.js", "datasources/SharePoint/SharePointSnapshot.js", "github:Bizboard/SPSoapAdapter@master/SharePoint.js", "github:Bizboard/arva-utils@master/request/UrlParser.js"], function($__export) {
+System.register("core/PrioritisedObject.js", ["npm:lodash@3.9.3.js", "npm:eventemitter3@1.1.1.js", "github:Bizboard/arva-utils@1.0.0-beta-1/ObjectHelper.js"], function($__export) {
   "use strict";
-  var __moduleName = "datasources/SharePointDataSource.js";
-  var Provide,
+  var __moduleName = "core/PrioritisedObject.js";
+  var _,
+      EventEmitter,
       ObjectHelper,
+      PrioritisedObject;
+  return {
+    setters: [function($__m) {
+      _ = $__m.default;
+    }, function($__m) {
+      EventEmitter = $__m.default;
+    }, function($__m) {
+      ObjectHelper = $__m.ObjectHelper;
+    }],
+    execute: function() {
+      PrioritisedObject = function($__super) {
+        function PrioritisedObject(dataSource) {
+          var dataSnapshot = arguments[1] !== (void 0) ? arguments[1] : null;
+          $traceurRuntime.superConstructor(PrioritisedObject).call(this);
+          this._valueChangedCallback = null;
+          this._id = dataSource ? dataSource.key() : 0;
+          this._events = this._events || [];
+          this._dataSource = dataSource;
+          this._priority = 0;
+          this._isBeingWrittenByDatasource = false;
+          ObjectHelper.bindAllMethods(this, this);
+          ObjectHelper.hideMethodsAndPrivatePropertiesFromObject(this);
+          ObjectHelper.hidePropertyFromObject(this, 'id');
+          ObjectHelper.hidePropertyFromObject(this, 'priority');
+          if (dataSnapshot) {
+            this._buildFromSnapshot(dataSnapshot);
+          } else {
+            this._buildFromDataSource(dataSource);
+          }
+        }
+        return ($traceurRuntime.createClass)(PrioritisedObject, {
+          get id() {
+            return this._id;
+          },
+          set id(value) {
+            this._id = value;
+          },
+          get priority() {
+            return this._priority;
+          },
+          set priority(value) {
+            if (this._priority !== value) {
+              this._priority = value;
+              this._dataSource.setPriority(value);
+            }
+          },
+          get _inheritable() {
+            return this._dataSource ? this._dataSource.inheritable : false;
+          },
+          remove: function() {
+            this.off();
+            this._dataSource.remove(this);
+            delete this;
+          },
+          once: function(event, handler) {
+            var context = arguments[2] !== (void 0) ? arguments[2] : this;
+            return this.on(event, function() {
+              handler.call(context, arguments);
+              this.off(event, handler, context);
+            }, this);
+          },
+          on: function(event, handler) {
+            var context = arguments[2] !== (void 0) ? arguments[2] : this;
+            var haveListeners = this.listeners(event, true);
+            $traceurRuntime.superGet(this, PrioritisedObject.prototype, "on").call(this, event, handler, context);
+            switch (event) {
+              case 'ready':
+                if (this._dataSource && this._dataSource.ready) {
+                  handler.call(context, this);
+                }
+                break;
+              case 'value':
+                if (!haveListeners) {
+                  this._dataSource.setValueChangedCallback(this._onChildValue);
+                } else {
+                  handler.call(context, this);
+                }
+                break;
+              case 'added':
+                if (!haveListeners) {
+                  this._dataSource.setChildAddedCallback(this._onChildAdded);
+                }
+                break;
+              case 'moved':
+                if (!haveListeners) {
+                  this._dataSource.setChildMovedCallback(this._onChildMoved);
+                }
+                break;
+              case 'removed':
+                if (!haveListeners) {
+                  this._dataSource.setChildRemovedCallback(this._onChildRemoved);
+                }
+                break;
+              default:
+                break;
+            }
+          },
+          off: function(event, handler, context) {
+            if (event && (handler || context)) {
+              $traceurRuntime.superGet(this, PrioritisedObject.prototype, "removeListener").call(this, event, handler, context);
+            } else {
+              $traceurRuntime.superGet(this, PrioritisedObject.prototype, "removeAllListeners").call(this, event);
+            }
+            if (!this.listeners(event, true)) {
+              switch (event) {
+                case 'ready':
+                  break;
+                case 'value':
+                  this._dataSource.removeValueChangedCallback();
+                  break;
+                case 'added':
+                  this._dataSource.removeChildAddedCallback();
+                  break;
+                case 'moved':
+                  this._dataSource.removeChildMovedCallback();
+                  break;
+                case 'removed':
+                  this._dataSource.removeChildRemovedCallback();
+                  break;
+                default:
+                  break;
+              }
+            }
+          },
+          transaction: function(method) {
+            this.disableChangeListener();
+            method();
+            this.enableChangeListener();
+            this._onSetterTriggered();
+          },
+          disableChangeListener: function() {
+            this._isBeingWrittenByDatasource = true;
+          },
+          enableChangeListener: function() {
+            this._isBeingWrittenByDatasource = false;
+          },
+          _buildFromSnapshot: function(dataSnapshot) {
+            this._priority = dataSnapshot.getPriority();
+            var data = dataSnapshot.val();
+            var numChildren = dataSnapshot.numChildren();
+            if (!this._id) {
+              this._id = dataSnapshot.key();
+            }
+            if (numChildren === 0) {
+              this._dataSource.ready = true;
+              this.emit('ready');
+            }
+            for (var key in data) {
+              if (Object.getOwnPropertyDescriptor(this, key)) {
+                ObjectHelper.addPropertyToObject(this, key, data[key], true, true, this._onSetterTriggered);
+              }
+            }
+            this._dataSource.ready = true;
+            this.emit('ready');
+          },
+          _buildFromDataSource: function(dataSource) {
+            var $__0 = this;
+            if (!dataSource) {
+              return;
+            }
+            var path = dataSource.path();
+            var DataSource = Object.getPrototypeOf(dataSource).constructor;
+            var newSource = new DataSource(path);
+            newSource.setValueChangedCallback(function(dataSnapshot) {
+              newSource.removeValueChangedCallback();
+              $__0._buildFromSnapshot(dataSnapshot);
+            });
+          },
+          _onSetterTriggered: function() {
+            if (!this._isBeingWrittenByDatasource) {
+              this._dataSource.setWithPriority(ObjectHelper.getEnumerableProperties(this), this._priority);
+            }
+          },
+          _onChildValue: function(dataSnapshot, previousSiblingID) {
+            if (_.isEqual(ObjectHelper.getEnumerableProperties(this), dataSnapshot.val())) {
+              this.emit('value', this, previousSiblingID);
+              return;
+            }
+            this._isBeingWrittenByDatasource = true;
+            this._buildFromSnapshot(dataSnapshot);
+            this._isBeingWrittenByDatasource = false;
+            this.emit('value', this, previousSiblingID);
+          },
+          _onChildAdded: function(dataSnapshot, previousSiblingID) {
+            this.emit('added', this, previousSiblingID);
+          },
+          _onChildMoved: function(dataSnapshot, previousSiblingID) {
+            this.emit('moved', this, previousSiblingID);
+          },
+          _onChildRemoved: function(dataSnapshot, previousSiblingID) {
+            this.emit('removed', this, previousSiblingID);
+          }
+        }, {}, $__super);
+      }(EventEmitter);
+      $__export("PrioritisedObject", PrioritisedObject);
+    }
+  };
+});
+
+System.register("datasources/FirebaseDataSource.js", ["github:Bizboard/di.js@master.js", "github:firebase/firebase-bower@2.2.7.js", "core/DataSource.js", "github:Bizboard/arva-utils@1.0.0-beta-1/ObjectHelper.js"], function($__export) {
+  "use strict";
+  var __moduleName = "datasources/FirebaseDataSource.js";
+  var Provide,
+      Firebase,
       DataSource,
-      SharePointSnapshot,
-      SharePoint,
-      UrlParser,
-      SharePointDataSource;
+      ObjectHelper,
+      FirebaseDataSource;
   return {
     setters: [function($__m) {
       Provide = $__m.Provide;
     }, function($__m) {
-      ObjectHelper = $__m.ObjectHelper;
+      Firebase = $__m.default;
     }, function($__m) {
       DataSource = $__m.DataSource;
     }, function($__m) {
-      SharePointSnapshot = $__m.SharePointSnapshot;
-    }, function($__m) {
-      SharePoint = $__m.SharePoint;
-    }, function($__m) {
-      UrlParser = $__m.UrlParser;
+      ObjectHelper = $__m.ObjectHelper;
     }],
     execute: function() {
-      SharePointDataSource = function($__super) {
-        function SharePointDataSource(path) {
-          $traceurRuntime.superConstructor(SharePointDataSource).call(this, path);
-          this._dataReference = null;
+      FirebaseDataSource = function($__super) {
+        function FirebaseDataSource(path) {
+          var options = arguments[1] !== (void 0) ? arguments[1] : {orderBy: '.priority'};
+          $traceurRuntime.superConstructor(FirebaseDataSource).call(this, path);
           this._onValueCallback = null;
           this._onAddCallback = null;
           this._onChangeCallback = null;
           this._onMoveCallback = null;
           this._onRemoveCallback = null;
-          this._orginialPath = path;
+          this._dataReference = new Firebase(path);
+          this.options = options;
           ObjectHelper.bindAllMethods(this, this);
-          ObjectHelper.hideMethodsAndPrivatePropertiesFromObject(this);
-          ObjectHelper.hidePropertyFromObject(Object.getPrototypeOf(this), 'length');
-          if (this.key().length > 0) {
-            this._dataReference = new SharePoint({
-              endPoint: this._orginialPath,
-              listName: this.key()
-            });
-          }
         }
-        return ($traceurRuntime.createClass)(SharePointDataSource, {
-          _notifyOnValue: function(snapshot) {
-            if (this._onValueCallback) {
-              this._onValueCallback(snapshot);
-            }
-          },
-          _ParseSelector: function(path, endPoint) {},
-          _ParsePath: function(path, endPoint) {
-            var url = UrlParser(path);
-            if (!url)
-              console.log("Invalid datasource path provided!");
-            var pathParts = url.path.split('/');
-            var newPath = url.protocol + "://" + url.host + "/";
-            for (var i = 0; i < pathParts.length; i++)
-              newPath += pathParts[i] + "/";
-            newPath += endPoint;
-            return newPath;
-          },
-          get inheritable() {
-            return true;
-          },
-          child: function(childName) {
-            var childPath = '';
-            if (childName.indexOf('http') > -1) {
-              childPath = childName.substring(1);
-            } else {
-              childPath += this._orginialPath + '/' + childName;
-            }
-            return new SharePointDataSource(childPath);
-          },
-          root: function() {
-            return '';
-          },
-          path: function() {
-            return this._orginialPath;
-          },
-          toString: function() {
-            return this._orginialPath;
-          },
-          key: function() {
-            var url = UrlParser(this._orginialPath);
-            if (!url)
-              console.log("Invalid datasource path provided!");
-            if (url.path.length == 0)
-              return "";
-            var pathElements = url.path.split('/');
-            if (pathElements.length == 1)
-              return url.path;
-            else
-              return url.path.split('/').pop();
-          },
-          set: function(newData) {
-            this._dataReference.set(newData);
+        return ($traceurRuntime.createClass)(FirebaseDataSource, {
+          get dataReference() {
             return this._dataReference;
           },
-          remove: function(object) {
-            this._dataReference.remove(newData);
+          set dataReference(value) {
+            this._dataReference = value;
+          },
+          toString: function() {
+            return this._dataReference.toString();
+          },
+          child: function(childName) {
+            var options = arguments[1] !== (void 0) ? arguments[1] : {};
+            return new FirebaseDataSource(this._dataReference.child(childName).toString(), options);
+          },
+          path: function() {
+            return this._dataReference.toString();
+          },
+          key: function() {
+            return this._dataReference.key();
+          },
+          set: function(newData) {
+            return this._dataReference.set(newData);
+          },
+          remove: function() {
+            return this._dataReference.remove();
           },
           push: function(newData) {
-            return this.set(newData);
+            return new FirebaseDataSource(this._dataReference.push(newData).toString());
           },
           setWithPriority: function(newData, priority) {
-            newData.priority = priority;
-            this.set(newData);
+            return this._dataReference.setWithPriority(newData, priority);
           },
-          setPriority: function(newPriority) {},
+          setPriority: function(newPriority) {
+            return this._dataReference.setPriority(newPriority);
+          },
+          orderByChild: function(childKey) {
+            return new FirebaseDataSource(this._dataReference.orderByChild(childKey));
+          },
+          orderByKey: function() {
+            return new FirebaseDataSource(this._dataReference.orderByKey());
+          },
+          orderByValue: function() {
+            return new FirebaseDataSource(this._dataReference.orderByValue());
+          },
+          limitToFirst: function(amount) {
+            return new FirebaseDataSource(this._dataReference.limitToFirst(amount));
+          },
+          limitToLast: function(amount) {
+            return new FirebaseDataSource(this._dataReference.limitToLast(amount));
+          },
+          authWithOAuthToken: function(provider, credentials, onComplete, options) {
+            return this._dataReference.authWithOAuthToken(provider, credentials, onComplete, options);
+          },
+          authWithCustomToken: function(authToken, onComplete, options) {
+            return this._dataReference.authWithCustomToken(authToken, onComplete, options);
+          },
+          authWithPassword: function(credentials, onComplete, options) {
+            return this._dataReference.authWithPassword(credentials, onComplete, options);
+          },
+          authAnonymously: function(onComplete, options) {
+            return this._dataReference.authAnonymously(onComplete, options);
+          },
+          getAuth: function() {
+            return this._dataReference.getAuth();
+          },
+          unauth: function() {
+            return this._dataReference.unauth();
+          },
           setValueChangedCallback: function(callback) {
-            var $__0 = this;
             this._onValueCallback = callback;
-            var wrapper = function(data) {
-              var newChildSnapshot = new SharePointSnapshot(data, $__0);
-              $__0._onValueCallback(newChildSnapshot);
-            };
-            this._dataReference.on('value', wrapper.bind(this));
+            if (this.options.orderBy && this.options.orderBy === '.priority') {
+              this._dataReference.orderByPriority().on('value', this._onValueCallback.bind(this));
+            } else if (this.options.orderBy && this.options.orderBy === '.value') {
+              this._dataReference.orderByValue().on('value', this._onValueCallback.bind(this));
+            } else if (this.options.orderBy && this.options.orderBy !== '') {
+              this._dataReference.orderByChild(this.options.orderBy).on('value', this._onValueCallback.bind(this));
+            } else {
+              this._dataReference.on('value', this._onValueCallback.bind(this));
+            }
           },
           removeValueChangedCallback: function() {
             if (this._onValueCallback) {
@@ -16950,11 +16915,18 @@ System.register("datasources/SharePointDataSource.js", ["github:Bizboard/di.js@m
           setChildAddedCallback: function(callback) {
             var $__0 = this;
             this._onAddCallback = callback;
-            var wrapper = function(data, previousSiblingId) {
-              var newChildSnapshot = new SharePointSnapshot(data, $__0);
-              $__0._onAddCallback(newChildSnapshot, previousSiblingId);
+            var wrapper = function(newChildSnapshot, prevChildName) {
+              $__0._onAddCallback(newChildSnapshot, prevChildName);
             };
-            this._dataReference.on('child_added', wrapper.bind(this));
+            if (this.options.orderBy && this.options.orderBy === '.priority') {
+              this._dataReference.orderByPriority().on('child_added', wrapper.bind(this));
+            } else if (this.options.orderBy && this.options.orderBy === '.value') {
+              this._dataReference.orderByValue().on('child_added', wrapper.bind(this));
+            } else if (this.options.orderBy && this.options.orderBy !== '') {
+              this._dataReference.orderByChild(this.options.orderBy).on('child_added', wrapper.bind(this));
+            } else {
+              this._dataReference.on('child_added', wrapper.bind(this));
+            }
           },
           removeChildAddedCallback: function() {
             if (this._onAddCallback) {
@@ -16965,11 +16937,18 @@ System.register("datasources/SharePointDataSource.js", ["github:Bizboard/di.js@m
           setChildChangedCallback: function(callback) {
             var $__0 = this;
             this._onChangeCallback = callback;
-            var wrapper = function(data, previousSiblingId) {
-              var newChildSnapshot = new SharePointSnapshot(data, $__0);
-              $__0._onChangeCallback(newChildSnapshot, previousSiblingId);
+            var wrapper = function(newChildSnapshot, prevChildName) {
+              $__0._onChangeCallback(newChildSnapshot, prevChildName);
             };
-            this._dataReference.on('child_changed', wrapper.bind(this));
+            if (this.options.orderBy && this.options.orderBy === '.priority') {
+              this._dataReference.orderByPriority().on('child_changed', wrapper.bind(this));
+            } else if (this.options.orderBy && this.options.orderBy === '.value') {
+              this._dataReference.orderByValue().on('child_changed', wrapper.bind(this));
+            } else if (this.options.orderBy && this.options.orderBy !== '') {
+              this._dataReference.orderByChild(this.options.orderBy).on('child_changed', wrapper.bind(this));
+            } else {
+              this._dataReference.on('child_changed', wrapper.bind(this));
+            }
           },
           removeChildChangedCallback: function() {
             if (this._onChangeCallback) {
@@ -16977,22 +16956,254 @@ System.register("datasources/SharePointDataSource.js", ["github:Bizboard/di.js@m
               this._onChangeCallback = null;
             }
           },
-          setChildMovedCallback: function(callback) {},
-          removeChildMovedCallback: function() {},
-          setChildRemovedCallback: function(callback) {
+          setChildMovedCallback: function(callback) {
             var $__0 = this;
+            this._onMoveCallback = callback;
+            this._dataReference.on('child_moved', function(newChildSnapshot, prevChildName) {
+              $__0._onMoveCallback(newChildSnapshot, prevChildName);
+            });
+          },
+          removeChildMovedCallback: function() {
+            if (this._onMoveCallback) {
+              this._dataReference.off('child_moved', this._onMoveCallback);
+              this._onMoveCallback = null;
+            }
+          },
+          setChildRemovedCallback: function(callback) {
             this._onRemoveCallback = callback;
-            var wrapper = function(data) {
-              var removedChildSnapshot = new SharePointSnapshot(data, $__0);
-              $__0._onRemoveCallback(removedChildSnapshot);
-            };
-            this._dataReference.on('child_removed', wrapper.bind(this));
+            this._dataReference.on('child_removed', this._onRemoveCallback);
           },
           removeChildRemovedCallback: function() {
             if (this._onRemoveCallback) {
               this._dataReference.off('child_removed', this._onRemoveCallback);
               this._onRemoveCallback = null;
             }
+          }
+        }, {}, $__super);
+      }(DataSource);
+      $__export("FirebaseDataSource", FirebaseDataSource);
+      Object.defineProperty(FirebaseDataSource, "annotations", {get: function() {
+          return [new Provide(DataSource)];
+        }});
+    }
+  };
+});
+
+System.register("datasources/SharePointDataSource.js", ["github:Bizboard/di.js@master.js", "github:Bizboard/arva-utils@1.0.0-beta-1/ObjectHelper.js", "github:Bizboard/arva-utils@1.0.0-beta-1/request/UrlParser.js", "core/DataSource.js", "github:Bizboard/SPSoapAdapter@master/SharePoint.js", "datasources/SharePoint/SharePointSnapshot.js"], function($__export) {
+  "use strict";
+  var __moduleName = "datasources/SharePointDataSource.js";
+  var Provide,
+      ObjectHelper,
+      UrlParser,
+      DataSource,
+      SharePoint,
+      SharePointSnapshot,
+      SharePointDataSource;
+  return {
+    setters: [function($__m) {
+      Provide = $__m.Provide;
+    }, function($__m) {
+      ObjectHelper = $__m.ObjectHelper;
+    }, function($__m) {
+      UrlParser = $__m.UrlParser;
+    }, function($__m) {
+      DataSource = $__m.DataSource;
+    }, function($__m) {
+      SharePoint = $__m.SharePoint;
+    }, function($__m) {
+      SharePointSnapshot = $__m.SharePointSnapshot;
+    }],
+    execute: function() {
+      SharePointDataSource = function($__super) {
+        function SharePointDataSource(path) {
+          var options = arguments[1] !== (void 0) ? arguments[1] : {};
+          $traceurRuntime.superConstructor(SharePointDataSource).call(this, path);
+          this._dataReference = null;
+          this._onValueCallback = null;
+          this._onAddCallback = null;
+          this._onChangeCallback = null;
+          this._onMoveCallback = null;
+          this._onRemoveCallback = null;
+          this._orginialPath = path;
+          this.options = options;
+          ObjectHelper.bindAllMethods(this, this);
+          if (this.key().length > 0) {
+            var configuration = {
+              endPoint: this._orginialPath,
+              listName: this.key()
+            };
+            if (this.options.query) {
+              configuration.query = this.options.query;
+            }
+            if (this.options.orderBy) {
+              configuration.orderBy = this.options.orderBy;
+            }
+            if (this.options.limit) {
+              configuration.limit = this.options.limit;
+            }
+            this._dataReference = new SharePoint(configuration);
+          }
+        }
+        return ($traceurRuntime.createClass)(SharePointDataSource, {
+          get inheritable() {
+            return true;
+          },
+          toString: function() {
+            return this._orginialPath;
+          },
+          child: function(childName) {
+            var options = arguments[1] !== (void 0) ? arguments[1] : null;
+            var childPath = '';
+            if (childName.indexOf('http') !== -1) {
+              childPath = childName.substring(1);
+            } else {
+              childPath += this._orginialPath + '/' + childName;
+            }
+            return new SharePointDataSource(childPath, options || this.options);
+          },
+          path: function() {
+            return this._orginialPath;
+          },
+          key: function() {
+            var url = UrlParser(this._orginialPath);
+            if (!url) {
+              console.log('Invalid datasource path provided!');
+            }
+            if (url.path.length === 0) {
+              return '';
+            }
+            var pathElements = url.path.split('/');
+            if (pathElements.length === 1) {
+              return url.path;
+            } else {
+              return url.path.split('/').pop();
+            }
+          },
+          set: function(newData) {
+            this._dataReference.set(newData);
+            return this;
+          },
+          remove: function(object) {
+            this._dataReference.remove(object);
+          },
+          push: function(newData) {
+            var pushedData = this._dataReference.set(newData);
+            return new SharePointDataSource(this.path()).child(("" + pushedData['_temporary-identifier']));
+          },
+          setWithPriority: function(newData, priority) {
+            newData.priority = priority;
+            this.set(newData);
+          },
+          setPriority: function(newPriority) {
+            throw new Error('Not implemented');
+          },
+          limitToFirst: function(amount) {
+            throw new Error('Not implemented');
+          },
+          limitToLast: function(amount) {
+            throw new Error('Not implemented');
+          },
+          authWithOAuthToken: function(provider, credentials, onComplete, options) {
+            throw new Error('Not implemented');
+          },
+          authWithCustomToken: function(authToken, onComplete, options) {
+            throw new Error('Not implemented');
+          },
+          authWithPassword: function(credentials, onComplete, options) {
+            throw new Error('Not implemented');
+          },
+          authAnonymously: function(onComplete, options) {
+            throw new Error('Not implemented');
+          },
+          getAuth: function() {
+            throw new Error('Not implemented');
+          },
+          unauth: function() {
+            throw new Error('Not implemented');
+          },
+          setValueChangedCallback: function(callback) {
+            var $__0 = this;
+            this._onValueCallback = function(data) {
+              var newChildSnapshot = new SharePointSnapshot(data, $__0);
+              callback(newChildSnapshot);
+            };
+            this._dataReference.on('value', this._onValueCallback);
+          },
+          removeValueChangedCallback: function() {
+            if (this._onValueCallback) {
+              this._dataReference.off('value', this._onValueCallback);
+              this._onValueCallback = null;
+            }
+          },
+          setChildAddedCallback: function(callback) {
+            var $__0 = this;
+            this._onAddCallback = function(data, previousSiblingId) {
+              var newChildSnapshot = new SharePointSnapshot(data, $__0);
+              callback(newChildSnapshot, previousSiblingId);
+            };
+            this._dataReference.on('child_added', this._onAddCallback);
+          },
+          removeChildAddedCallback: function() {
+            if (this._onAddCallback) {
+              this._dataReference.off('child_added', this._onAddCallback);
+              this._onAddCallback = null;
+            }
+          },
+          setChildChangedCallback: function(callback) {
+            var $__0 = this;
+            this._onChangeCallback = function(data, previousSiblingId) {
+              var newChildSnapshot = new SharePointSnapshot(data, $__0);
+              callback(newChildSnapshot, previousSiblingId);
+            };
+            this._dataReference.on('child_changed', this._onChangeCallback);
+          },
+          removeChildChangedCallback: function() {
+            if (this._onChangeCallback) {
+              this._dataReference.off('child_changed', this._onChangeCallback);
+              this._onChangeCallback = null;
+            }
+          },
+          setChildMovedCallback: function(callback) {
+            console.warn('Not implemented');
+          },
+          removeChildMovedCallback: function() {
+            console.warn('Not implemented');
+          },
+          setChildRemovedCallback: function(callback) {
+            var $__0 = this;
+            this._onRemoveCallback = function(data) {
+              var removedChildSnapshot = new SharePointSnapshot(data, $__0);
+              callback(removedChildSnapshot);
+            };
+            this._dataReference.on('child_removed', this._onRemoveCallback);
+          },
+          removeChildRemovedCallback: function() {
+            if (this._onRemoveCallback) {
+              this._dataReference.off('child_removed', this._onRemoveCallback);
+              this._onRemoveCallback = null;
+            }
+          },
+          root: function() {
+            return '';
+          },
+          _notifyOnValue: function(snapshot) {
+            if (this._onValueCallback) {
+              this._onValueCallback(snapshot);
+            }
+          },
+          _ParseSelector: function(path, endPoint) {},
+          _ParsePath: function(path, endPoint) {
+            var url = UrlParser(path);
+            if (!url) {
+              console.log('Invalid datasource path provided!');
+            }
+            var pathParts = url.path.split('/');
+            var newPath = url.protocol + '://' + url.host + '/';
+            for (var i = 0; i < pathParts.length; i++) {
+              newPath += pathParts[i] + '/';
+            }
+            newPath += endPoint;
+            return newPath;
           }
         }, {}, $__super);
       }(DataSource);
@@ -17041,247 +17252,88 @@ System.register("github:Bizboard/di.js@master.js", ["github:Bizboard/di.js@maste
   };
 });
 
-System.register("datasources/FirebaseDataSource.js", ["github:Bizboard/arva-utils@master/ObjectHelper.js", "core/DataSource.js", "github:firebase/firebase-bower@2.2.7.js", "github:Bizboard/di.js@master.js"], function($__export) {
+System.register("github:Bizboard/arva-utils@1.0.0-beta-1/Context.js", ["github:Bizboard/di.js@master.js"], function($__export) {
   "use strict";
-  var __moduleName = "datasources/FirebaseDataSource.js";
-  var ObjectHelper,
-      DataSource,
-      Firebase,
-      Provide,
-      annotate,
-      FirebaseDataSource;
+  var __moduleName = "github:Bizboard/arva-utils@1.0.0-beta-1/Context.js";
+  var Injector,
+      contextContainer,
+      Context;
   return {
     setters: [function($__m) {
-      ObjectHelper = $__m.ObjectHelper;
-    }, function($__m) {
-      DataSource = $__m.DataSource;
-    }, function($__m) {
-      Firebase = $__m.default;
-    }, function($__m) {
-      Provide = $__m.Provide;
-      annotate = $__m.annotate;
+      Injector = $__m.Injector;
     }],
     execute: function() {
-      FirebaseDataSource = function($__super) {
-        function FirebaseDataSource(path) {
-          var options = arguments[1] !== (void 0) ? arguments[1] : {orderBy: '.priority'};
-          $traceurRuntime.superConstructor(FirebaseDataSource).call(this, path);
-          this._onValueCallback = null;
-          this._onAddCallback = null;
-          this._onChangeCallback = null;
-          this._onMoveCallback = null;
-          this._onRemoveCallback = null;
-          this._dataReference = new Firebase(path);
-          this.options = options;
-          ObjectHelper.bindAllMethods(this, this);
-        }
-        return ($traceurRuntime.createClass)(FirebaseDataSource, {
-          get dataReference() {
-            return this._dataReference;
+      contextContainer = {};
+      Context = function() {
+        function Context() {}
+        return ($traceurRuntime.createClass)(Context, {}, {
+          getContext: function() {
+            var contextName = arguments[0] !== (void 0) ? arguments[0] : 'Default';
+            return contextContainer[contextName];
           },
-          set dataReference(value) {
-            this._dataReference = value;
+          setContext: function() {
+            var context = arguments[0] !== (void 0) ? arguments[0] : {};
+            var contextName = arguments[1] !== (void 0) ? arguments[1] : 'Default';
+            contextContainer[contextName] = context;
           },
-          child: function(childName) {
-            var options = arguments[1] !== (void 0) ? arguments[1] : null;
-            if (options)
-              return new FirebaseDataSource(this._dataReference.child(childName).toString(), options);
-            else
-              return new FirebaseDataSource(this._dataReference.child(childName).toString());
-          },
-          path: function() {
-            return this._dataReference.toString();
-          },
-          key: function() {
-            return this._dataReference.key();
-          },
-          set: function(newData) {
-            return this._dataReference.set(newData);
-          },
-          remove: function() {
-            return this._dataReference.remove();
-          },
-          push: function(newData) {
-            return new FirebaseDataSource(this._dataReference.push(newData).toString());
-          },
-          setWithPriority: function(newData, priority) {
-            return this._dataReference.setWithPriority(newData, priority);
-          },
-          setPriority: function(newPriority) {
-            return this._dataReference.setPriority(newPriority);
-          },
-          limitToFirst: function(amount) {
-            return this._dataReference.limitToFirst(amount);
-          },
-          limitToLast: function(amount) {
-            return this._dataReference.limitToLast(amount);
-          },
-          authWithOAuthToken: function(provider, credentials, onComplete, options) {
-            return this._dataReference.authWithOAuthToken(provider, credentials, onComplete, options);
-          },
-          authWithCustomToken: function(authToken, onComplete, options) {
-            return this._dataReference.authWithCustomToken(authToken, onComplete, options);
-          },
-          authWithPassword: function(credentials, onComplete, options) {
-            return this._dataReference.authWithPassword(credentials, onComplete, options);
-          },
-          getAuth: function() {
-            return this._dataReference.getAuth();
-          },
-          unauth: function() {
-            return this._dataReference.unauth();
-          },
-          setValueChangedCallback: function(callback) {
-            this._onValueCallback = callback;
-            this._dataReference.on('value', this._onValueCallback);
-          },
-          removeValueChangedCallback: function() {
-            if (this._onValueCallback) {
-              this._dataReference.off('value', this._onValueCallback);
-              this._onValueCallback = null;
-            }
-          },
-          setChildAddedCallback: function(callback) {
-            var $__0 = this;
-            this._onAddCallback = callback;
-            var wrapper = function(newChildSnapshot, prevChildName) {
-              $__0._onAddCallback(newChildSnapshot, prevChildName);
-            };
-            if (this.options.orderBy && this.options.orderBy == '.priority') {
-              this._dataReference.orderByPriority().on('child_added', wrapper.bind(this));
-            } else if (this.options.orderBy && this.options.orderBy == '.value') {
-              this._dataReference.orderByValue().on('child_added', wrapper.bind(this));
-            } else if (this.options.orderBy && this.options.orderBy != '') {
-              this._dataReference.orderByChild(this.options.orderBy).on('child_added', wrapper.bind(this));
-            } else {
-              this._dataReference.on('child_added', wrapper.bind(this));
-            }
-          },
-          removeChildAddedCallback: function() {
-            if (this._onAddCallback) {
-              this._dataReference.off('child_added', this._onAddCallback);
-              this._onAddCallback = null;
-            }
-          },
-          setChildChangedCallback: function(callback) {
-            var $__0 = this;
-            this._onChangeCallback = callback;
-            var wrapper = function(newChildSnapshot, prevChildName) {
-              $__0._onChangeCallback(newChildSnapshot, prevChildName);
-            };
-            if (this.options.orderBy && this.options.orderBy == '.priority') {
-              this._dataReference.orderByPriority().on('child_changed', wrapper.bind(this));
-            } else if (this.options.orderBy && this.options.orderBy == '.value') {
-              this._dataReference.orderByValue().on('child_changed', wrapper.bind(this));
-            } else if (this.options.orderBy && this.options.orderBy != '') {
-              this._dataReference.orderByChild(this.options.orderBy).on('child_changed', wrapper.bind(this));
-            } else {
-              this._dataReference.on('child_changed', wrapper.bind(this));
-            }
-          },
-          removeChildChangedCallback: function() {
-            if (this._onChangeCallback) {
-              this._dataReference.off('child_changed', this._onChangeCallback);
-              this._onChangeCallback = null;
-            }
-          },
-          setChildMovedCallback: function(callback) {
-            var $__0 = this;
-            this._onMoveCallback = callback;
-            this._dataReference.on('child_moved', function(newChildSnapshot, prevChildName) {
-              $__0._onMoveCallback(newChildSnapshot, prevChildName);
-            });
-          },
-          removeChildMovedCallback: function() {
-            if (this._onMoveCallback) {
-              this._dataReference.off('child_moved', this._onMoveCallback);
-              this._onMoveCallback = null;
-            }
-          },
-          setChildRemovedCallback: function(callback) {
-            this._onRemoveCallback = callback;
-            this._dataReference.on('child_removed', this._onRemoveCallback);
-          },
-          removeChildRemovedCallback: function() {
-            if (this._onRemoveCallback) {
-              this._dataReference.off('child_removed', this._onRemoveCallback);
-              this._onRemoveCallback = null;
-            }
+          buildContext: function() {
+            var dependencies = arguments[0] !== (void 0) ? arguments[0] : [];
+            var contextName = arguments[1] !== (void 0) ? arguments[1] : 'Default';
+            Context.setContext(new Injector(dependencies));
           }
-        }, {}, $__super);
-      }(DataSource);
-      $__export("FirebaseDataSource", FirebaseDataSource);
-      annotate(FirebaseDataSource, new Provide(DataSource));
+        });
+      }();
+      $__export("Context", Context);
     }
   };
 });
 
-System.register("core/Model.js", ["npm:lodash@3.9.3.js", "core/Model/prioritisedObject.js", "core/DataSource.js", "github:Bizboard/arva-utils@master/ObjectHelper.js", "github:Bizboard/arva-utils@master/Context.js"], function($__export) {
+System.register("core/Model.js", ["npm:lodash@3.9.3.js", "github:Bizboard/arva-utils@1.0.0-beta-1/Context.js", "github:Bizboard/arva-utils@1.0.0-beta-1/ObjectHelper.js", "core/PrioritisedObject.js", "core/DataSource.js"], function($__export) {
   "use strict";
   var __moduleName = "core/Model.js";
   var _,
+      Context,
+      ObjectHelper,
       PrioritisedObject,
       DataSource,
-      ObjectHelper,
-      Context,
       Model;
   return {
     setters: [function($__m) {
       _ = $__m.default;
     }, function($__m) {
-      PrioritisedObject = $__m.PrioritisedObject;
-    }, function($__m) {
-      DataSource = $__m.DataSource;
+      Context = $__m.Context;
     }, function($__m) {
       ObjectHelper = $__m.ObjectHelper;
     }, function($__m) {
-      Context = $__m.Context;
+      PrioritisedObject = $__m.PrioritisedObject;
+    }, function($__m) {
+      DataSource = $__m.DataSource;
     }],
     execute: function() {
       Model = function($__super) {
         function Model(id) {
           var data = arguments[1] !== (void 0) ? arguments[1] : null;
           var options = arguments[2] !== (void 0) ? arguments[2] : {};
-          var $__0;
           var dataSource = Context.getContext().get(DataSource);
-          if (options.path) {
-            $traceurRuntime.superConstructor(Model).call(this, dataSource.child(options.path + '/' + id || ''), options.dataSnapshot);
-          } else if (options.dataSource) {
-            $traceurRuntime.superConstructor(Model).call(this, options.dataSource, options.dataSnapshot);
-          } else if (options.dataSnapshot) {
-            $traceurRuntime.superConstructor(Model).call(this, dataSource.child(options.dataSnapshot.ref().path.toString()), options.dataSnapshot);
-          } else {
-            $traceurRuntime.superConstructor(Model).call(this);
-          }
+          $traceurRuntime.superConstructor(Model).call(this);
           this._replaceModelAccessorsWithDatabinding();
           var modelName = Object.getPrototypeOf(this).constructor.name;
           var pathRoot = modelName + 's';
-          if (id) {
-            this.disableChangeListener();
-            this.id = id;
-            this.enableChangeListener();
-            if (options.dataSource) {
-              this._dataSource = options.dataSource;
-            } else if (options.path) {
-              this._dataSource = dataSource.child(options.path).child(id);
-            } else {
-              this._dataSource = dataSource.child(pathRoot).child(id);
-            }
+          if (options.dataSource && id) {
+            this._dataSource = options.dataSource;
+          } else if (options.dataSource) {
+            this._dataSource = options.dataSource.push(data);
+          } else if (options.path && id) {
+            this._dataSource = dataSource.child(options.path + '/' + id || '');
+          } else if (options.dataSnapshot) {
+            this._dataSource = dataSource.child(options.dataSnapshot.ref().path.toString());
+          } else if (id) {
+            this._dataSource = dataSource.child(pathRoot).child(id);
           } else {
-            if (options.dataSnapshot) {
-              id = options.dataSnapshot.key();
-              this._dataSource = dataSource.child(pathRoot).child(id);
+            if (options.path) {
+              this._dataSource = dataSource.child(options.path).push(data);
             } else {
-              if (options.dataSource)
-                this._dataSource = options.dataSource.push(data);
-              else if (options.path)
-                this._dataSource = dataSource.child(options.path).push(data);
-              else {
-                this._dataSource = dataSource.child(pathRoot).push(data);
-              }
-              this.disableChangeListener();
-              this.id = this._dataSource.key();
-              this.enableChangeListener();
+              this._dataSource = dataSource.child(pathRoot).push(data);
             }
           }
           if (options.dataSnapshot) {
@@ -17289,18 +17341,10 @@ System.register("core/Model.js", ["npm:lodash@3.9.3.js", "core/Model/prioritised
           } else {
             this._buildFromDataSource(this._dataSource);
           }
-          if (data) {
-            this.transaction(($__0 = this, function() {
-              for (var name in data) {
-                if (Object.getOwnPropertyDescriptor($__0, name)) {
-                  var value = data[name];
-                  $__0[name] = value;
-                }
-              }
-            }));
-          }
+          this._writeLocalDataToModel(data);
         }
-        return ($traceurRuntime.createClass)(Model, {_replaceModelAccessorsWithDatabinding: function() {
+        return ($traceurRuntime.createClass)(Model, {
+          _replaceModelAccessorsWithDatabinding: function() {
             var $__0 = this;
             var prototype = Object.getPrototypeOf(this);
             while (prototype.constructor.name !== 'Model') {
@@ -17339,7 +17383,29 @@ System.register("core/Model.js", ["npm:lodash@3.9.3.js", "core/Model/prioritised
               }
               prototype = Object.getPrototypeOf(prototype);
             }
-          }}, {}, $__super);
+          },
+          _writeLocalDataToModel: function(data) {
+            if (data) {
+              var isDataDifferent = false;
+              for (var name in data) {
+                if (Object.getOwnPropertyDescriptor(this, name) && this[name] !== data[name]) {
+                  isDataDifferent = true;
+                  break;
+                }
+              }
+              if (isDataDifferent) {
+                this.transaction(function() {
+                  for (var name in data) {
+                    if (Object.getOwnPropertyDescriptor(this, name)) {
+                      var value = data[name];
+                      this[name] = value;
+                    }
+                  }
+                }.bind(this));
+              }
+            }
+          }
+        }, {}, $__super);
       }(PrioritisedObject);
       $__export("Model", Model);
     }

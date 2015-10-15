@@ -22,7 +22,7 @@ export class DataModelGenerator {
     constructor(originalPath, schema) {
 
         // initialize the arguments
-        if (!schema) throw "Schema wasn't provided.";
+        if (!schema) throw 'Schema wasn\'t provided.';
         if (schema && schema.Prefix)  {
             this._applicationId = schema.Prefix;
         }
@@ -38,7 +38,7 @@ export class DataModelGenerator {
             this.hidden = schema.hidden.toString().toUpperCase();
         }
 
-        /* Bind all local methods to the current object instance, so we can refer to "this"
+        /* Bind all local methods to the current object instance, so we can refer to 'this'
          * in the methods as expected, even when they're called from event handlers.        */
         ObjectHelper.bindAllMethods(this, this);
 
@@ -159,7 +159,7 @@ export class DataModelGenerator {
                 .then(
                 (result)=> {
                     // exists, so let's return handle
-                    resolve(result);
+                    resolve(result.response);
                 },
                 (error) => {
                     // exists, so let's create
@@ -168,7 +168,7 @@ export class DataModelGenerator {
                     PostRequest(newListRequest)
                         .then(
                         (result)=> {
-                            resolve(result);
+                            resolve(result.response);
                         },
                         (error) => {
                             reject(error);
@@ -201,13 +201,12 @@ export class DataModelGenerator {
             if (this._applicationId) internalName = this._applicationId + '_' + internalName;
             if (listData.indexOf(internalName)!=-1) continue;
 
-            // handle Lookup's differently
-            if (modelDescription[i].type == 'Lookup') {
-                let newLookup = this._CreateLookup(listName, internalName, modelDescription[i].source);
+            // handle Lookups differently
+            if (modelDescription[i].type == 'Lookup' || modelDescription[i].type == 'LookupMulti') {
+                let newLookup = this._CreateLookup(listName, internalName, modelDescription[i].type, modelDescription[i].source);
                 listOfLookups.push(newLookup);
-            }
-            // handle simple types
-            else {
+            } else {
+                // handle simple types
 
                 var modelData = {
                     '_ID': i,
@@ -226,9 +225,8 @@ export class DataModelGenerator {
         return new Promise((resolve, reject)=> {
 
             if (params.newFields.Fields.Method.length==0) {
-                resolve("No action taken.");
-            }
-            else {
+                resolve('No action taken.');
+            } else {
                 PostRequest(updateListRequest)
 
                     // end with creation of all simple field types
@@ -242,7 +240,7 @@ export class DataModelGenerator {
 
                     // end with resolving all lookup creations
                     .then((result) => {
-                            resolve(result);
+                            resolve(result.response);
                         }, (error) => {
                             reject(result);
                         });
@@ -250,7 +248,7 @@ export class DataModelGenerator {
         });
     }
 
-    _CreateLookup(listName, fieldName, sourceName) {
+    _CreateLookup(listName, fieldName, type, sourceName) {
 
         return this._GetOrCreateList(sourceName)
             .then((result)=> {
@@ -264,11 +262,12 @@ export class DataModelGenerator {
                             Method: [{
                                 '_ID': 1,
                                 Field: {
-                                    '_Type': 'Lookup',
+                                    '_Type': type,
                                     '_DisplayName': fieldName,
                                     '_FromBaseType': 'TRUE',
                                     '_ShowField': 'Title',
-                                    '_List': listId
+                                    '_List': listId,
+                                    '_Mult': type === 'LookupMulti' ? 'TRUE' : 'FALSE'
                                 }
                             }]
                         }
@@ -299,13 +298,13 @@ export class DataModelGenerator {
         let idNode;
 
 
-        if (typeof(data.selectSingleNode) != "undefined")
-            idNode = data.selectSingleNode("//List");
+        if (typeof(data.selectSingleNode) != 'undefined')
+            idNode = data.selectSingleNode('//List');
         else
-            idNode = data.querySelector("List");
+            idNode = data.querySelector('List');
 
         let idAttribute = '';
-        if (idNode) idAttribute = idNode.getAttribute("ID");
+        if (idNode) idAttribute = idNode.getAttribute('ID');
 
         return idAttribute;
     }
@@ -334,22 +333,22 @@ export class DataModelGenerator {
 
     _ParsePath(path, endPoint) {
         var url = UrlParser(path);
-        if (!url) console.log("Invalid datasource path provided!");
+        if (!url) console.log('Invalid datasource path provided!');
 
         var pathParts = url.path.split('/');
-        var newPath = url.protocol + "://" + url.host + "/";
+        var newPath = url.protocol + '://' + url.host + '/';
         for(var i=0;i<pathParts.length;i++)
-            newPath += pathParts[i] + "/";
+            newPath += pathParts[i] + '/';
         newPath += endPoint;
         return newPath;
     }
 
     _serializeParams(params) {
-        if (!params||params.length==0) return "";
-        var data = { "root": params };
+        if (!params||params.length==0) return '';
+        var data = { root: params };
         var creator = new XML2JS();
         var payload = creator.json2xml_str(data);
 
-        return payload.replace("<root>","").replace("</root>","");
+        return payload.replace('<root>','').replace('</root>','');
     }
 }
