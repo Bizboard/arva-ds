@@ -1,7 +1,6 @@
 /**
  * Created by tom on 15/10/15.
  */
-var sys = require('sys')
 var exec = require('child_process').exec;
 function puts(error, stdout, stderr) { sys.puts(stdout) }
 
@@ -22,8 +21,8 @@ if(!version) {
     var dependency = arvaDependencies.shift();
     if(!dependency) { return; }
 
-    exec(`jspm install ${dependency}=github:bizboard/${dependency}@${version}`, function(error, stdout, stderr) {
-        sys.puts(stdout);
+    exec(`jspm install ${dependency}=github:bizboard/${dependency}@${version}`, function(error, stdoutText, stderrText) {
+        console.log(stdoutText);
         if(error){
             console.log('Error whilst installing dependency:', error);
         }
