@@ -3,25 +3,25 @@
   "version": "1.0.0-beta-1",
   "description": "Using the latest ES6 standards creating a simple, compact DataSource library that enables plain object interaction in Javascript and automated synchronisation.",
   "main": false,
-  "homepage": "https://github.com/Bizboard/arva-ds",
+  "homepage": "https://github.com/bizboard/arva-ds",
   "repository": {
     "type": "git",
-    "url": "git://github.com/Bizboard/arva-ds.git"
+    "url": "git://github.com/bizboard/arva-ds.git"
   },
   "scripts": {
-    "build": "jspm bundle-sfx main dist/arva-ds.js"
+    "build": "jspm bundle-sfx main.js dist/arva-ds.js"
   },
   "bugs": {
-    "url": "https://github.com/Bizboard/arva-ds/issues"
+    "url": "https://github.com/bizboard/arva-ds/issues"
   },
   "jspm": {
     "directories": {
       "lib": "src"
     },
     "dependencies": {
-      "SPSoapAdapter": "github:Bizboard/SPSoapAdapter@master",
-      "arva-utils": "github:Bizboard/arva-utils@master",
-      "di": "github:Bizboard/di.js@master",
+      "SPSoapAdapter": "github:bizboard/SPSoapAdapter@develop",
+      "arva-utils": "github:bizboard/arva-utils@develop",
+      "di": "github:bizboard/di.js@master",
       "eventemitter3": "npm:eventemitter3@^1.1.0",
       "firebase": "github:firebase/firebase-bower@^2.2.0",
       "lodash": "npm:lodash@^3.2.0"

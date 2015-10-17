@@ -1,3 +1,4 @@
+
 /**
  This Source Code is licensed under the MIT license. If a copy of the
  MIT-license was not distributed with this file, You can obtain one at:
@@ -9,8 +10,8 @@
 
  */
 
-import {ObjectHelper}               from 'arva-utils/ObjectHelper';
-import {Snapshot}                   from '../../core/Model/snapshot';
+import {ObjectHelper}               from 'arva-utils/ObjectHelper.js';
+import {Snapshot}                   from '../../core/Snapshot.js';
 
 export class SharePointSnapshot extends Snapshot {
 
@@ -66,11 +67,13 @@ export class SharePointSnapshot extends Snapshot {
     }
 
     numChildren() {
-        if (this._data instanceof Array)
+        if (this._data instanceof Array) {
             return this._data.length;
-        //else if (this._data instanceof Object)
-        //    return ObjectHelper.getEnumerableProperties(this._data).length;
-        else return 1;
+        } else if (this._data instanceof Object) {
+            return ObjectHelper.getEnumerableProperties(this._data).length;
+        } else {
+            return 0;
+        }
     }
 }
 
