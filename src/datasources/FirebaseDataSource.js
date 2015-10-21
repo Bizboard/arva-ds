@@ -8,12 +8,12 @@
  @copyright Bizboard, 2015
 
  */
-import {Provide}                    from 'di';
+import {provide}                    from 'di';
 import Firebase                     from 'firebase';
 import {DataSource}                 from '../core/DataSource.js';
 import {ObjectHelper}               from 'arva-utils/ObjectHelper.js';
 
-@Provide(DataSource)
+@provide(DataSource)
 export class FirebaseDataSource extends DataSource {
 
     get dataReference() {

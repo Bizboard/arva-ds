@@ -9,14 +9,14 @@
 
  */
 
-import {Provide}                from 'di';
+import {provide}                from 'di';
 import {DataSource}             from '../core/DataSource.js';
 import Timer                    from 'famous/utilities/Timer';
 import EventEmitter             from 'eventemitter3';
 import _                        from 'lodash';
 import {MockedSnapshot}         from './Mocked/MockedSnapshot.js';
 
-@Provide(DataSource)
+@provide(DataSource)
 export class MockedDataSource extends DataSource {
 
     /**

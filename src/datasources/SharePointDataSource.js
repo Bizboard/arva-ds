@@ -9,14 +9,14 @@
 
  */
 
-import {Provide}                    from 'di';
+import {provide}                    from 'di';
 import {ObjectHelper}               from 'arva-utils/ObjectHelper.js';
 import {UrlParser}                  from 'arva-utils/request/UrlParser.js';
 import {DataSource}                 from '../core/DataSource.js';
 import {SharePoint}                 from 'SPSoapAdapter/SharePoint.js';
 import {SharePointSnapshot}         from './SharePoint/SharePointSnapshot.js';
 
-@Provide(DataSource)
+@provide(DataSource)
 export class SharePointDataSource extends DataSource {
 
     /**
