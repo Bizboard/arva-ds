@@ -32,7 +32,7 @@ export class SharePointDataSource extends DataSource {
         this._onChangeCallback = null;
         this._onMoveCallback = null;
         this._onRemoveCallback = null;
-        this._orginialPath = path;
+        this._orginalPath = path;
         this.options = options;
 
         /* Bind all local methods to the current object instance, so we can refer to 'this'
@@ -42,7 +42,7 @@ export class SharePointDataSource extends DataSource {
         /* Don't initialize this datasource when there is no path selected to retrieve data from. */
         if (this.key().length > 0) {
             let configuration = {
-                endPoint: this._orginialPath,
+                endPoint: this._orginalPath,
                 listName: this.key()
             };
 
@@ -81,7 +81,7 @@ export class SharePointDataSource extends DataSource {
      * @returns {String} Full resource path.
      */
     toString() {
-        return this._orginialPath;
+        return this._orginalPath;
     }
 
     /**
@@ -95,7 +95,7 @@ export class SharePointDataSource extends DataSource {
         if (childName.indexOf('http') !== -1) {
             childPath = childName.substring(1);
         } else {
-            childPath += this._orginialPath + '/' + childName;
+            childPath += this._orginalPath + '/' + childName;
         }
 
         return new SharePointDataSource(childPath, options || this.options);
@@ -106,7 +106,7 @@ export class SharePointDataSource extends DataSource {
      * @returns {String} Full resource path.
      */
     path() {
-        return this._orginialPath;
+        return this._orginalPath;
     }
 
     /**
@@ -114,7 +114,7 @@ export class SharePointDataSource extends DataSource {
      * @returns {String} Current branch name.
      */
     key() {
-        var url = UrlParser(this._orginialPath);
+        var url = UrlParser(this._orginalPath);
         if (!url) { console.log('Invalid datasource path provided!'); }
 
         if (url.path.length === 0) { return ''; }
