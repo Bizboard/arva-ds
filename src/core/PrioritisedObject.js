@@ -223,26 +223,21 @@ export class PrioritisedObject extends EventEmitter {
         /* Set root object _priority */
         this._priority = dataSnapshot.getPriority();
         let data = dataSnapshot.val();
-        let numChildren = dataSnapshot.numChildren();
 
         if (!this._id) {
             this._id = dataSnapshot.key();
         }
 
-        /* If there is no data at this point yet, fire a ready event */
-        if (numChildren === 0) {
-            this._dataSource.ready = true;
-            this.emit('ready');
-        }
-
-        for (let key in data) {
-
-            /* Only map properties that exists on our model */
-            if (Object.getOwnPropertyDescriptor(this, key)) {
-                /* If child is a primitive, listen to changes so we can synch with Firebase */
-                ObjectHelper.addPropertyToObject(this, key, data[key], true, true, this._onSetterTriggered);
+        if(data instanceof Object){
+            for (let key in data) {
+                /* Only map properties that exists on our model */
+                if (Object.getOwnPropertyDescriptor(this, key)) {
+                    /* If child is a primitive, listen to changes so we can synch with Firebase */
+                    ObjectHelper.addPropertyToObject(this, key, data[key], true, true, this._onSetterTriggered);
+                }
             }
-
+        } else if (data != undefined && data != null) {
+            ObjectHelper.addPropertyToObject(this, 'value', data, true, true, this._onSetterTriggered);
         }
 
         this._dataSource.ready = true;
