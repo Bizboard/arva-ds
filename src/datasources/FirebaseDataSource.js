@@ -28,7 +28,7 @@ export class FirebaseDataSource extends DataSource {
      * @param {String} path Full path to resource in remote data storage.
      * @return {FirebaseDataSource} FirebaseDataSource instance.
      **/
-    constructor(path, options = { orderBy: '.priority'}) {
+    constructor(path, options = {orderBy: '.priority'}) {
         super(path);
         this._onValueCallback = null;
         this._onAddCallback = null;
@@ -238,6 +238,64 @@ export class FirebaseDataSource extends DataSource {
     }
 
     /**
+     * Subscribe to and event emitted by the DataSource.
+     * @param {String} event Event type to subscribe to. Allowed values are: 'value', 'child_changed', 'child_added', 'child_removed', 'child_moved'.
+     * @param {Function} handler Function to call when the subscribed event is emitted.
+     * @param {Object} context Context to set 'this' to when calling the handler function.
+     */
+    on(event, handler, context = this) {
+        switch (event) {
+            case 'value':
+            case 'child_added':
+            case 'child_changed':
+                if (this.options.orderBy && this.options.orderBy === '.priority') {
+                    this._dataReference.orderByPriority().on(event, handler.bind(this));
+                } else if (this.options.orderBy && this.options.orderBy === '.value') {
+                    this._dataReference.orderByValue().on(event, handler.bind(this));
+                } else if (this.options.orderBy && this.options.orderBy !== '') {
+                    this._dataReference.orderByChild(this.options.orderBy).on(event, handler.bind(this));
+                } else {
+                    this._dataReference.on(event, handler.bind(this));
+                }
+                break;
+
+            default:
+                this._dataReference.on(event, handler.bind(this));
+                break;
+        }
+    }
+
+    /**
+     * Subscribe to an event emitted by the DataSource once, and then immediately unsubscribe again once it has been emitted a single time.
+     * @param {String} event Event type to subscribe to. Allowed values are: 'value', 'child_changed', 'child_added', 'child_removed', 'child_moved'.
+     * @param {Function} handler Function to call when the subscribed event is emitted.
+     * @param {Object} context Context to set 'this' to when calling the handler function.
+     */
+    once(event, handler, context = this) {
+        return this.on(event, function onceWrapper() {
+            /* TODO: bug in traceur preventing us from using ...arguments as expected: https://github.com/google/traceur-compiler/issues/1118
+             * We want to do this: handler.call(context, ...arguments); */
+            handler.call(context, arguments);
+            this.off(event, onceWrapper, context);
+        }, this);
+    }
+
+
+    /**
+     * Unsubscribe to a previously subscribed event. If no handler or context is given, all handlers for
+     * the given event are removed. If no parameters are given at all, all event types will have their handlers removed.
+     * @param {String} event Event type to unsubscribe from. Allowed values are: 'value', 'child_changed', 'child_added', 'child_removed', 'child_moved'.
+     * @param {Function} handler Optional: Function that was used in previous subscription.
+     */
+    off(event, handler) {
+        if (event && (handler || context)) {
+            super.removeListener(event, handler, context);
+        } else {
+            this._eventEmitter.removeAllListeners(event);
+        }
+    }
+
+    /**
      * Sets the callback triggered when dataSource updates the data.
      * @param {Function} callback Callback function to call when the subscribed data value changes.
      * @returns {void}
@@ -261,7 +319,7 @@ export class FirebaseDataSource extends DataSource {
      * @returns {void}
      **/
     removeValueChangedCallback() {
-        if(this._onValueCallback) {
+        if (this._onValueCallback) {
             this._dataReference.off('value', this._onValueCallback);
             this._onValueCallback = null;
         }
@@ -294,7 +352,7 @@ export class FirebaseDataSource extends DataSource {
      * @returns {void}
      **/
     removeChildAddedCallback() {
-        if(this._onAddCallback) {
+        if (this._onAddCallback) {
             this._dataReference.off('child_added', this._onAddCallback);
             this._onAddCallback = null;
         }
@@ -327,7 +385,7 @@ export class FirebaseDataSource extends DataSource {
      * @returns {void}
      **/
     removeChildChangedCallback() {
-        if(this._onChangeCallback) {
+        if (this._onChangeCallback) {
             this._dataReference.off('child_changed', this._onChangeCallback);
             this._onChangeCallback = null;
         }
@@ -350,7 +408,7 @@ export class FirebaseDataSource extends DataSource {
      * @returns {void}
      **/
     removeChildMovedCallback() {
-        if(this._onMoveCallback) {
+        if (this._onMoveCallback) {
             this._dataReference.off('child_moved', this._onMoveCallback);
             this._onMoveCallback = null;
         }
@@ -371,7 +429,7 @@ export class FirebaseDataSource extends DataSource {
      * @returns {void}
      **/
     removeChildRemovedCallback() {
-        if(this._onRemoveCallback) {
+        if (this._onRemoveCallback) {
             this._dataReference.off('child_removed', this._onRemoveCallback);
             this._onRemoveCallback = null;
         }

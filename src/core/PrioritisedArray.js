@@ -89,22 +89,6 @@ export class PrioritisedArray extends Array {
     }
 
     /**
-     * Subscribes to the given event type exactly once; it automatically unsubscribes after the first time it is triggered.
-     * @param {String} event One of the following Event Types: 'value', 'child_changed', 'child_moved', 'child_removed'.
-     * @param {Function} handler Function that is called when the given event type is emitted.
-     * @param {Object} context Optional: context of 'this' inside the handler function when it is called.
-     * @returns {void}
-     */
-    once(event, handler, context = this) {
-        return this.on(event, function onceWrapper() {
-            /* TODO: bug in traceur preventing us from using ...arguments as expected: https://github.com/google/traceur-compiler/issues/1118
-             * We want to do this: handler.call(context, ...arguments); */
-            handler.call(context, arguments);
-            this.off(event, onceWrapper, context);
-        }, this);
-    }
-
-    /**
      * Subscribes to events emitted by this PrioritisedArray.
      * @param {String} event One of the following Event Types: 'value', 'child_changed', 'child_moved', 'child_removed'.
      * @param {Function} handler Function that is called when the given event type is emitted.
@@ -131,6 +115,22 @@ export class PrioritisedArray extends Array {
     }
 
     /**
+     * Subscribes to the given event type exactly once; it automatically unsubscribes after the first time it is triggered.
+     * @param {String} event One of the following Event Types: 'value', 'child_changed', 'child_moved', 'child_removed'.
+     * @param {Function} handler Function that is called when the given event type is emitted.
+     * @param {Object} context Optional: context of 'this' inside the handler function when it is called.
+     * @returns {void}
+     */
+    once(event, handler, context = this) {
+        return this.on(event, function onceWrapper() {
+            /* TODO: bug in traceur preventing us from using ...arguments as expected: https://github.com/google/traceur-compiler/issues/1118
+             * We want to do this: handler.call(context, ...arguments); */
+            handler.call(context, arguments);
+            this.off(event, onceWrapper, context);
+        }, this);
+    }
+
+    /**
      * Removes subscription to events emitted by this PrioritisedArray. If no handler or context is given, all handlers for
      * the given event are removed. If no parameters are given at all, all event types will have their handlers removed.
      * @param {String} event One of the following Event Types: 'value', 'child_changed', 'child_moved', 'child_removed'.
@@ -139,7 +139,6 @@ export class PrioritisedArray extends Array {
      * @returns {void}
      */
     off(event, handler, context) {
-
         if (event && (handler || context)) {
             this._eventEmitter.removeListener(event, handler, context);
         } else {

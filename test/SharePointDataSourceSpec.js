@@ -12,7 +12,7 @@ describe('SharePointDataSource', () => {
 
     before(() => {
         /* Mock web workers for the SharePoint client if we're running tests from nodejs */
-        if(typeof Worker === 'undefined') { global.Worker = ()=>{} }
+        if(typeof Worker === 'undefined') { global.Worker = class Worker { postMessage () {} }; }
 
         return loadDependencies({SharePointDataSource: 'src/datasources/SharePointDataSource.js'}).then((importedObjects) => { imports = importedObjects; });
     });
@@ -34,6 +34,36 @@ describe('SharePointDataSource', () => {
             dataSource.options.query.should.deep.equal(query);
             dataSource.options.orderBy.should.equal(orderBy);
             dataSource.options.limit.should.equal(limit);
+        });
+        it('calls setValueChangedCallback callback immediately after push', () => {
+            let dataSource = new imports.SharePointDataSource('http://somedomain.org/site/List');
+            let check = null;
+            let childRef = dataSource.push({test:true});
+            childRef.setValueChangedCallback(() => {
+                check = 'pass';
+            });
+            if(check === null) { check = 'fail'; }
+            check.should.equal('pass');
+        });
+        it('calls setValueChangedCallback callback immediately after set', () => {
+            let dataSource = new imports.SharePointDataSource('http://somedomain.org/site/List/1');
+            let check = null;
+            let childRef = dataSource.set({test:true});
+            childRef.setValueChangedCallback(() => {
+                check = 'pass';
+            });
+            if(check === null) { check = 'fail'; }
+            check.should.equal('pass');
+        });
+        it('does not have ', () => {
+            let dataSource = new imports.SharePointDataSource('http://somedomain.org/site/List');
+            let check = null;
+            let childRef = dataSource.push({test:true});
+            childRef.setValueChangedCallback(() => {
+                check = 'pass';
+            });
+            if(check === null) { check = 'fail'; }
+            check.should.equal('pass');
         });
     });
 });
