@@ -276,12 +276,12 @@ export class FirebaseDataSource extends DataSource {
      * @param {Object} context Context to set 'this' to when calling the handler function.
      */
     once(event, handler, context = this) {
-        return this.on(event, function onceWrapper() {
-            /* TODO: bug in traceur preventing us from using ...arguments as expected: https://github.com/google/traceur-compiler/issues/1118
-             * We want to do this: handler.call(context, ...arguments); */
-            handler.call(context, arguments);
-            this.off(event, onceWrapper, context);
-        }, this);
+        let onceWrapper = function () {
+            handler.call(context, ...arguments);
+            this.off(event, onceWrapper);
+        }.bind(this);
+
+        return this.on(event, onceWrapper, this);
     }
 
 

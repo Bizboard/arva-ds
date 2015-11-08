@@ -261,7 +261,7 @@ export class SharePointDataSource extends DataSource {
     on(event, handler, context) {
         let callback = this._callbacks[handler] = (data) => {
             let newChildSnapshot = new SharePointSnapshot(data, this);
-            callback(newChildSnapshot);
+            handler(newChildSnapshot);
         };
         this._dataReference.on(event, callback, context);
     }
@@ -272,15 +272,14 @@ export class SharePointDataSource extends DataSource {
      * @param {Function} handler Function to call when the subscribed event is emitted.
      * @param {Object} context Context to set 'this' to when calling the handler function.
      */
-    once(event, handler, context) {
-        return this._dataReference.on(event, function onceWrapper() {
-            /* TODO: bug in traceur preventing us from using ...arguments as expected: https://github.com/google/traceur-compiler/issues/1118
-             * We want to do this: handler.call(context, ...arguments); */
-            handler.call(context, arguments);
-            this._dataReference.off(event, onceWrapper, context);
-        }, this);
-    }
+    once(event, handler, context = this) {
+        let onceWrapper = function () {
+            handler.call(context, ...arguments);
+            this.off(event, onceWrapper);
+        }.bind(this);
 
+        return this.on(event, onceWrapper, this);
+    }
 
     /**
      * Unsubscribe to a previously subscribed event. If no handler or context is given, all handlers for
@@ -289,7 +288,8 @@ export class SharePointDataSource extends DataSource {
      * @param {Function} handler Optional: Function that was used in previous subscription.
      */
     off(event, handler) {
-        this._dataReference.off(event, handler)
+        let callback = this._callbacks[handler];
+        this._dataReference.off(event, callback);
     }
 
     /**
