@@ -279,14 +279,9 @@ export class PrioritisedArray extends Array {
      * @private
      */
     _buildFromDataSource(dataSource) {
-        let path = dataSource.path();
-        let options = dataSource.options;
-        let DataSourceConstructor = Object.getPrototypeOf(dataSource).constructor;
-        let newSource = new DataSourceConstructor(path, options);
-        newSource.setValueChangedCallback((dataSnapshot) => {
-            newSource.removeValueChangedCallback();
+        dataSource.once('value', (dataSnapshot) => {
             this._buildFromSnapshot(dataSnapshot);
-            this._registerCallbacks(newSource);
+            this._registerCallbacks(dataSource);
         });
     }
 

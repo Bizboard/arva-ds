@@ -9,9 +9,7 @@
 
  */
 
-import EventEmitter                 from 'eventemitter3';
-
-export class DataSource extends EventEmitter {
+export class DataSource {
 
     /**
      * @param {String} path Full path to resource in remote data storage.
@@ -167,7 +165,7 @@ export class DataSource extends EventEmitter {
     unauth() { }
 
     /**
-     * Subscribe to and event emitted by the DataSource.
+     * Subscribe to an event emitted by the DataSource.
      * @param {String} event Event type to subscribe to. Allowed values are: 'value', 'child_changed', 'child_added', 'child_removed', 'child_moved'.
      * @param {Function} handler Function to call when the subscribed event is emitted.
      * @param {Object} context Context to set 'this' to when calling the handler function.

@@ -258,14 +258,7 @@ export class PrioritisedObject extends EventEmitter {
      */
     _buildFromDataSource(dataSource) {
         if (!dataSource) { return; }
-
-        let path = dataSource.path();
-        let DataSource = Object.getPrototypeOf(dataSource).constructor;
-        let newSource = new DataSource(path);
-        newSource.setValueChangedCallback((dataSnapshot) => {
-            newSource.removeValueChangedCallback();
-            this._buildFromSnapshot(dataSnapshot);
-        });
+        dataSource.once('value', this._buildFromSnapshot);
     }
 
     /**

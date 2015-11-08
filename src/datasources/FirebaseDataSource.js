@@ -238,7 +238,7 @@ export class FirebaseDataSource extends DataSource {
     }
 
     /**
-     * Subscribe to and event emitted by the DataSource.
+     * Subscribe to an event emitted by the DataSource.
      * @param {String} event Event type to subscribe to. Allowed values are: 'value', 'child_changed', 'child_added', 'child_removed', 'child_moved'.
      * @param {Function} handler Function to call when the subscribed event is emitted.
      * @param {Object} context Context to set 'this' to when calling the handler function.
@@ -248,6 +248,10 @@ export class FirebaseDataSource extends DataSource {
             case 'value':
             case 'child_added':
             case 'child_changed':
+                /* TODO: Not saving the new dataReference instance like this prevents us from unsubscribing again.
+                 * We'll need to save the dataReference in such a way that we can still call child(), which
+                 * is not possible if we overwrite the dataReference because the order*() methods can be called
+                 * only once. */
                 if (this.options.orderBy && this.options.orderBy === '.priority') {
                     this._dataReference.orderByPriority().on(event, handler.bind(this));
                 } else if (this.options.orderBy && this.options.orderBy === '.value') {
