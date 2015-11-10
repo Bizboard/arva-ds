@@ -168,7 +168,7 @@ export class PrioritisedArray extends Array {
         } else if (model instanceof Object) {
             /* Let's try to parse the object using property reflection */
             var options = {dataSource: this._dataSource};
-            let newModel = new this._dataType(null, model, _.extend(this._modelOptions, options));
+            let newModel = new this._dataType(null, model, _.extend({}, this._modelOptions, options));
             this.add(newModel);
         } else {
             /* TODO: change to throw exception */
@@ -257,7 +257,7 @@ export class PrioritisedArray extends Array {
                     options.path = dataSnapshot.ref().toString().replace(rootPath, '/');
                 }
 
-                let newModel = new this._dataType(child.key(), child.val(), _.extend(this._modelOptions, options));
+                let newModel = new this._dataType(child.key(), child.val(), _.extend({}, this._modelOptions, options));
                 this.add(newModel);
 
                 /* If this is the last child, fire a ready event */

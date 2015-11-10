@@ -16,8 +16,13 @@ import {DataSource}                 from '../core/DataSource.js';
 import {SharePoint}                 from 'SPSoapAdapter/SharePoint.js';
 import {SharePointSnapshot}         from './SharePoint/SharePointSnapshot.js';
 
+let _currentUser;
+
 @provide(DataSource)
 export class SharePointDataSource extends DataSource {
+
+    static get currentUser(){ return _currentUser; }
+    static set currentUser(value){ _currentUser = value; }
 
     /**
      * @param {String} path Full path to resource in remote data storage.
@@ -244,7 +249,15 @@ export class SharePointDataSource extends DataSource {
      * If the user is not authenticated, returns null.
      * @returns {Object|null} User auth object.
      */
-    getAuth() { throw new Error('Not implemented'); }
+    getAuth() {
+        if (!SharePointDataSource.currentUser) {
+            this._dataReference.getAuth((authData) => {
+                SharePointDataSource.currentUser = authData;
+            });
+        }
+
+        return SharePointDataSource.currentUser;
+    }
 
     /**
      * Logs out from the datasource, allowing to re-authenticate at a later time.
