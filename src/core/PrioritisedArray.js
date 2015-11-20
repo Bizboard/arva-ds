@@ -307,16 +307,20 @@ export class PrioritisedArray extends Array {
      */
     _onChildAdded(snapshot, prevSiblingId) {
         let id = snapshot.key();
-
-        if (this._findIndexById(id) >= 0) { /* Child already exists. */
-            return;
-        }
-
-        var rootPath = snapshot.ref().root().toString();
         let model = this.add(new this._dataType(id, null, {
             dataSnapshot: snapshot,
             dataSource: this._dataSource.child(id)
         }), prevSiblingId);
+
+        let previousPosition = this._findIndexById(id);
+        if(previousPosition >= 0) {
+            let oldModel = this[previousPosition];
+            let oldProperties = ObjectHelper.getEnumerableProperties(oldModel);
+            let newProperties = ObjectHelper.getEnumerableProperties(model);
+            if (_.isEqual(oldProperties, newProperties)) { /* Child already exists. */
+                return;
+            }
+        }
 
         if (!this._dataSource.ready) {
             this._dataSource.ready = true;
