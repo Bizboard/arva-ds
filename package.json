@@ -9,7 +9,7 @@
     "url": "git://github.com/bizboard/arva-ds.git"
   },
   "scripts": {
-    "build": "jspm bundle-sfx main.js dist/arva-ds.js",
+    "build": "jspm bundle-sfx src/main.js dist/arva-ds.js",
     "test": "node_modules/.bin/mocha --compilers js:babel/register --timeout 15000"
   },
   "bugs": {

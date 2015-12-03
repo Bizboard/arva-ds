@@ -8,8 +8,9 @@
  @copyright Bizboard, 2015
 
  */
-import {provide}                    from 'di';
+import _                            from 'lodash';
 import Firebase                     from 'firebase';
+import {provide}                    from 'di';
 import {DataSource}                 from '../core/DataSource.js';
 import {ObjectHelper}               from 'arva-utils/ObjectHelper.js';
 
@@ -17,16 +18,21 @@ import {ObjectHelper}               from 'arva-utils/ObjectHelper.js';
 export class FirebaseDataSource extends DataSource {
 
     get dataReference() {
-        return this._dataReference;
+        return this._orderedDataReference;
     }
 
     set dataReference(value) {
-        this._dataReference = value;
+        this._orderedDataReference = value;
     }
 
     /**
      * @param {String} path Full path to resource in remote data storage.
      * @return {FirebaseDataSource} FirebaseDataSource instance.
+     * @param {Object} options Optional: options to construct the DataSource with.
+     * @param {String} [options.orderBy] Optional, order all items received through the dataSource.
+     *                                   Options are: '.priority', '.value', or a string containing the child key to order by (e.g. 'MyModelProperty')
+     * @param {Number} [options.limitToFirst] Optional, only subscribe to the first amount of entries.
+     * @param {Number} [options.limitToLast] Optional, only subscribe to the last amount of entries.
      **/
     constructor(path, options = {orderBy: '.priority'}) {
         super(path);
@@ -36,10 +42,30 @@ export class FirebaseDataSource extends DataSource {
         this._onMoveCallback = null;
         this._onRemoveCallback = null;
         this._dataReference = new Firebase(path);
+        this.handlers = {};
         this.options = options;
 
+        /* Populate the orderedReference, which is the standard Firebase reference with an optional ordering
+         * defined. This needs to be saved seperately, because methods like child() and key() can't be called
+         * from the ordered reference, and must instead be performed on the standard reference. */
+        if (this.options.orderBy && this.options.orderBy === '.priority') {
+            this._orderedDataReference = this._dataReference.orderByPriority();
+        } else if (this.options.orderBy && this.options.orderBy === '.value') {
+            this._orderedDataReference = this._dataReference.orderByValue();
+        } else if (this.options.orderBy && this.options.orderBy !== '') {
+            this._orderedDataReference = this._dataReference.orderByChild(this.options.orderBy);
+        } else {
+            this._orderedDataReference = this._dataReference;
+        }
+
+        if(this.options.limitToFirst !== undefined) {
+            this._orderedDataReference = this._orderedDataReference.limitToFirst(this.options.limitToFirst);
+        } else if (this.options.limitToLast !== undefined) {
+            this._orderedDataReference = this._orderedDataReference.limitToLast(this.options.limitToLast);
+        }
+
         /* Bind all local methods to the current object instance, so we can refer to "this"
-         * in the methods as expected, even when they're called from event handlers.        */
+         * in the methods as expected, even when they're called from event handlers. */
         ObjectHelper.bindAllMethods(this, this);
     }
 
@@ -59,7 +85,7 @@ export class FirebaseDataSource extends DataSource {
      * @returns {DataSource} New dataSource instance pointing to the given child branch.
      */
     child(childName, options = {}) {
-        return new FirebaseDataSource(this._dataReference.child(childName).toString(), options);
+        return new FirebaseDataSource(`${this._dataReference.toString()}/${childName}`, options);
     }
 
     /**
@@ -84,7 +110,7 @@ export class FirebaseDataSource extends DataSource {
      * @returns {void}
      */
     set(newData) {
-        return this._dataReference.set(newData);
+        return this._orderedDataReference.set(newData);
     }
 
     /**
@@ -92,7 +118,7 @@ export class FirebaseDataSource extends DataSource {
      * @returns {void}
      */
     remove() {
-        return this._dataReference.remove();
+        return this._orderedDataReference.remove();
     }
 
     /**
@@ -102,7 +128,7 @@ export class FirebaseDataSource extends DataSource {
      * @returns {void}
      */
     push(newData) {
-        return new FirebaseDataSource(this._dataReference.push(newData).toString());
+        return new FirebaseDataSource(this._orderedDataReference.push(newData).toString());
     }
 
     /**
@@ -112,7 +138,7 @@ export class FirebaseDataSource extends DataSource {
      * @returns {void}
      */
     setWithPriority(newData, priority) {
-        return this._dataReference.setWithPriority(newData, priority);
+        return this._orderedDataReference.setWithPriority(newData, priority);
     }
 
     /**
@@ -121,7 +147,7 @@ export class FirebaseDataSource extends DataSource {
      * @returns {void}
      */
     setPriority(newPriority) {
-        return this._dataReference.setPriority(newPriority);
+        return this._orderedDataReference.setPriority(newPriority);
     }
 
     /**
@@ -130,7 +156,7 @@ export class FirebaseDataSource extends DataSource {
      * @returns {DataSource} New dataSource instance.
      */
     orderByChild(childKey) {
-        return new FirebaseDataSource(this._dataReference.orderByChild(childKey));
+        return new FirebaseDataSource(this.toString(), _.merge({}, this.options, {orderBy: childKey}));
     }
 
     /**
@@ -138,7 +164,7 @@ export class FirebaseDataSource extends DataSource {
      * @returns {DataSource} New dataSource instance.
      */
     orderByKey() {
-        return new FirebaseDataSource(this._dataReference.orderByKey());
+        return new FirebaseDataSource(this.toString(), _.merge({}, this.options, {orderBy: '.key'}));
     }
 
     /**
@@ -146,7 +172,7 @@ export class FirebaseDataSource extends DataSource {
      * @returns {DataSource} New dataSource instance.
      */
     orderByValue() {
-        return new FirebaseDataSource(this._dataReference.orderByValue());
+        return new FirebaseDataSource(this.toString(), _.merge({}, this.options, {orderBy: '.value'}));
     }
 
     /**
@@ -155,7 +181,7 @@ export class FirebaseDataSource extends DataSource {
      * @returns {DataSource} New dataSource instance.
      */
     limitToFirst(amount) {
-        return new FirebaseDataSource(this._dataReference.limitToFirst(amount));
+        return new FirebaseDataSource(this.toString(), _.merge({}, this.options, {limitToFirst: amount}));
     }
 
     /**
@@ -164,7 +190,7 @@ export class FirebaseDataSource extends DataSource {
      * @returns {DataSource} New dataSource instance.
      */
     limitToLast(amount) {
-        return new FirebaseDataSource(this._dataReference.limitToLast(amount));
+        return new FirebaseDataSource(this.toString(), _.merge({}, this.options, {limitToLast: amount}));
     }
 
     /**
@@ -244,29 +270,8 @@ export class FirebaseDataSource extends DataSource {
      * @param {Object} context Context to set 'this' to when calling the handler function.
      */
     on(event, handler, context = this) {
-        switch (event) {
-            case 'value':
-            case 'child_added':
-            case 'child_changed':
-                /* TODO: Not saving the new dataReference instance like this prevents us from unsubscribing again.
-                 * We'll need to save the dataReference in such a way that we can still call child(), which
-                 * is not possible if we overwrite the dataReference because the order*() methods can be called
-                 * only once. */
-                if (this.options.orderBy && this.options.orderBy === '.priority') {
-                    this._dataReference.orderByPriority().on(event, handler.bind(this));
-                } else if (this.options.orderBy && this.options.orderBy === '.value') {
-                    this._dataReference.orderByValue().on(event, handler.bind(this));
-                } else if (this.options.orderBy && this.options.orderBy !== '') {
-                    this._dataReference.orderByChild(this.options.orderBy).on(event, handler.bind(this));
-                } else {
-                    this._dataReference.on(event, handler.bind(this));
-                }
-                break;
-
-            default:
-                this._dataReference.on(event, handler.bind(this));
-                break;
-        }
+        let boundHandler = this.handlers[handler] = handler.bind(this);
+        this._orderedDataReference.on(event, boundHandler);
     }
 
     /**
@@ -276,10 +281,10 @@ export class FirebaseDataSource extends DataSource {
      * @param {Object} context Context to set 'this' to when calling the handler function.
      */
     once(event, handler, context = this) {
-        let onceWrapper = function () {
+        function onceWrapper() {
             handler.call(context, ...arguments);
             this.off(event, onceWrapper);
-        }.bind(this);
+        }
 
         return this.on(event, onceWrapper, this);
     }
@@ -292,39 +297,29 @@ export class FirebaseDataSource extends DataSource {
      * @param {Function} handler Optional: Function that was used in previous subscription.
      */
     off(event, handler) {
-        if (event && (handler || context)) {
-            super.removeListener(event, handler, context);
-        } else {
-            this._eventEmitter.removeAllListeners(event);
-        }
+        let boundHandler = this.handlers[handler];
+        this._orderedDataReference.off(event, boundHandler);
     }
 
     /**
      * Sets the callback triggered when dataSource updates the data.
      * @param {Function} callback Callback function to call when the subscribed data value changes.
+     * @deprecated Use the on() method instead.
      * @returns {void}
      **/
     setValueChangedCallback(callback) {
         this._onValueCallback = callback;
-
-        if (this.options.orderBy && this.options.orderBy === '.priority') {
-            this._dataReference.orderByPriority().on('value', this._onValueCallback.bind(this));
-        } else if (this.options.orderBy && this.options.orderBy === '.value') {
-            this._dataReference.orderByValue().on('value', this._onValueCallback.bind(this));
-        } else if (this.options.orderBy && this.options.orderBy !== '') {
-            this._dataReference.orderByChild(this.options.orderBy).on('value', this._onValueCallback.bind(this));
-        } else {
-            this._dataReference.on('value', this._onValueCallback.bind(this));
-        }
+        this.on('value', callback);
     }
 
     /**
      * Removes the callback set to trigger when dataSource updates the data.
+     * @deprecated Use the off() method instead.
      * @returns {void}
      **/
     removeValueChangedCallback() {
         if (this._onValueCallback) {
-            this._dataReference.off('value', this._onValueCallback);
+            this.off('value', this._onValueCallback);
             this._onValueCallback = null;
         }
     }
@@ -332,32 +327,22 @@ export class FirebaseDataSource extends DataSource {
     /**
      * Set the callback triggered when dataSource adds a data element.
      * @param {Function} callback Callback function to call when a new data child is added.
+     * @deprecated Use the on() method instead.
      * @returns {void}
      **/
     setChildAddedCallback(callback) {
         this._onAddCallback = callback;
-        let wrapper = (newChildSnapshot, prevChildName) => {
-            this._onAddCallback(newChildSnapshot, prevChildName);
-        };
-
-        if (this.options.orderBy && this.options.orderBy === '.priority') {
-            this._dataReference.orderByPriority().on('child_added', wrapper.bind(this));
-        } else if (this.options.orderBy && this.options.orderBy === '.value') {
-            this._dataReference.orderByValue().on('child_added', wrapper.bind(this));
-        } else if (this.options.orderBy && this.options.orderBy !== '') {
-            this._dataReference.orderByChild(this.options.orderBy).on('child_added', wrapper.bind(this));
-        } else {
-            this._dataReference.on('child_added', wrapper.bind(this));
-        }
+        this.on('child_added', callback);
     }
 
     /**
      * Removes the callback set to trigger when dataSource adds a data element.
+     * @deprecated Use the off() method instead.
      * @returns {void}
      **/
     removeChildAddedCallback() {
         if (this._onAddCallback) {
-            this._dataReference.off('child_added', this._onAddCallback);
+            this.off('child_added', this._onAddCallback);
             this._onAddCallback = null;
         }
     }
@@ -365,32 +350,22 @@ export class FirebaseDataSource extends DataSource {
     /**
      * Set the callback triggered when dataSource changes a data element.
      * @param {Function} callback Callback function to call when a child is changed.
+     * @deprecated Use the on() method instead.
      * @returns {void}
      **/
     setChildChangedCallback(callback) {
         this._onChangeCallback = callback;
-        let wrapper = (newChildSnapshot, prevChildName) => {
-            this._onChangeCallback(newChildSnapshot, prevChildName);
-        };
-
-        if (this.options.orderBy && this.options.orderBy === '.priority') {
-            this._dataReference.orderByPriority().on('child_changed', wrapper.bind(this));
-        } else if (this.options.orderBy && this.options.orderBy === '.value') {
-            this._dataReference.orderByValue().on('child_changed', wrapper.bind(this));
-        } else if (this.options.orderBy && this.options.orderBy !== '') {
-            this._dataReference.orderByChild(this.options.orderBy).on('child_changed', wrapper.bind(this));
-        } else {
-            this._dataReference.on('child_changed', wrapper.bind(this));
-        }
+        this.on('child_changed', callback);
     }
 
     /**
      * Removes the callback set to trigger when dataSource changes a data element.
+     * @deprecated Use the off() method instead.
      * @returns {void}
      **/
     removeChildChangedCallback() {
         if (this._onChangeCallback) {
-            this._dataReference.off('child_changed', this._onChangeCallback);
+            this.off('child_changed', this._onChangeCallback);
             this._onChangeCallback = null;
         }
     }
@@ -398,22 +373,22 @@ export class FirebaseDataSource extends DataSource {
     /**
      * Set the callback triggered when dataSource moves a data element.
      * @param {Function} callback Callback function to call when a child is moved.
+     * @deprecated Use the on() method instead.
      * @returns {void}
      **/
     setChildMovedCallback(callback) {
         this._onMoveCallback = callback;
-        this._dataReference.on('child_moved', (newChildSnapshot, prevChildName) => {
-            this._onMoveCallback(newChildSnapshot, prevChildName);
-        });
+        this.on('value', callback);
     }
 
     /**
      * Removes the callback set to trigger when dataSource moves a data element.
+     * @deprecated Use the off() method instead.
      * @returns {void}
      **/
     removeChildMovedCallback() {
         if (this._onMoveCallback) {
-            this._dataReference.off('child_moved', this._onMoveCallback);
+            this.off('child_moved', this._onMoveCallback);
             this._onMoveCallback = null;
         }
     }
@@ -421,20 +396,22 @@ export class FirebaseDataSource extends DataSource {
     /**
      * Set the callback triggered when dataSource removes a data element.
      * @param {Function} callback Callback function to call when a child is removed.
+     * @deprecated Use the on() method instead.
      * @returns {void}
      **/
     setChildRemovedCallback(callback) {
         this._onRemoveCallback = callback;
-        this._dataReference.on('child_removed', this._onRemoveCallback);
+        this.on('child_removed', this._onRemoveCallback);
     }
 
     /**
      * Removes the callback set to trigger when dataSource removes a data element.
+     * @deprecated Use the off() method instead.
      * @returns {void}
      **/
     removeChildRemovedCallback() {
         if (this._onRemoveCallback) {
-            this._dataReference.off('child_removed', this._onRemoveCallback);
+            this.off('child_removed', this._onRemoveCallback);
             this._onRemoveCallback = null;
         }
     }
