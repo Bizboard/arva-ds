@@ -23,7 +23,7 @@ export class DataModelGenerator {
 
         // initialize the arguments
         if (!schema) throw 'Schema wasn\'t provided.';
-        if (schema && schema.Prefix)  {
+        if (schema && schema.Prefix) {
             this._applicationId = schema.Prefix;
         }
 
@@ -59,7 +59,7 @@ export class DataModelGenerator {
                 let tableCreator = this._GetOrCreateList(table)
                     .then(function (result) {
                         var fields = this._Schema[table];
-                        if (fields && fields.length>0) {
+                        if (fields && fields.length > 0) {
                             return this._GetOrCreateModel(table, fields, result);
                         }
                         return Promise.resolve();
@@ -73,7 +73,7 @@ export class DataModelGenerator {
             Promise.all(listOfPromisesToFullfill)
                 .then(results=> {
                     resolve(results);
-                }, error =>{
+                }, error => {
                     reject(error);
                 });
         });
@@ -81,7 +81,6 @@ export class DataModelGenerator {
 
     Seed() {
         if (!this._Seed) throw 'There is no seed to deploy.';
-
 
 
     }
@@ -94,12 +93,12 @@ export class DataModelGenerator {
         };
 
         return {
-            url     : this._ParsePath(this._originalPath, this._GetListService),
-            headers : new Map([
+            url: this._ParsePath(this._originalPath, this._GetListService),
+            headers: new Map([
                 ['SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/GetList'],
                 ['Content-Type', 'text/xml']
             ]),
-            data    : this._applySoapTemplate({
+            data: this._applySoapTemplate({
                 method: 'GetList',
                 params: this._serializeParams(params)
             })
@@ -109,18 +108,18 @@ export class DataModelGenerator {
     _getListCreationRequest(listName, listDescription) {
         // rough configuration object
         let params = {
-                listName: listName,
-                description: listDescription,
-                templateID: '100'
+            listName: listName,
+            description: listDescription,
+            templateID: '100'
         };
 
         return {
-            url     : this._ParsePath(this._originalPath, this._GetListService),
-            headers : new Map([
+            url: this._ParsePath(this._originalPath, this._GetListService),
+            headers: new Map([
                 ['SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/AddList'],
                 ['Content-Type', 'text/xml']
             ]),
-            data    : this._applySoapTemplate({
+            data: this._applySoapTemplate({
                 method: 'AddList',
                 params: this._serializeParams(params)
             })
@@ -130,12 +129,12 @@ export class DataModelGenerator {
     _getListUpdateRequest(params) {
 
         return {
-            url     : this._ParsePath(this._originalPath, this._GetListService),
-            headers : new Map([
+            url: this._ParsePath(this._originalPath, this._GetListService),
+            headers: new Map([
                 ['SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/UpdateList'],
                 ['Content-Type', 'text/xml']
             ]),
-            data    : this._applySoapTemplate({
+            data: this._applySoapTemplate({
                 method: 'UpdateList',
                 params: this._serializeParams(params)
             })
@@ -184,8 +183,15 @@ export class DataModelGenerator {
         let params = {
             listName: listName,
             newFields: {
-                Fields : {
-                    Method: []
+                Fields: {
+                    Method: [{
+                        '_ID': 0, /* We automatically add an id field of our own, so we can push our own IDs to SharePoint. */
+                        Field: {
+                            '_Type': 'Integer',
+                            '_DisplayName': '__id',
+                            '_FromBaseType': 'TRUE'
+                        }
+                    }]
                 }
             },
             listProperties: {
@@ -196,17 +202,17 @@ export class DataModelGenerator {
             }
         };
 
-        for (let i=0;i<modelDescription.length;i++) {
+        for (let i = 1; i < modelDescription.length; i++) {
             let internalName = modelDescription[i].name;
             if (this._applicationId) internalName = this._applicationId + '_' + internalName;
-            if (listData.indexOf(internalName)!=-1) continue;
+            if (listData.indexOf(internalName) != -1) continue;
 
             // handle Lookups differently
             if (modelDescription[i].type == 'Lookup' || modelDescription[i].type == 'LookupMulti') {
                 let newLookup = this._CreateLookup(listName, internalName, modelDescription[i].type, modelDescription[i].source);
                 listOfLookups.push(newLookup);
             } else {
-                // handle simple types
+                // handle primitives
 
                 var modelData = {
                     '_ID': i,
@@ -224,7 +230,7 @@ export class DataModelGenerator {
 
         return new Promise((resolve, reject)=> {
 
-            if (params.newFields.Fields.Method.length==0) {
+            if (params.newFields.Fields.Method.length <= 1) {
                 resolve('No action taken.');
             } else {
                 PostRequest(updateListRequest)
@@ -240,10 +246,10 @@ export class DataModelGenerator {
 
                     // end with resolving all lookup creations
                     .then((result) => {
-                            resolve(result.response);
-                        }, (error) => {
-                            reject(result);
-                        });
+                        resolve(result.response);
+                    }, (error) => {
+                        reject(result);
+                    });
             }
         });
     }
@@ -317,11 +323,11 @@ export class DataModelGenerator {
             '  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
             '  xmlns:xsd="http://www.w3.org/2001/XMLSchema" ' +
             '  xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">' +
-                '<soap:Body>' +
-                    '<<%= method %> xmlns="http://schemas.microsoft.com/sharepoint/soap/">' +
-                    '<%= params %>' +
-                    '</<%= method %>>' +
-                '</soap:Body>' +
+            '<soap:Body>' +
+            '<<%= method %> xmlns="http://schemas.microsoft.com/sharepoint/soap/">' +
+            '<%= params %>' +
+            '</<%= method %>>' +
+            '</soap:Body>' +
             '</soap:Envelope>')(properties);
     }
 
@@ -330,25 +336,24 @@ export class DataModelGenerator {
     }
 
 
-
     _ParsePath(path, endPoint) {
         var url = UrlParser(path);
         if (!url) console.log('Invalid datasource path provided!');
 
         var pathParts = url.path.split('/');
         var newPath = url.protocol + '://' + url.host + '/';
-        for(var i=0;i<pathParts.length;i++)
+        for (var i = 0; i < pathParts.length; i++)
             newPath += pathParts[i] + '/';
         newPath += endPoint;
         return newPath;
     }
 
     _serializeParams(params) {
-        if (!params||params.length==0) return '';
-        var data = { root: params };
+        if (!params || params.length == 0) return '';
+        var data = {root: params};
         var creator = new XML2JS();
         var payload = creator.json2xml_str(data);
 
-        return payload.replace('<root>','').replace('</root>','');
+        return payload.replace('<root>', '').replace('</root>', '');
     }
 }
