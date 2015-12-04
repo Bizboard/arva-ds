@@ -378,7 +378,7 @@ export class FirebaseDataSource extends DataSource {
      **/
     setChildMovedCallback(callback) {
         this._onMoveCallback = callback;
-        this.on('value', callback);
+        this.on('child_moved', callback);
     }
 
     /**
