@@ -123,9 +123,7 @@ export class PrioritisedArray extends Array {
      */
     once(event, handler, context = this) {
         return this.on(event, function onceWrapper() {
-            /* TODO: bug in traceur preventing us from using ...arguments as expected: https://github.com/google/traceur-compiler/issues/1118
-             * We want to do this: handler.call(context, ...arguments); */
-            handler.call(context, arguments);
+            handler.call(context, ...arguments);
             this.off(event, onceWrapper, context);
         }, this);
     }
