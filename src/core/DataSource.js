@@ -93,6 +93,25 @@ export class DataSource {
     setPriority(newPriority) { }
 
     /**
+     * Orders the DataSource's childs by the value in child[key].
+     * @param {String} childKey Key of the field to order by.
+     * @returns {DataSource} New dataSource instance.
+     */
+    orderByChild(childKey) { }
+
+    /**
+     * Orders the DataSource's childs by their key names, ignoring their priority.
+     * @returns {DataSource} New dataSource instance.
+     */
+    orderByKey() { }
+
+    /**
+     * Orders the DataSource's childs by their values, ignoring their priority.
+     * @returns {DataSource} New dataSource instance.
+     */
+    orderByValue() { }
+
+    /**
      * Returns a new dataSource reference that will limit the subscription to only the first given amount items.
      * @param {Number} amount Amount of items to limit the dataSource to.
      * @returns {DataSource} New dataSource instance.
