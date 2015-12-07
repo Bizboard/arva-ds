@@ -19,8 +19,8 @@ System.config({
 
 System.config({
   "map": {
-    "SPSoapAdapter": "github:bizboard/SPSoapAdapter@develop",
-    "arva-utils": "github:bizboard/arva-utils@develop",
+    "SPSoapAdapter": "github:bizboard/SPSoapAdapter@1.0.0-beta-2",
+    "arva-utils": "github:bizboard/arva-utils@1.0.0-beta-2",
     "babel": "npm:babel-core@5.8.25",
     "babel-runtime": "npm:babel-runtime@5.8.25",
     "core-js": "npm:core-js@0.9.18",
@@ -30,20 +30,14 @@ System.config({
     "lodash": "npm:lodash@3.10.1",
     "traceur": "github:jmcriffey/bower-traceur@0.0.92",
     "traceur-runtime": "github:jmcriffey/bower-traceur-runtime@0.0.90",
-    "github:bizboard/SPSoapAdapter@develop": {
-      "arva-utils": "github:bizboard/arva-utils@master",
+    "github:bizboard/SPSoapAdapter@1.0.0-beta-2": {
+      "arva-utils": "github:bizboard/arva-utils@1.0.0-beta-2",
       "eventemitter3": "npm:eventemitter3@1.1.1",
       "json-query": "npm:json-query@1.5.0",
       "lodash": "npm:lodash@3.10.1",
-      "xml2js": "npm:xml2js@0.4.12"
+      "xml2js": "npm:xml2js@0.4.15"
     },
-    "github:bizboard/arva-utils@develop": {
-      "di": "github:bizboard/di.js@master",
-      "fs": "github:jspm/nodelibs-fs@0.1.2",
-      "lodash": "npm:lodash@3.10.1",
-      "path": "github:jspm/nodelibs-path@0.1.0"
-    },
-    "github:bizboard/arva-utils@master": {
+    "github:bizboard/arva-utils@1.0.0-beta-2": {
       "di": "github:bizboard/di.js@master",
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "lodash": "npm:lodash@3.10.1",
@@ -53,7 +47,7 @@ System.config({
       "assert": "npm:assert@1.3.0"
     },
     "github:jspm/nodelibs-buffer@0.1.0": {
-      "buffer": "npm:buffer@3.5.1"
+      "buffer": "npm:buffer@3.5.4"
     },
     "github:jspm/nodelibs-events@0.1.1": {
       "events": "npm:events@1.0.2"
@@ -82,17 +76,20 @@ System.config({
     "npm:babel-runtime@5.8.25": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
-    "npm:buffer@3.5.1": {
+    "npm:buffer@3.5.4": {
       "base64-js": "npm:base64-js@0.0.8",
+      "child_process": "github:jspm/nodelibs-child_process@0.1.0",
+      "fs": "github:jspm/nodelibs-fs@0.1.2",
       "ieee754": "npm:ieee754@1.1.6",
-      "is-array": "npm:is-array@1.0.1"
+      "isarray": "npm:isarray@0.0.1",
+      "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:core-js@0.9.18": {
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "process": "github:jspm/nodelibs-process@0.1.2",
       "systemjs-json": "github:systemjs/plugin-json@0.1.0"
     },
-    "npm:core-util-is@1.0.1": {
+    "npm:core-util-is@1.0.2": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0"
     },
     "npm:inherits@2.0.1": {
@@ -112,7 +109,7 @@ System.config({
     },
     "npm:readable-stream@1.1.13": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
-      "core-util-is": "npm:core-util-is@1.0.1",
+      "core-util-is": "npm:core-util-is@1.0.2",
       "events": "github:jspm/nodelibs-events@0.1.1",
       "inherits": "npm:inherits@2.0.1",
       "isarray": "npm:isarray@0.0.1",
@@ -120,7 +117,7 @@ System.config({
       "stream-browserify": "npm:stream-browserify@1.0.0",
       "string_decoder": "npm:string_decoder@0.10.31"
     },
-    "npm:sax@1.1.3": {
+    "npm:sax@1.1.4": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.2",
       "stream": "github:jspm/nodelibs-stream@0.1.0",
@@ -141,16 +138,14 @@ System.config({
       "inherits": "npm:inherits@2.0.1",
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
-    "npm:xml2js@0.4.12": {
+    "npm:xml2js@0.4.15": {
       "events": "github:jspm/nodelibs-events@0.1.1",
-      "fs": "github:jspm/nodelibs-fs@0.1.2",
       "process": "github:jspm/nodelibs-process@0.1.2",
-      "sax": "npm:sax@1.1.3",
+      "sax": "npm:sax@1.1.4",
       "timers": "github:jspm/nodelibs-timers@0.1.0",
-      "util": "github:jspm/nodelibs-util@0.1.0",
-      "xmlbuilder": "npm:xmlbuilder@3.1.0"
+      "xmlbuilder": "npm:xmlbuilder@4.1.0"
     },
-    "npm:xmlbuilder@3.1.0": {
+    "npm:xmlbuilder@4.1.0": {
       "lodash": "npm:lodash@3.10.1",
       "process": "github:jspm/nodelibs-process@0.1.2"
     }

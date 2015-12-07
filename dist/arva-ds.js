@@ -14464,7 +14464,7 @@ System.register('github:Bizboard/di.js@master/providers.js', ['npm:babel-runtime
     }
   };
 });
-System.register('github:bizboard/arva-utils@develop/request/UrlParser.js', [], function (_export) {
+System.register('github:bizboard/arva-utils@1.0.0-beta-2/request/UrlParser.js', [], function (_export) {
     /**
      This Source Code is licensed under the MIT license. If a copy of the
      MIT-license was not distributed with this file, You can obtain one at:
@@ -14502,7 +14502,7 @@ System.register('github:bizboard/arva-utils@develop/request/UrlParser.js', [], f
         execute: function () {}
     };
 });
-System.register('github:bizboard/SPSoapAdapter@develop/Settings.js', ['npm:babel-runtime@5.8.25/helpers/create-class.js', 'npm:babel-runtime@5.8.25/helpers/class-call-check.js'], function (_export) {
+System.register('github:bizboard/SPSoapAdapter@1.0.0-beta-2/Settings.js', ['npm:babel-runtime@5.8.25/helpers/create-class.js', 'npm:babel-runtime@5.8.25/helpers/class-call-check.js'], function (_export) {
   var _createClass, _classCallCheck, Settings;
 
   return {
@@ -14537,394 +14537,7 @@ System.register('github:bizboard/SPSoapAdapter@develop/Settings.js', ['npm:babel
     }
   };
 });
-System.register('github:bizboard/arva-utils@master/request/UrlParser.js', [], function (_export) {
-    /**
-     This Source Code is licensed under the MIT license. If a copy of the
-     MIT-license was not distributed with this file, You can obtain one at:
-     http://opensource.org/licenses/mit-license.html.
-    
-     @author: Hans van den Akker (mysim1)
-     @license MIT
-     @copyright Bizboard, 2015
-    
-     */
-
-    'use strict';
-
-    _export('UrlParser', UrlParser);
-
-    function UrlParser(url) {
-
-        var e = /^([a-z][a-z0-9+.-]*):(?:\/\/((?:(?=((?:[a-z0-9-._~!$&'()*+,;=:]|%[0-9A-F]{2})*))(\3)@)?(?=(\[[0-9A-F:.]{2,}\]|(?:[a-z0-9-._~!$&'()*+,;=]|%[0-9A-F]{2})*))\5(?::(?=(\d*))\6)?)(\/(?=((?:[a-z0-9-._~!$&'()*+,;=:@\/]|%[0-9A-F]{2})*))\8)?|(\/?(?!\/)(?=((?:[a-z0-9-._~!$&'()*+,;=:@\/]|%[0-9A-F]{2})*))\10)?)(?:\?(?=((?:[a-z0-9-._~!$&'()*+,;=:@\/?]|%[0-9A-F]{2})*))\11)?(?:#(?=((?:[a-z0-9-._~!$&'()*+,;=:@\/?]|%[0-9A-F]{2})*))\12)?$/i;
-
-        if (url.match(e)) {
-            return {
-                url: RegExp['$&'],
-                protocol: RegExp.$1,
-                host: RegExp.$2,
-                path: RegExp.$8,
-                hash: RegExp.$12
-            };
-        } else {
-            return null;
-        }
-    }
-
-    return {
-        setters: [],
-        execute: function () {}
-    };
-});
-System.register('github:bizboard/arva-utils@master/ObjectHelper.js', ['npm:babel-runtime@5.8.25/helpers/create-class.js', 'npm:babel-runtime@5.8.25/helpers/class-call-check.js', 'npm:babel-runtime@5.8.25/core-js/object/get-own-property-descriptor.js', 'npm:babel-runtime@5.8.25/core-js/object/define-property.js', 'npm:babel-runtime@5.8.25/core-js/object/get-own-property-names.js', 'npm:babel-runtime@5.8.25/core-js/object/keys.js', 'npm:babel-runtime@5.8.25/core-js/get-iterator.js', 'npm:lodash@3.10.1.js'], function (_export) {
-    var _createClass, _classCallCheck, _Object$getOwnPropertyDescriptor, _Object$defineProperty, _Object$getOwnPropertyNames, _Object$keys, _getIterator, _, ObjectHelper;
-
-    return {
-        setters: [function (_npmBabelRuntime5825HelpersCreateClassJs) {
-            _createClass = _npmBabelRuntime5825HelpersCreateClassJs['default'];
-        }, function (_npmBabelRuntime5825HelpersClassCallCheckJs) {
-            _classCallCheck = _npmBabelRuntime5825HelpersClassCallCheckJs['default'];
-        }, function (_npmBabelRuntime5825CoreJsObjectGetOwnPropertyDescriptorJs) {
-            _Object$getOwnPropertyDescriptor = _npmBabelRuntime5825CoreJsObjectGetOwnPropertyDescriptorJs['default'];
-        }, function (_npmBabelRuntime5825CoreJsObjectDefinePropertyJs) {
-            _Object$defineProperty = _npmBabelRuntime5825CoreJsObjectDefinePropertyJs['default'];
-        }, function (_npmBabelRuntime5825CoreJsObjectGetOwnPropertyNamesJs) {
-            _Object$getOwnPropertyNames = _npmBabelRuntime5825CoreJsObjectGetOwnPropertyNamesJs['default'];
-        }, function (_npmBabelRuntime5825CoreJsObjectKeysJs) {
-            _Object$keys = _npmBabelRuntime5825CoreJsObjectKeysJs['default'];
-        }, function (_npmBabelRuntime5825CoreJsGetIteratorJs) {
-            _getIterator = _npmBabelRuntime5825CoreJsGetIteratorJs['default'];
-        }, function (_npmLodash3101Js) {
-            _ = _npmLodash3101Js['default'];
-        }],
-        execute: function () {
-            /**
-             This Source Code is licensed under the MIT license. If a copy of the
-             MIT-license was not distributed with this file, You can obtain one at:
-             http://opensource.org/licenses/mit-license.html.
-            
-             @author: Tom Clement (tjclement)
-             @license MIT
-             @copyright Bizboard, 2015
-            
-             */
-
-            'use strict';
-
-            ObjectHelper = (function () {
-                function ObjectHelper() {
-                    _classCallCheck(this, ObjectHelper);
-                }
-
-                _createClass(ObjectHelper, null, [{
-                    key: 'hideMethodsAndPrivatePropertiesFromObject',
-
-                    /* Sets enumerability of methods and all properties starting with '_' on an object to false,
-                     * effectively hiding them from for(x in object) loops.   */
-                    value: function hideMethodsAndPrivatePropertiesFromObject(object) {
-                        for (var propName in object) {
-
-                            var prototype = Object.getPrototypeOf(object);
-                            var descriptor = prototype ? _Object$getOwnPropertyDescriptor(prototype, propName) : undefined;
-                            if (descriptor && (descriptor.get || descriptor.set) && !propName.startsWith('_')) {
-                                /* This is a public getter/setter, so we can skip it */
-                                continue;
-                            }
-
-                            var property = object[propName];
-                            if (typeof property === 'function' || propName.startsWith('_')) {
-                                ObjectHelper.hidePropertyFromObject(object, propName);
-                            }
-                        }
-                    }
-
-                    /* Sets enumerability of methods on an object to false,
-                     * effectively hiding them from for(x in object) loops.   */
-                }, {
-                    key: 'hideMethodsFromObject',
-                    value: function hideMethodsFromObject(object) {
-                        for (var propName in object) {
-                            var property = object[propName];
-                            if (typeof property === 'function') {
-                                ObjectHelper.hidePropertyFromObject(object, propName);
-                            }
-                        }
-                    }
-
-                    /* Sets enumerability of an object's property to false,
-                     * effectively hiding it from for(x in object) loops.   */
-                }, {
-                    key: 'hidePropertyFromObject',
-                    value: function hidePropertyFromObject(object, propName) {
-                        var prototype = object;
-                        var descriptor = _Object$getOwnPropertyDescriptor(object, propName);
-                        while (!descriptor) {
-                            prototype = Object.getPrototypeOf(prototype);
-
-                            if (prototype.constructor.name === 'Object' || prototype.constructor.name === 'Array') {
-                                return;
-                            }
-
-                            descriptor = _Object$getOwnPropertyDescriptor(prototype, propName);
-                        }
-                        descriptor.enumerable = false;
-                        _Object$defineProperty(prototype, propName, descriptor);
-                        _Object$defineProperty(object, propName, descriptor);
-                    }
-
-                    /* Sets enumerability of all of an object's properties (including methods) to false,
-                     * effectively hiding them from for(x in object) loops.   */
-                }, {
-                    key: 'hideAllPropertiesFromObject',
-                    value: function hideAllPropertiesFromObject(object) {
-                        for (var propName in object) {
-                            ObjectHelper.hidePropertyFromObject(object, propName);
-                        }
-                    }
-
-                    /* Adds a property with enumerable: false to object */
-                }, {
-                    key: 'addHiddenPropertyToObject',
-                    value: function addHiddenPropertyToObject(object, propName, prop) {
-                        var writable = arguments.length <= 3 || arguments[3] === undefined ? true : arguments[3];
-                        var useAccessors = arguments.length <= 4 || arguments[4] === undefined ? true : arguments[4];
-
-                        return ObjectHelper.addPropertyToObject(object, propName, prop, false, writable, undefined, useAccessors);
-                    }
-
-                    /* Adds a property with given enumerability and writability to object. If writable, uses a hidden object.shadow
-                     * property to save the actual data state, and object[propName] with gettter/setter to the shadow. Allows for a
-                     * callback to be triggered upon every set.   */
-                }, {
-                    key: 'addPropertyToObject',
-                    value: function addPropertyToObject(object, propName, prop) {
-                        var enumerable = arguments.length <= 3 || arguments[3] === undefined ? true : arguments[3];
-                        var writable = arguments.length <= 4 || arguments[4] === undefined ? true : arguments[4];
-                        var setCallback = arguments.length <= 5 || arguments[5] === undefined ? null : arguments[5];
-                        var useAccessors = arguments.length <= 6 || arguments[6] === undefined ? true : arguments[6];
-
-                        /* If property is non-writable, we won't need a shadowed prop for the getters/setters */
-                        if (!writable || !useAccessors) {
-                            var descriptor = {
-                                enumerable: enumerable,
-                                writable: writable,
-                                value: prop
-                            };
-                            _Object$defineProperty(object, propName, descriptor);
-                        } else {
-                            ObjectHelper.addGetSetPropertyWithShadow(object, propName, prop, enumerable, writable, setCallback);
-                        }
-                    }
-
-                    /* Adds given property to the object with get() and set() accessors, and saves actual data in object.shadow */
-                }, {
-                    key: 'addGetSetPropertyWithShadow',
-                    value: function addGetSetPropertyWithShadow(object, propName, prop) {
-                        var enumerable = arguments.length <= 3 || arguments[3] === undefined ? true : arguments[3];
-                        var writable = arguments.length <= 4 || arguments[4] === undefined ? true : arguments[4];
-                        var setCallback = arguments.length <= 5 || arguments[5] === undefined ? null : arguments[5];
-
-                        ObjectHelper.buildPropertyShadow(object, propName, prop);
-                        ObjectHelper.buildGetSetProperty(object, propName, enumerable, writable, setCallback);
-                    }
-
-                    /* Creates or extends object.shadow to contain a property with name propName */
-                }, {
-                    key: 'buildPropertyShadow',
-                    value: function buildPropertyShadow(object, propName, prop) {
-                        var shadow = {};
-
-                        try {
-                            /* If a shadow property already exists, we should extend instead of overwriting it. */
-                            if ('shadow' in object) {
-                                shadow = object.shadow;
-                            }
-                        } catch (error) {
-                            return;
-                        }
-
-                        shadow[propName] = prop;
-                        Object.defineProperty(object, 'shadow', {
-                            writable: true,
-                            configurable: true,
-                            enumerable: false,
-                            value: shadow
-                        });
-                    }
-
-                    /* Creates a property on object that has a getter that fetches from object.shadow,
-                     * and a setter that sets object.shadow as well as triggers setCallback() if set.   */
-                }, {
-                    key: 'buildGetSetProperty',
-                    value: function buildGetSetProperty(object, propName) {
-                        var enumerable = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
-                        var writable = arguments.length <= 3 || arguments[3] === undefined ? true : arguments[3];
-                        var setCallback = arguments.length <= 4 || arguments[4] === undefined ? null : arguments[4];
-
-                        var descriptor = {
-                            enumerable: enumerable,
-                            configurable: true,
-                            get: function get() {
-                                return object.shadow[propName];
-                            },
-                            set: function set(value) {
-                                if (writable) {
-                                    object.shadow[propName] = value;
-                                    if (setCallback && typeof setCallback === 'function') {
-                                        setCallback({
-                                            propertyName: propName,
-                                            newValue: value
-                                        });
-                                    }
-                                } else {
-                                    throw new ReferenceError('Attempted to write to non-writable property ' + propName + '.');
-                                }
-                            }
-                        };
-
-                        _Object$defineProperty(object, propName, descriptor);
-                    }
-
-                    /* Calls object['functionName'].bind(bindTarget) on all of object's functions. */
-                }, {
-                    key: 'bindAllMethods',
-                    value: function bindAllMethods(object, bindTarget) {
-                        /* Bind all current object's methods to bindTarget. */
-                        var methodNames = ObjectHelper.getMethodNames(object);
-                        methodNames.forEach(function (name) {
-                            object[name] = object[name].bind(bindTarget);
-                        });
-                    }
-                }, {
-                    key: 'getMethodNames',
-                    value: function getMethodNames(object) {
-                        var methodNames = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
-
-                        var propNames = _Object$getOwnPropertyNames(object).filter(function (c) {
-                            return typeof object[c] === 'function';
-                        });
-                        methodNames = methodNames.concat(propNames);
-
-                        /* Recursively find prototype's methods until we hit the Object prototype. */
-                        var prototype = Object.getPrototypeOf(object);
-                        if (prototype.constructor.name !== 'Object' && prototype.constructor.name !== 'Array') {
-                            return ObjectHelper.getMethodNames(prototype, methodNames);
-                        }
-
-                        return methodNames;
-                    }
-
-                    /* Returns a new object with all enumerable properties of the given object */
-                }, {
-                    key: 'getEnumerableProperties',
-                    value: function getEnumerableProperties(object) {
-
-                        return ObjectHelper.getPrototypeEnumerableProperties(object, object);
-                    }
-                }, {
-                    key: 'getPrototypeEnumerableProperties',
-                    value: function getPrototypeEnumerableProperties(rootObject, prototype) {
-                        var result = {};
-
-                        /* Collect all propertise in the prototype's keys() enumerable */
-                        var propNames = _Object$keys(prototype);
-                        var _iteratorNormalCompletion = true;
-                        var _didIteratorError = false;
-                        var _iteratorError = undefined;
-
-                        try {
-                            for (var _iterator = _getIterator(propNames.values()), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                                var _name = _step.value;
-
-                                var value = rootObject[_name];
-
-                                /* Value must be a non-null primitive or object to be pushable to a dataSource */
-                                if (value !== null && value !== undefined && typeof value !== 'function') {
-                                    if (typeof value === 'object' && !(value instanceof Array)) {
-                                        result[_name] = ObjectHelper.getEnumerableProperties(value);
-                                    } else {
-                                        result[_name] = value;
-                                    }
-                                }
-                            }
-
-                            /* Collect all properties with accessors (getters/setters) that are enumerable, too */
-                        } catch (err) {
-                            _didIteratorError = true;
-                            _iteratorError = err;
-                        } finally {
-                            try {
-                                if (!_iteratorNormalCompletion && _iterator['return']) {
-                                    _iterator['return']();
-                                }
-                            } finally {
-                                if (_didIteratorError) {
-                                    throw _iteratorError;
-                                }
-                            }
-                        }
-
-                        var descriptorNames = _Object$getOwnPropertyNames(prototype);
-                        descriptorNames = descriptorNames.filter(function (name) {
-                            return propNames.indexOf(name) < 0;
-                        });
-                        var _iteratorNormalCompletion2 = true;
-                        var _didIteratorError2 = false;
-                        var _iteratorError2 = undefined;
-
-                        try {
-                            for (var _iterator2 = _getIterator(descriptorNames.values()), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                                var _name2 = _step2.value;
-
-                                var descriptor = _Object$getOwnPropertyDescriptor(prototype, _name2);
-                                if (descriptor && descriptor.enumerable) {
-                                    var value = rootObject[_name2];
-
-                                    /* Value must be a non-null primitive or object to be pushable to a dataSource */
-                                    if (value !== null && value !== undefined && typeof value !== 'function') {
-                                        if (typeof value === 'object' && !(value instanceof Array)) {
-                                            result[_name2] = ObjectHelper.getEnumerableProperties(value);
-                                        } else {
-                                            result[_name2] = value;
-                                        }
-                                    }
-                                }
-                            }
-
-                            /* Collect all enumerable properties in the prototype's prototype as well */
-                        } catch (err) {
-                            _didIteratorError2 = true;
-                            _iteratorError2 = err;
-                        } finally {
-                            try {
-                                if (!_iteratorNormalCompletion2 && _iterator2['return']) {
-                                    _iterator2['return']();
-                                }
-                            } finally {
-                                if (_didIteratorError2) {
-                                    throw _iteratorError2;
-                                }
-                            }
-                        }
-
-                        var superPrototype = Object.getPrototypeOf(prototype);
-                        var ignorableTypes = ['Object', 'Array', 'EventEmitter'];
-                        if (ignorableTypes.indexOf(superPrototype.constructor.name) === -1) {
-                            var prototypeEnumerables = ObjectHelper.getPrototypeEnumerableProperties(rootObject, superPrototype);
-                            _.merge(result, prototypeEnumerables);
-                        }
-
-                        return result;
-                    }
-                }]);
-
-                return ObjectHelper;
-            })();
-
-            _export('ObjectHelper', ObjectHelper);
-        }
-    };
-});
-System.register('github:bizboard/arva-utils@master/BlobHelper.js', ['npm:babel-runtime@5.8.25/helpers/create-class.js', 'npm:babel-runtime@5.8.25/helpers/class-call-check.js'], function (_export) {
+System.register('github:bizboard/arva-utils@1.0.0-beta-2/BlobHelper.js', ['npm:babel-runtime@5.8.25/helpers/create-class.js', 'npm:babel-runtime@5.8.25/helpers/class-call-check.js'], function (_export) {
     var _createClass, _classCallCheck, BlobHelper;
 
     return {
@@ -15051,7 +14664,7 @@ System.register("src/core/Snapshot.js", ["npm:babel-runtime@5.8.25/helpers/creat
     }
   };
 });
-System.register('github:bizboard/SPSoapAdapter@develop/SharePoint.js', ['npm:babel-runtime@5.8.25/helpers/get.js', 'npm:babel-runtime@5.8.25/helpers/inherits.js', 'npm:babel-runtime@5.8.25/helpers/create-class.js', 'npm:babel-runtime@5.8.25/helpers/class-call-check.js', 'npm:babel-runtime@5.8.25/helpers/slice.js', 'npm:lodash@3.10.1.js', 'npm:eventemitter3@1.1.1.js', 'github:bizboard/SPSoapAdapter@develop/Settings.js', 'github:bizboard/arva-utils@master/request/UrlParser.js', 'github:bizboard/arva-utils@master/ObjectHelper.js', 'github:bizboard/arva-utils@master/BlobHelper.js'], function (_export) {
+System.register('github:bizboard/SPSoapAdapter@1.0.0-beta-2/SharePoint.js', ['npm:babel-runtime@5.8.25/helpers/get.js', 'npm:babel-runtime@5.8.25/helpers/inherits.js', 'npm:babel-runtime@5.8.25/helpers/create-class.js', 'npm:babel-runtime@5.8.25/helpers/class-call-check.js', 'npm:babel-runtime@5.8.25/helpers/slice.js', 'npm:lodash@3.10.1.js', 'npm:eventemitter3@1.1.1.js', 'github:bizboard/SPSoapAdapter@1.0.0-beta-2/Settings.js', 'github:bizboard/arva-utils@1.0.0-beta-2/request/UrlParser.js', 'github:bizboard/arva-utils@1.0.0-beta-2/ObjectHelper.js', 'github:bizboard/arva-utils@1.0.0-beta-2/BlobHelper.js'], function (_export) {
     var _get, _inherits, _createClass, _classCallCheck, _slice, _, EventEmitter, Settings, UrlParser, ObjectHelper, BlobHelper, DEBUG_WORKER, SPWorker, workerEvents, SharePoint;
 
     return {
@@ -15069,14 +14682,14 @@ System.register('github:bizboard/SPSoapAdapter@develop/SharePoint.js', ['npm:bab
             _ = _npmLodash3101Js['default'];
         }, function (_npmEventemitter3111Js) {
             EventEmitter = _npmEventemitter3111Js['default'];
-        }, function (_githubBizboardSPSoapAdapterDevelopSettingsJs) {
-            Settings = _githubBizboardSPSoapAdapterDevelopSettingsJs.Settings;
-        }, function (_githubBizboardArvaUtilsMasterRequestUrlParserJs) {
-            UrlParser = _githubBizboardArvaUtilsMasterRequestUrlParserJs.UrlParser;
-        }, function (_githubBizboardArvaUtilsMasterObjectHelperJs) {
-            ObjectHelper = _githubBizboardArvaUtilsMasterObjectHelperJs.ObjectHelper;
-        }, function (_githubBizboardArvaUtilsMasterBlobHelperJs) {
-            BlobHelper = _githubBizboardArvaUtilsMasterBlobHelperJs.BlobHelper;
+        }, function (_githubBizboardSPSoapAdapter100Beta2SettingsJs) {
+            Settings = _githubBizboardSPSoapAdapter100Beta2SettingsJs.Settings;
+        }, function (_githubBizboardArvaUtils100Beta2RequestUrlParserJs) {
+            UrlParser = _githubBizboardArvaUtils100Beta2RequestUrlParserJs.UrlParser;
+        }, function (_githubBizboardArvaUtils100Beta2ObjectHelperJs) {
+            ObjectHelper = _githubBizboardArvaUtils100Beta2ObjectHelperJs.ObjectHelper;
+        }, function (_githubBizboardArvaUtils100Beta2BlobHelperJs) {
+            BlobHelper = _githubBizboardArvaUtils100Beta2BlobHelperJs.BlobHelper;
         }],
         execute: function () {
             /**
@@ -15336,7 +14949,7 @@ System.register('github:bizboard/SPSoapAdapter@develop/SharePoint.js', ['npm:bab
         }
     };
 });
-System.register('src/datasources/SharePoint/SharePointSnapshot.js', ['npm:babel-runtime@5.8.25/helpers/get.js', 'npm:babel-runtime@5.8.25/helpers/inherits.js', 'npm:babel-runtime@5.8.25/helpers/create-class.js', 'npm:babel-runtime@5.8.25/helpers/class-call-check.js', 'npm:babel-runtime@5.8.25/core-js/get-iterator.js', 'github:bizboard/arva-utils@develop/ObjectHelper.js', 'src/core/Snapshot.js'], function (_export) {
+System.register('src/datasources/SharePoint/SharePointSnapshot.js', ['npm:babel-runtime@5.8.25/helpers/get.js', 'npm:babel-runtime@5.8.25/helpers/inherits.js', 'npm:babel-runtime@5.8.25/helpers/create-class.js', 'npm:babel-runtime@5.8.25/helpers/class-call-check.js', 'npm:babel-runtime@5.8.25/core-js/get-iterator.js', 'github:bizboard/arva-utils@1.0.0-beta-2/ObjectHelper.js', 'src/core/Snapshot.js'], function (_export) {
     var _get, _inherits, _createClass, _classCallCheck, _getIterator, ObjectHelper, Snapshot, SharePointSnapshot;
 
     return {
@@ -15350,8 +14963,8 @@ System.register('src/datasources/SharePoint/SharePointSnapshot.js', ['npm:babel-
             _classCallCheck = _npmBabelRuntime5825HelpersClassCallCheckJs['default'];
         }, function (_npmBabelRuntime5825CoreJsGetIteratorJs) {
             _getIterator = _npmBabelRuntime5825CoreJsGetIteratorJs['default'];
-        }, function (_githubBizboardArvaUtilsDevelopObjectHelperJs) {
-            ObjectHelper = _githubBizboardArvaUtilsDevelopObjectHelperJs.ObjectHelper;
+        }, function (_githubBizboardArvaUtils100Beta2ObjectHelperJs) {
+            ObjectHelper = _githubBizboardArvaUtils100Beta2ObjectHelperJs.ObjectHelper;
         }, function (_srcCoreSnapshotJs) {
             Snapshot = _srcCoreSnapshotJs.Snapshot;
         }],
@@ -15466,7 +15079,7 @@ System.register('src/datasources/SharePoint/SharePointSnapshot.js', ['npm:babel-
         }
     };
 });
-System.register('github:bizboard/arva-utils@develop/ObjectHelper.js', ['npm:babel-runtime@5.8.25/helpers/create-class.js', 'npm:babel-runtime@5.8.25/helpers/class-call-check.js', 'npm:babel-runtime@5.8.25/core-js/object/get-own-property-descriptor.js', 'npm:babel-runtime@5.8.25/core-js/object/define-property.js', 'npm:babel-runtime@5.8.25/core-js/object/get-own-property-names.js', 'npm:babel-runtime@5.8.25/core-js/object/keys.js', 'npm:babel-runtime@5.8.25/core-js/get-iterator.js', 'npm:lodash@3.10.1.js'], function (_export) {
+System.register('github:bizboard/arva-utils@1.0.0-beta-2/ObjectHelper.js', ['npm:babel-runtime@5.8.25/helpers/create-class.js', 'npm:babel-runtime@5.8.25/helpers/class-call-check.js', 'npm:babel-runtime@5.8.25/core-js/object/get-own-property-descriptor.js', 'npm:babel-runtime@5.8.25/core-js/object/define-property.js', 'npm:babel-runtime@5.8.25/core-js/object/get-own-property-names.js', 'npm:babel-runtime@5.8.25/core-js/object/keys.js', 'npm:babel-runtime@5.8.25/core-js/get-iterator.js', 'npm:lodash@3.10.1.js'], function (_export) {
     var _createClass, _classCallCheck, _Object$getOwnPropertyDescriptor, _Object$defineProperty, _Object$getOwnPropertyNames, _Object$keys, _getIterator, _, ObjectHelper;
 
     return {
@@ -15723,7 +15336,7 @@ System.register('github:bizboard/arva-utils@develop/ObjectHelper.js', ['npm:babe
                         var _iteratorError = undefined;
 
                         try {
-                            for (var _iterator = _getIterator(propNames.values()), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                            for (var _iterator = _getIterator(propNames), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                                 var _name = _step.value;
 
                                 var value = rootObject[_name];
@@ -15763,7 +15376,7 @@ System.register('github:bizboard/arva-utils@develop/ObjectHelper.js', ['npm:babe
                         var _iteratorError2 = undefined;
 
                         try {
-                            for (var _iterator2 = _getIterator(descriptorNames.values()), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                            for (var _iterator2 = _getIterator(descriptorNames), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
                                 var _name2 = _step2.value;
 
                                 var descriptor = _Object$getOwnPropertyDescriptor(prototype, _name2);
@@ -15815,7 +15428,7 @@ System.register('github:bizboard/arva-utils@develop/ObjectHelper.js', ['npm:babe
         }
     };
 });
-System.register('src/core/PrioritisedObject.js', ['npm:babel-runtime@5.8.25/helpers/get.js', 'npm:babel-runtime@5.8.25/helpers/inherits.js', 'npm:babel-runtime@5.8.25/helpers/create-class.js', 'npm:babel-runtime@5.8.25/helpers/class-call-check.js', 'npm:babel-runtime@5.8.25/core-js/object/get-own-property-descriptor.js', 'npm:lodash@3.10.1.js', 'npm:eventemitter3@1.1.1.js', 'github:bizboard/arva-utils@develop/ObjectHelper.js'], function (_export) {
+System.register('src/core/PrioritisedObject.js', ['npm:babel-runtime@5.8.25/helpers/get.js', 'npm:babel-runtime@5.8.25/helpers/inherits.js', 'npm:babel-runtime@5.8.25/helpers/create-class.js', 'npm:babel-runtime@5.8.25/helpers/class-call-check.js', 'npm:babel-runtime@5.8.25/core-js/object/get-own-property-descriptor.js', 'npm:lodash@3.10.1.js', 'npm:eventemitter3@1.1.1.js', 'github:bizboard/arva-utils@1.0.0-beta-2/ObjectHelper.js'], function (_export) {
     var _get, _inherits, _createClass, _classCallCheck, _Object$getOwnPropertyDescriptor, _, EventEmitter, ObjectHelper, PrioritisedObject;
 
     return {
@@ -15833,8 +15446,8 @@ System.register('src/core/PrioritisedObject.js', ['npm:babel-runtime@5.8.25/help
             _ = _npmLodash3101Js['default'];
         }, function (_npmEventemitter3111Js) {
             EventEmitter = _npmEventemitter3111Js['default'];
-        }, function (_githubBizboardArvaUtilsDevelopObjectHelperJs) {
-            ObjectHelper = _githubBizboardArvaUtilsDevelopObjectHelperJs.ObjectHelper;
+        }, function (_githubBizboardArvaUtils100Beta2ObjectHelperJs) {
+            ObjectHelper = _githubBizboardArvaUtils100Beta2ObjectHelperJs.ObjectHelper;
         }],
         execute: function () {
             /**
@@ -16212,7 +15825,7 @@ System.register('src/core/PrioritisedObject.js', ['npm:babel-runtime@5.8.25/help
         }
     };
 });
-System.register('src/datasources/FirebaseDataSource.js', ['npm:babel-runtime@5.8.25/helpers/get.js', 'npm:babel-runtime@5.8.25/helpers/inherits.js', 'npm:babel-runtime@5.8.25/helpers/create-class.js', 'npm:babel-runtime@5.8.25/helpers/class-call-check.js', 'npm:babel-runtime@5.8.25/helpers/slice.js', 'npm:lodash@3.10.1.js', 'github:firebase/firebase-bower@2.3.1.js', 'github:bizboard/di.js@master.js', 'src/core/DataSource.js', 'github:bizboard/arva-utils@develop/ObjectHelper.js'], function (_export) {
+System.register('src/datasources/FirebaseDataSource.js', ['npm:babel-runtime@5.8.25/helpers/get.js', 'npm:babel-runtime@5.8.25/helpers/inherits.js', 'npm:babel-runtime@5.8.25/helpers/create-class.js', 'npm:babel-runtime@5.8.25/helpers/class-call-check.js', 'npm:babel-runtime@5.8.25/helpers/slice.js', 'npm:lodash@3.10.1.js', 'github:firebase/firebase-bower@2.3.1.js', 'github:bizboard/di.js@master.js', 'src/core/DataSource.js', 'github:bizboard/arva-utils@1.0.0-beta-2/ObjectHelper.js'], function (_export) {
     var _get, _inherits, _createClass, _classCallCheck, _slice, _, Firebase, provide, DataSource, ObjectHelper, FirebaseDataSource;
 
     return {
@@ -16234,8 +15847,8 @@ System.register('src/datasources/FirebaseDataSource.js', ['npm:babel-runtime@5.8
             provide = _githubBizboardDiJsMasterJs.provide;
         }, function (_srcCoreDataSourceJs) {
             DataSource = _srcCoreDataSourceJs.DataSource;
-        }, function (_githubBizboardArvaUtilsDevelopObjectHelperJs) {
-            ObjectHelper = _githubBizboardArvaUtilsDevelopObjectHelperJs.ObjectHelper;
+        }, function (_githubBizboardArvaUtils100Beta2ObjectHelperJs) {
+            ObjectHelper = _githubBizboardArvaUtils100Beta2ObjectHelperJs.ObjectHelper;
         }],
         execute: function () {
             /**
@@ -16686,7 +16299,7 @@ System.register('src/datasources/FirebaseDataSource.js', ['npm:babel-runtime@5.8
                     key: 'setChildMovedCallback',
                     value: function setChildMovedCallback(callback) {
                         this._onMoveCallback = callback;
-                        this.on('value', callback);
+                        this.on('child_moved', callback);
                     }
 
                     /**
@@ -16740,7 +16353,7 @@ System.register('src/datasources/FirebaseDataSource.js', ['npm:babel-runtime@5.8
         }
     };
 });
-System.register('src/datasources/SharePointDataSource.js', ['npm:babel-runtime@5.8.25/helpers/get.js', 'npm:babel-runtime@5.8.25/helpers/inherits.js', 'npm:babel-runtime@5.8.25/helpers/create-class.js', 'npm:babel-runtime@5.8.25/helpers/class-call-check.js', 'npm:babel-runtime@5.8.25/helpers/slice.js', 'github:bizboard/di.js@master.js', 'github:bizboard/arva-utils@develop/ObjectHelper.js', 'github:bizboard/arva-utils@develop/request/UrlParser.js', 'src/core/DataSource.js', 'github:bizboard/SPSoapAdapter@develop/SharePoint.js', 'src/datasources/SharePoint/SharePointSnapshot.js'], function (_export) {
+System.register('src/datasources/SharePointDataSource.js', ['npm:babel-runtime@5.8.25/helpers/get.js', 'npm:babel-runtime@5.8.25/helpers/inherits.js', 'npm:babel-runtime@5.8.25/helpers/create-class.js', 'npm:babel-runtime@5.8.25/helpers/class-call-check.js', 'npm:babel-runtime@5.8.25/helpers/slice.js', 'github:bizboard/di.js@master.js', 'github:bizboard/arva-utils@1.0.0-beta-2/ObjectHelper.js', 'github:bizboard/arva-utils@1.0.0-beta-2/request/UrlParser.js', 'src/core/DataSource.js', 'github:bizboard/SPSoapAdapter@1.0.0-beta-2/SharePoint.js', 'src/datasources/SharePoint/SharePointSnapshot.js'], function (_export) {
     var _get, _inherits, _createClass, _classCallCheck, _slice, provide, ObjectHelper, UrlParser, DataSource, SharePoint, SharePointSnapshot, _currentUser, SharePointDataSource;
 
     return {
@@ -16756,14 +16369,14 @@ System.register('src/datasources/SharePointDataSource.js', ['npm:babel-runtime@5
             _slice = _npmBabelRuntime5825HelpersSliceJs['default'];
         }, function (_githubBizboardDiJsMasterJs) {
             provide = _githubBizboardDiJsMasterJs.provide;
-        }, function (_githubBizboardArvaUtilsDevelopObjectHelperJs) {
-            ObjectHelper = _githubBizboardArvaUtilsDevelopObjectHelperJs.ObjectHelper;
-        }, function (_githubBizboardArvaUtilsDevelopRequestUrlParserJs) {
-            UrlParser = _githubBizboardArvaUtilsDevelopRequestUrlParserJs.UrlParser;
+        }, function (_githubBizboardArvaUtils100Beta2ObjectHelperJs) {
+            ObjectHelper = _githubBizboardArvaUtils100Beta2ObjectHelperJs.ObjectHelper;
+        }, function (_githubBizboardArvaUtils100Beta2RequestUrlParserJs) {
+            UrlParser = _githubBizboardArvaUtils100Beta2RequestUrlParserJs.UrlParser;
         }, function (_srcCoreDataSourceJs) {
             DataSource = _srcCoreDataSourceJs.DataSource;
-        }, function (_githubBizboardSPSoapAdapterDevelopSharePointJs) {
-            SharePoint = _githubBizboardSPSoapAdapterDevelopSharePointJs.SharePoint;
+        }, function (_githubBizboardSPSoapAdapter100Beta2SharePointJs) {
+            SharePoint = _githubBizboardSPSoapAdapter100Beta2SharePointJs.SharePoint;
         }, function (_srcDatasourcesSharePointSharePointSnapshotJs) {
             SharePointSnapshot = _srcDatasourcesSharePointSharePointSnapshotJs.SharePointSnapshot;
         }],
@@ -17529,6 +17142,31 @@ System.register("src/core/DataSource.js", ["npm:babel-runtime@5.8.25/helpers/cre
         }, {
           key: "setPriority",
           value: function setPriority(newPriority) {}
+
+          /**
+           * Orders the DataSource's childs by the value in child[key].
+           * @param {String} childKey Key of the field to order by.
+           * @returns {DataSource} New dataSource instance.
+           */
+        }, {
+          key: "orderByChild",
+          value: function orderByChild(childKey) {}
+
+          /**
+           * Orders the DataSource's childs by their key names, ignoring their priority.
+           * @returns {DataSource} New dataSource instance.
+           */
+        }, {
+          key: "orderByKey",
+          value: function orderByKey() {}
+
+          /**
+           * Orders the DataSource's childs by their values, ignoring their priority.
+           * @returns {DataSource} New dataSource instance.
+           */
+        }, {
+          key: "orderByValue",
+          value: function orderByValue() {}
 
           /**
            * Returns a new dataSource reference that will limit the subscription to only the first given amount items.
@@ -18600,7 +18238,7 @@ System.register("github:bizboard/di.js@master.js", ["github:Bizboard/di.js@maste
     execute: function () {}
   };
 });
-System.register('github:bizboard/arva-utils@develop/Context.js', ['npm:babel-runtime@5.8.25/helpers/create-class.js', 'npm:babel-runtime@5.8.25/helpers/class-call-check.js', 'github:bizboard/di.js@master.js'], function (_export) {
+System.register('github:bizboard/arva-utils@1.0.0-beta-2/Context.js', ['npm:babel-runtime@5.8.25/helpers/create-class.js', 'npm:babel-runtime@5.8.25/helpers/class-call-check.js', 'github:bizboard/di.js@master.js'], function (_export) {
     var _createClass, _classCallCheck, Injector, contextContainer, Context;
 
     return {
@@ -18645,7 +18283,7 @@ System.register('github:bizboard/arva-utils@develop/Context.js', ['npm:babel-run
                         var context = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
                         var contextName = arguments.length <= 1 || arguments[1] === undefined ? 'Default' : arguments[1];
 
-                        contextContainer[contextName] = context;
+                        return contextContainer[contextName] = context;
                     }
                 }, {
                     key: 'buildContext',
@@ -18653,7 +18291,7 @@ System.register('github:bizboard/arva-utils@develop/Context.js', ['npm:babel-run
                         var dependencies = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
                         var contextName = arguments.length <= 1 || arguments[1] === undefined ? 'Default' : arguments[1];
 
-                        Context.setContext(new Injector(dependencies));
+                        return Context.setContext(new Injector(dependencies), contextName);
                     }
                 }]);
 
@@ -18664,7 +18302,7 @@ System.register('github:bizboard/arva-utils@develop/Context.js', ['npm:babel-run
         }
     };
 });
-System.register('src/core/Model.js', ['npm:babel-runtime@5.8.25/helpers/get.js', 'npm:babel-runtime@5.8.25/helpers/inherits.js', 'npm:babel-runtime@5.8.25/helpers/create-class.js', 'npm:babel-runtime@5.8.25/helpers/class-call-check.js', 'npm:babel-runtime@5.8.25/core-js/object/get-own-property-names.js', 'npm:babel-runtime@5.8.25/core-js/get-iterator.js', 'npm:babel-runtime@5.8.25/core-js/object/get-own-property-descriptor.js', 'npm:lodash@3.10.1.js', 'github:bizboard/arva-utils@develop/Context.js', 'github:bizboard/arva-utils@develop/ObjectHelper.js', 'src/core/PrioritisedObject.js', 'src/core/DataSource.js'], function (_export) {
+System.register('src/core/Model.js', ['npm:babel-runtime@5.8.25/helpers/get.js', 'npm:babel-runtime@5.8.25/helpers/inherits.js', 'npm:babel-runtime@5.8.25/helpers/create-class.js', 'npm:babel-runtime@5.8.25/helpers/class-call-check.js', 'npm:babel-runtime@5.8.25/core-js/object/get-own-property-names.js', 'npm:babel-runtime@5.8.25/core-js/get-iterator.js', 'npm:babel-runtime@5.8.25/core-js/object/get-own-property-descriptor.js', 'npm:lodash@3.10.1.js', 'github:bizboard/arva-utils@1.0.0-beta-2/Context.js', 'github:bizboard/arva-utils@1.0.0-beta-2/ObjectHelper.js', 'src/core/PrioritisedObject.js', 'src/core/DataSource.js'], function (_export) {
     var _get, _inherits, _createClass, _classCallCheck, _Object$getOwnPropertyNames, _getIterator, _Object$getOwnPropertyDescriptor, _, Context, ObjectHelper, PrioritisedObject, DataSource, Model;
 
     return {
@@ -18684,10 +18322,10 @@ System.register('src/core/Model.js', ['npm:babel-runtime@5.8.25/helpers/get.js',
             _Object$getOwnPropertyDescriptor = _npmBabelRuntime5825CoreJsObjectGetOwnPropertyDescriptorJs['default'];
         }, function (_npmLodash3101Js) {
             _ = _npmLodash3101Js['default'];
-        }, function (_githubBizboardArvaUtilsDevelopContextJs) {
-            Context = _githubBizboardArvaUtilsDevelopContextJs.Context;
-        }, function (_githubBizboardArvaUtilsDevelopObjectHelperJs) {
-            ObjectHelper = _githubBizboardArvaUtilsDevelopObjectHelperJs.ObjectHelper;
+        }, function (_githubBizboardArvaUtils100Beta2ContextJs) {
+            Context = _githubBizboardArvaUtils100Beta2ContextJs.Context;
+        }, function (_githubBizboardArvaUtils100Beta2ObjectHelperJs) {
+            ObjectHelper = _githubBizboardArvaUtils100Beta2ObjectHelperJs.ObjectHelper;
         }, function (_srcCorePrioritisedObjectJs) {
             PrioritisedObject = _srcCorePrioritisedObjectJs.PrioritisedObject;
         }, function (_srcCoreDataSourceJs) {
