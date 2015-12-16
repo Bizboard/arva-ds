@@ -34,7 +34,7 @@ export class MockedDataSource extends DataSource {
         this._onMoveCallback = null;
         this._onRemoveCallback = null;
         this.options = options;
-        //this._dataSet = dataSet;
+        this.handlers = {};
 
 
         if (this.options.dataSet instanceof Array)
@@ -229,6 +229,37 @@ export class MockedDataSource extends DataSource {
      * @returns {void}
      */
     unauth() { }
+
+    on(event, handler, context = this) {
+        let boundHandler = this.handlers[handler] = handler.bind(this);
+        this._dataReference.on(event, boundHandler);
+    }
+
+    /**
+     * Subscribe to an event emitted by the DataSource once, and then immediately unsubscribe again once it has been emitted a single time.
+     * @param {String} event Event type to subscribe to. Allowed values are: 'value', 'child_changed', 'child_added', 'child_removed', 'child_moved'.
+     * @param {Function} handler Function to call when the subscribed event is emitted.
+     * @param {Object} context Context to set 'this' to when calling the handler function.
+     */
+    once(event, handler, context = this) {
+        function onceWrapper() {
+            handler.call(context, new MockedSnapshot(...arguments));
+            this.off(event, onceWrapper);
+        }
+
+        return this.on(event, onceWrapper, this);
+    }
+
+    /**
+     * Unsubscribe to a previously subscribed event. If no handler or context is given, all handlers for
+     * the given event are removed. If no parameters are given at all, all event types will have their handlers removed.
+     * @param {String} event Event type to unsubscribe from. Allowed values are: 'value', 'child_changed', 'child_added', 'child_removed', 'child_moved'.
+     * @param {Function} handler Optional: Function that was used in previous subscription.
+     */
+    off(event, handler) {
+        let boundHandler = this.handlers[handler];
+        this._dataReference.off(event, boundHandler);
+    }
 
     /**
      * Sets the callback triggered when dataSource updates the data.
