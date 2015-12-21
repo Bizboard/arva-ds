@@ -164,6 +164,10 @@ export class PrioritisedArray extends Array {
                 }
 
                 this._eventEmitter.emit('child_added', model, prevSiblingId);
+
+                if(this._dataSource.ready === true){
+                    this._eventEmitter.emit('new_child', model, prevSiblingId);
+                }
             }
         } else if (model instanceof Object) {
             /* Let's try to parse the object using property reflection */
