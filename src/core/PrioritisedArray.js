@@ -160,22 +160,24 @@ export class PrioritisedArray extends Array {
                 } else {
                     this.push(model);
                 }
-
                 this._eventEmitter.emit('child_added', model, prevSiblingId);
+                return model;
             }
         } else if (model instanceof Object) {
             /* Let's try to parse the object using property reflection */
             var options = {dataSource: this._dataSource};
             let newModel = new this._dataType(null, model, _.extend({}, this._modelOptions, options));
             this.add(newModel);
+            return newModel;
         } else {
             /* TODO: change to throw exception */
             console.log('Tried to append an object that is not the same type as the one this PrioritisedArray was created with.');
         }
 
         /* Return model so we can do this: let newModel = PrioArray.add(new Model()); newModel.someProperty = true; */
-        return model;
+        return  null;
     }
+
 
     /**
      * Inserts a model instance at the given position of the PrioritisedArray, and recalculates the priority (position)
