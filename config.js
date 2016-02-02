@@ -19,8 +19,8 @@ System.config({
 
 System.config({
   "map": {
-    "SPSoapAdapter": "github:bizboard/SPSoapAdapter@develop",
-    "arva-utils": "github:bizboard/arva-utils@develop",
+    "SPSoapAdapter": "github:bizboard/SPSoapAdapter@1.0.0-beta-3",
+    "arva-utils": "github:bizboard/arva-utils@1.0.0-beta-3",
     "babel": "npm:babel-core@5.8.35",
     "babel-runtime": "npm:babel-runtime@5.8.35",
     "core-js": "npm:core-js@0.9.18",
@@ -30,14 +30,14 @@ System.config({
     "lodash": "npm:lodash@4.2.0",
     "traceur": "github:jmcriffey/bower-traceur@0.0.92",
     "traceur-runtime": "github:jmcriffey/bower-traceur-runtime@0.0.90",
-    "github:bizboard/SPSoapAdapter@develop": {
-      "arva-utils": "github:bizboard/arva-utils@develop",
+    "github:bizboard/SPSoapAdapter@1.0.0-beta-3": {
+      "arva-utils": "github:bizboard/arva-utils@1.0.0-beta-3",
       "eventemitter3": "npm:eventemitter3@1.1.1",
       "json-query": "npm:json-query@1.5.0",
       "lodash": "npm:lodash@4.2.0",
       "xml2js": "npm:xml2js@0.4.16"
     },
-    "github:bizboard/arva-utils@develop": {
+    "github:bizboard/arva-utils@1.0.0-beta-3": {
       "bowser": "npm:bowser@1.0.0",
       "di": "github:bizboard/di.js@master",
       "fs": "github:jspm/nodelibs-fs@0.1.2",

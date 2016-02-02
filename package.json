@@ -20,8 +20,8 @@
       "lib": "src"
     },
     "dependencies": {
-      "SPSoapAdapter": "github:bizboard/SPSoapAdapter@develop",
-      "arva-utils": "github:bizboard/arva-utils@develop",
+      "SPSoapAdapter": "github:bizboard/SPSoapAdapter@1.0.0-beta-3",
+      "arva-utils": "github:bizboard/arva-utils@1.0.0-beta-3",
       "di": "github:bizboard/di.js@master",
       "eventemitter3": "npm:eventemitter3@^1.1.0",
       "firebase": "github:firebase/firebase-bower@^2.2.0",
