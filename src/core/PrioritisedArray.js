@@ -355,13 +355,13 @@ export class PrioritisedArray extends Array {
             return;
         }
 
-        let oldModel = this[previousPosition];
+        /*let oldModel = this[previousPosition];
         let oldProperties = ObjectHelper.getEnumerableProperties(oldModel);
         let newProperties = ObjectHelper.getEnumerableProperties(changedModel);
         if (_.isEqual(oldProperties, newProperties)) {
-            /* The model wasn't changed, so we won't emit a changed event in the PrioritisedArray. */
+             The model wasn't changed, so we won't emit a changed event in the PrioritisedArray.
             return;
-        }
+        }*/
 
         this.remove(previousPosition);
 
