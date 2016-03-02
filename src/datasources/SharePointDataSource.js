@@ -250,13 +250,16 @@ export class SharePointDataSource extends DataSource {
      * @returns {Object|null} User auth object.
      */
     getAuth() {
-        if (!SharePointDataSource.currentUser) {
-            this._dataReference.getAuth((authData) => {
-                SharePointDataSource.currentUser = authData;
-            });
-        }
-
-        return SharePointDataSource.currentUser;
+        return new Promise((resolve)=>{
+            if (!SharePointDataSource.currentUser) {
+                this._dataReference.getAuth((authData) => {
+                    SharePointDataSource.currentUser = authData;
+                    resolve(SharePointDataSource.currentUser);
+                });
+            } else {
+                resolve(SharePointDataSource.currentUser);
+            }
+        });
     }
 
     /**
