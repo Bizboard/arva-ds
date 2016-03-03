@@ -205,7 +205,7 @@ export class DataModelGenerator {
         for (let i = 1; i < modelDescription.length; i++) {
             let internalName = modelDescription[i].name;
             if (this._applicationId) internalName = this._applicationId + '_' + internalName;
-            if (listData.indexOf(`StaticName=${internalName}`) != -1) continue;
+            if (listData.indexOf(`StaticName="${internalName}"`) != -1) continue;
 
             // handle Lookups differently
             if (modelDescription[i].type == 'Lookup' || modelDescription[i].type == 'LookupMulti') {
