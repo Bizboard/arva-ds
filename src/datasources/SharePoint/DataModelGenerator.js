@@ -115,7 +115,7 @@ export class DataModelGenerator {
               (result)=> {
                   // exists, so let's return handle
                   let viewId = this._ResolveViewID(result.response);
-                  let fieldNames = fields.map((field)=> return field.Name);
+                  let fieldNames = fields.map((field)=>  field.Name);
                   let updateRequest = this._getUpdateViewRequest(listName, viewId, fieldNames);
 
                   PostRequest(updateRequest)
