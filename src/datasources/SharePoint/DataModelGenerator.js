@@ -135,7 +135,7 @@ export class DataModelGenerator {
               FieldRef: []
             }
           },
-          rowLimit: 100
+          rowLimit: { RowLimit: 100 }
       };
 
       for (let fn=0;fn<fieldNames.length;fn++) {
