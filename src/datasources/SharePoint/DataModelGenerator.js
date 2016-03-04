@@ -71,29 +71,10 @@ export class DataModelGenerator {
                 } catch(ex) {
                   console.log(ex);
                 }
-/*
-                let tableCreator = this._GetOrCreateList(table)
-                    .then(function (result) {
-                        var fields = this._Schema[table];
-                        if (fields && fields.length > 0) {
-                            return this._GetOrCreateModel(table, fields, result);
-                        }
-                        return Promise.resolve();
-                    }.bind(this));*/
-
-                //listOfPromisesToFullfill.push(tableCreator);
             }
 
             resolve();
 
-            // wait for all deploy actions to complete before we tell the Deploy
-            // context to return control;
-            /*Promise.all(listOfPromisesToFullfill)
-                .then(results=> {
-                    resolve(results);
-                }, error => {
-                    reject(error);
-                });*/
         }.bind(this));
     }
 
@@ -106,33 +87,29 @@ export class DataModelGenerator {
 
     _UpdateDefaultView(listName, fields, listCreated) {
 
-      let firstRequest = this._getDefaultViewRequest(listName);
+      return new Promise(async function (resolve, reject) {
 
-      return new Promise((resolve, reject)=> {
+          try {
 
-          PostRequest(firstRequest)
-              .then(
-              (result)=> {
-                  // exists, so let's return handle
-                  let viewId = this._ResolveViewID(result.response);
-                  let fieldNames = fields.map((field)=>  field.Name);
-                  let updateRequest = this._getUpdateViewRequest(listName, viewId, fieldNames);
+            // resolve correct info
+            let firstRequest = this._getDefaultViewRequest(listName);
+            let viewResult = await PostRequest(firstRequest);
 
-                  PostRequest(updateRequest)
-                      .then(
-                      (result)=> {
-                          resolve(result.response);
-                      },
-                      (error) => {
-                          reject(error);
-                      });
-              },
-              (error) => {
-                  console.log(error);
-              });
-      });
+            // update
+            let viewId = this._ResolveViewID(viewResult.response);
+            let fieldNames = fields.map((field)=>  field.Name);
+            let updateRequest = this._getUpdateViewRequest(listName, viewId, fieldNames);
+            let updateResult = await PostRequest(updateRequest);
 
+            resolve(updateResult.response);
+          }
+          catch (ex) {
+            console.log(ex);
+            reject(ex);
+          }
+      }.bind(this));
     }
+
 
     _ResolveViewID(response) {
 
@@ -324,9 +301,9 @@ export class DataModelGenerator {
 
             // handle Lookups differently
             if (modelDescription[i].type == 'Lookup' || modelDescription[i].type == 'LookupMulti') {
-                let newLookup = this._CreateLookup(listName, internalName, modelDescription[i].type, modelDescription[i].source);
-                listOfLookups.push(newLookup);
-            } else {
+                listOfLookups.push([listName, internalName, modelDescription[i].type, modelDescription[i].source]);
+            }
+            else {
                 // handle primitives
 
                 var modelData = {
@@ -341,71 +318,66 @@ export class DataModelGenerator {
             }
         }
 
-        let updateListRequest = this._getListUpdateRequest(params);
+        return new Promise(async function(resolve, reject) {
 
-        return new Promise((resolve, reject)=> {
+          try {
+            // update list with settings and simple fields
+            let updateListRequest = this._getListUpdateRequest(params);
+            let updateResult = await PostRequest(updateListRequest);
 
-          PostRequest(updateListRequest)
+            // go add lookups
+            for (let lf=0;lf<listOfLookups.length;lf++) {
+              try {
+                let lookupResult = await this._CreateLookup(...listOfLookups[lf]);
+              }
+              catch(ex) {
+                console.error('Error creating lookup field');
+              }
+            }
+            resolve(updateResult.response);
+          }
+          catch (ex) {
+            reject(ex);
+          }
 
-            // end with creation of all simple field types
-            .then((result) => {
-                return Promise.all(listOfLookups);
-            },
-
-            (error) => {
-                reject(error);
-            })
-
-            // end with resolving all lookup creations
-            .then((result) => {
-                resolve(result.response);
-            }, (error) => {
-                reject(result);
-            });
-        });
+        }.bind(this));
     }
 
-    _CreateLookup(listName, fieldName, type, sourceName) {
 
-        return this._GetOrCreateList(sourceName)
-            .then((result)=> {
-                let listId = this._ResolveListID(result);
+    async _CreateLookup(listName, fieldName, type, sourceName) {
 
-                // rough configuration object
-                let params = {
-                    listName: listName,
-                    newFields: {
-                        Fields: {
-                            Method: [{
-                                '_ID': 1,
-                                Field: {
-                                    '_Type': type,
-                                    '_DisplayName': fieldName,
-                                    '_FromBaseType': 'TRUE',
-                                    '_ShowField': 'Title',
-                                    '_List': listId,
-                                    '_Mult': type === 'LookupMulti' ? 'TRUE' : 'FALSE'
-                                }
-                            }]
+        let listResult = await this._GetOrCreateList(sourceName);
+
+        let listId = this._ResolveListID(listResult);
+
+        // rough configuration object
+        let params = {
+            listName: listName,
+            newFields: {
+                Fields: {
+                    Method: [{
+                        '_ID': 1,
+                        Field: {
+                            '_Type': type,
+                            '_DisplayName': fieldName,
+                            '_FromBaseType': 'TRUE',
+                            '_ShowField': 'Title',
+                            '_List': listId,
+                            '_Mult': type === 'LookupMulti' ? 'TRUE' : 'FALSE'
                         }
-                    }
-                };
+                    }]
+                }
+            }
+        };
 
-                let updateListRequest = this._getListUpdateRequest(params);
-
-                return new Promise((resolve, reject)=> {
-
-                    PostRequest(updateListRequest)
-                        .then(
-                        (result)=> {
-                            // TODO: rename the fields to the real
-                            resolve(result);
-                        },
-                        (error) => {
-                            reject(error);
-                        });
-                });
-            });
+        let updateListRequest = this._getListUpdateRequest(params);
+        try {
+          let updateListResult = await PostRequest(updateListRequest);
+          return updateListResult;
+        }
+        catch (ex) {
+          return '';
+        }
     }
 
 
