@@ -259,27 +259,16 @@ export class DataModelGenerator {
     async _GetOrCreateModel(listName, modelDescription, listData) {
 
         let listOfLookups = [];
+        let fieldsAdded = 0;
         // rough configuration object
         let params = {
-            listName: this._ResolveListID(listData),
-            newFields: {
-                Fields: {
-                    Method: [{
-                        '_ID': 0, /* We automatically add an id field of our own, so we can push our own IDs to SharePoint. */
-                        Field: {
-                            '_Type': 'Integer',
-                            '_DisplayName': '__id',
-                            '_FromBaseType': 'TRUE',
-                            '_Hidden': 'TRUE'
-                        }
-                    }]
-                }
-            },
+            listName: listName,
             updateFields: {
               Fields: {
                   Method: [{
-                      '_ID': modelDescription.length, /* We automatically add an id field of our own, so we can push our own IDs to SharePoint. */
+                      '_ID': 0, /* We automatically add an id field of our own, so we can push our own IDs to SharePoint. */
                       Field: {
+                          '_Type': 'Text',
                           '_Name': 'Title',
                           '_Required': 'FALSE'
                       }
@@ -293,6 +282,22 @@ export class DataModelGenerator {
                 }
             }
         };
+
+        if (listData.indexOf(`StaticName="__id"`)) {
+          params.newFields = {
+              Fields: {
+                  Method: [{
+                      '_ID': 0, /* We automatically add an id field of our own, so we can push our own IDs to SharePoint. */
+                      Field: {
+                          '_Type': 'Integer',
+                          '_DisplayName': '__id',
+                          '_FromBaseType': 'TRUE',
+                          '_Hidden': 'TRUE'
+                      }
+                  }]
+              }
+          };
+        }
 
         for (let i = 1; i < modelDescription.length; i++) {
             let internalName = modelDescription[i].name;
