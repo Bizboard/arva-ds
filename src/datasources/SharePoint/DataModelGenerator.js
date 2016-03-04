@@ -66,8 +66,6 @@ export class DataModelGenerator {
                       //let viewCreated = await this._UpdateDefaultView(table, fields, listCreated);
                   }
 
-                  resolve();
-
                 } catch(ex) {
                   console.log(ex);
                 }
