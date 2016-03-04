@@ -63,7 +63,7 @@ export class DataModelGenerator {
                   var fields = this._Schema[table];
                   if (fields && fields.length > 0) {
                       let modelCreated = await this._GetOrCreateModel(table, fields, listCreated);
-                      //let viewCreated = await this._UpdateDefaultView(table, fields, listCreated);
+                      let viewCreated = await this._UpdateDefaultView(table, fields, listCreated);
                   }
 
                 } catch(ex) {
@@ -88,7 +88,7 @@ export class DataModelGenerator {
       return new Promise(async function (resolve, reject) {
 
           try {
-
+            
             // resolve correct info
             let firstRequest = this._getDefaultViewRequest(listName);
             let viewResult = await PostRequest(firstRequest);
