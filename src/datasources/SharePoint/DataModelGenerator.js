@@ -49,7 +49,7 @@ export class DataModelGenerator {
 
 
 
-    Deploy() {
+    async Deploy() {
         if (!this._Schema) throw 'There is no schema to deploy.';
         //var listOfPromisesToFullfill = [];
 
@@ -290,7 +290,7 @@ export class DataModelGenerator {
         });
     }
 
-    _GetOrCreateModel(listName, modelDescription, listData) {
+    async _GetOrCreateModel(listName, modelDescription, listData) {
 
         let listOfLookups = [];
         // rough configuration object
