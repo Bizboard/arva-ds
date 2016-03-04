@@ -139,7 +139,9 @@ export class DataModelGenerator {
       };
 
       for (let fn=0;fn<fieldNames.length;fn++) {
-        params.viewFields.ViewFields.FieldRef.push(fieldNames[fn].name);
+        params.viewFields.ViewFields.FieldRef.push({
+          '_Name': fieldNames[fn].name
+        });
       }
 
       return {
