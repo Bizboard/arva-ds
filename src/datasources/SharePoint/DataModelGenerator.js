@@ -163,7 +163,7 @@ export class DataModelGenerator {
       };
 
       return {
-          url: this._ParsePath(this._originalPath, this._GetListService),
+          url: this._ParsePath(this._originalPath, this._GetViewService),
           headers: new Map([
               ['SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/GetView'],
               ['Content-Type', 'text/xml']
