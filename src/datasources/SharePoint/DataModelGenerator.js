@@ -189,7 +189,8 @@ export class DataModelGenerator {
                         Field: {
                             '_Type': 'Integer',
                             '_DisplayName': '__id',
-                            '_FromBaseType': 'TRUE'
+                            '_FromBaseType': 'TRUE',
+                            '_Hidden': 'TRUE'
                         }
                     }]
                 }
@@ -317,6 +318,18 @@ export class DataModelGenerator {
 
 
     _applySoapTemplate(properties) {
+      return `<?xml version="1.0" encoding="utf-8"?>
+              <soap:Envelope
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+              <soap:Body>
+              <${properties.method} xmlns="http://schemas.microsoft.com/sharepoint/soap/">
+                ${properties.params}
+              </${properties.method}>
+              </soap:Body>
+              </soap:Envelope>`;
+      /*
         return _.template(
             '<?xml version="1.0" encoding="utf-8"?>' +
             '<soap:Envelope ' +
@@ -328,7 +341,7 @@ export class DataModelGenerator {
             '<%= params %>' +
             '</<%= method %>>' +
             '</soap:Body>' +
-            '</soap:Envelope>')(properties);
+            '</soap:Envelope>')(properties);*/
     }
 
     get _GetListService() {
