@@ -231,27 +231,23 @@ export class DataModelGenerator {
 
         return new Promise((resolve, reject)=> {
 
-            if (params.newFields.Fields.Method.length <= 1) {
-                resolve('No action taken.');
-            } else {
-                PostRequest(updateListRequest)
+          PostRequest(updateListRequest)
 
-                    // end with creation of all simple field types
-                    .then((result) => {
-                        return Promise.all(listOfLookups);
-                    },
+            // end with creation of all simple field types
+            .then((result) => {
+                return Promise.all(listOfLookups);
+            },
 
-                    (error) => {
-                        reject(error);
-                    })
+            (error) => {
+                reject(error);
+            })
 
-                    // end with resolving all lookup creations
-                    .then((result) => {
-                        resolve(result.response);
-                    }, (error) => {
-                        reject(result);
-                    });
-            }
+            // end with resolving all lookup creations
+            .then((result) => {
+                resolve(result.response);
+            }, (error) => {
+                reject(result);
+            });
         });
     }
 
