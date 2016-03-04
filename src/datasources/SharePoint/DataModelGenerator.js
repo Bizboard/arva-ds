@@ -95,8 +95,7 @@ export class DataModelGenerator {
 
             // update
             let viewId = this._ResolveViewID(viewResult.response);
-            let fieldNames = fields.map(function (field) { return field.name; });
-            let updateRequest = this._getUpdateViewRequest(listName, viewId, fieldNames);
+            let updateRequest = this._getUpdateViewRequest(listName, viewId, fields);
             let updateResult = await PostRequest(updateRequest);
 
             resolve(updateResult.response);
@@ -140,7 +139,7 @@ export class DataModelGenerator {
       };
 
       for (let fn=0;fn<fieldNames.length;fn++) {
-        params.viewFields.ViewFields.FieldRef.push(fieldNames[fn]);
+        params.viewFields.ViewFields.FieldRef.push(fieldNames[fn].name);
       }
 
       return {
