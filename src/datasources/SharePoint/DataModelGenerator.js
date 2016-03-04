@@ -261,7 +261,7 @@ export class DataModelGenerator {
         let listOfLookups = [];
         // rough configuration object
         let params = {
-            listName: listName,
+            listName: this._ResolveListID(listData),
             newFields: {
                 Fields: {
                     Method: [{
