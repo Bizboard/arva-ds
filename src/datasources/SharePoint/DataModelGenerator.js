@@ -49,11 +49,11 @@ export class DataModelGenerator {
 
 
 
-    async Deploy() {
+    Deploy() {
         if (!this._Schema) throw 'There is no schema to deploy.';
         //var listOfPromisesToFullfill = [];
 
-        return new Promise((resolve, reject)=> {
+        return new Promise(async function(resolve, reject) {
 
             // iterate through all tables listed.
             for (let table in this._Schema) {
@@ -94,7 +94,7 @@ export class DataModelGenerator {
                 }, error => {
                     reject(error);
                 });*/
-        });
+        }.bind(this));
     }
 
     Seed() {
