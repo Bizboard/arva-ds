@@ -270,6 +270,7 @@ export class DataModelGenerator {
                       Field: {
                           '_Type': 'Text',
                           '_Name': 'Title',
+                          '_DisplayName': 'Title',
                           '_Required': 'FALSE'
                       }
                   }]
