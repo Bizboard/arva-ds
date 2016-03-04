@@ -88,7 +88,7 @@ export class DataModelGenerator {
       return new Promise(async function (resolve, reject) {
 
           try {
-            
+
             // resolve correct info
             let firstRequest = this._getDefaultViewRequest(listName);
             let viewResult = await PostRequest(firstRequest);
@@ -144,7 +144,7 @@ export class DataModelGenerator {
       }
 
       return {
-          url: this._ParsePath(this._originalPath, this._GetListService),
+          url: this._ParsePath(this._originalPath, this._GetViewService),
           headers: new Map([
               ['SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/UpdateView'],
               ['Content-Type', 'text/xml']
@@ -432,6 +432,10 @@ export class DataModelGenerator {
 
     get _GetListService() {
         return '_vti_bin/Lists.asmx';
+    }
+
+    get _GetViewService() {
+        return '_vti_bin/Views.asmx';
     }
 
 
