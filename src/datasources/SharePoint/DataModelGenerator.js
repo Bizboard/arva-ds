@@ -276,7 +276,7 @@ export class DataModelGenerator {
               let creationResult = await PostRequest(newListRequest);
               resolve(creationResult.response);
             }
-        });
+        }.bind(this));
     }
 
     async _GetOrCreateModel(listName, modelDescription, listData) {
