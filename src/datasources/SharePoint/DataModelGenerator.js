@@ -262,31 +262,20 @@ export class DataModelGenerator {
      * @returns {Promise}
      * @constructor
      */
-    async _GetOrCreateList(listName, description = '') {
+    _GetOrCreateList(listName, description = '') {
 
-        let existingListRequest = this._getListExistRequest(listName);
+        return new Promise(async function(resolve, reject) {
 
-        return new Promise((resolve, reject)=> {
-
-            PostRequest(existingListRequest)
-                .then(
-                (result)=> {
-                    // exists, so let's return handle
-                    resolve(result.response);
-                },
-                (error) => {
-                    // exists, so let's create
-                    let newListRequest = this._getListCreationRequest(listName, description);
-
-                    PostRequest(newListRequest)
-                        .then(
-                        (result)=> {
-                            resolve(result.response);
-                        },
-                        (error) => {
-                            reject(error);
-                        });
-                });
+            try {
+              let existingListRequest = this._getListExistRequest(listName);
+              let existingResult = await PostRequest(existingListRequest);
+              resolve(existingResult.response);
+            }
+            catch (ex) {
+              let newListRequest = this._getListCreationRequest(listName, description);
+              let creationResult = await PostRequest(newListRequest);
+              resolve(creationResult.response);
+            }
         });
     }
 
