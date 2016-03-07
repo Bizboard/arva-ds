@@ -306,7 +306,7 @@ export class DataModelGenerator {
 
             // handle Lookups differently
             if (modelDescription[i].type == 'Lookup' || modelDescription[i].type == 'LookupMulti') {
-                listOfLookups.push([listName, internalName, modelDescription[i].type, modelDescription[i].source]);
+                listOfLookups.push([listName, internalName, modelDescription[i].type, modelDescription[i].source, modelDescription[i].showField]);
             }
             else {
                 // handle primitives
@@ -349,7 +349,7 @@ export class DataModelGenerator {
     }
 
 
-    async _CreateLookup(listName, fieldName, type, sourceName) {
+    async _CreateLookup(listName, fieldName, type, sourceName, showField) {
 
         let listResult = await this._GetOrCreateList(sourceName);
 
@@ -368,7 +368,8 @@ export class DataModelGenerator {
                             '_FromBaseType': 'TRUE',
                             '_ShowField': 'Title',
                             '_List': listId,
-                            '_Mult': type === 'LookupMulti' ? 'TRUE' : 'FALSE'
+                            '_Mult': type === 'LookupMulti' ? 'TRUE' : 'FALSE',
+                            '_ShowField': showField || 'ID' 
                         }
                     }]
                 }
