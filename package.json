@@ -20,7 +20,7 @@
       "lib": "src"
     },
     "dependencies": {
-      "SPSoapAdapter": "github:bizboard/SPSoapAdapter@develop",
+      "SPSoapAdapter": "github:bizboard/SPSoapAdapter@sandboxed",
       "arva-utils": "github:bizboard/arva-utils@develop",
       "di": "github:bizboard/di.js@master",
       "eventemitter3": "npm:eventemitter3@^1.1.0",
