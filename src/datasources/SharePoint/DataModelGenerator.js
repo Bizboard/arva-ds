@@ -47,36 +47,33 @@ export class DataModelGenerator {
         ObjectHelper.hideMethodsAndPrivatePropertiesFromObject(this);
     }
 
+
+
     Deploy() {
         if (!this._Schema) throw 'There is no schema to deploy.';
-        var listOfPromisesToFullfill = [];
+        //var listOfPromisesToFullfill = [];
 
-        return new Promise((resolve, reject)=> {
+        return new Promise(async function(resolve, reject) {
 
             // iterate through all tables listed.
             for (let table in this._Schema) {
 
-                let tableCreator = this._GetOrCreateList(table)
-                    .then(function (result) {
-                        var fields = this._Schema[table];
-                        if (fields && fields.length > 0) {
-                            return this._GetOrCreateModel(table, fields, result);
-                        }
-                        return Promise.resolve();
-                    }.bind(this));
+                try {
+                  let listCreated = await this._GetOrCreateList(table);
+                  var fields = this._Schema[table];
+                  if (fields && fields.length > 0) {
+                      let modelCreated = await this._GetOrCreateModel(table, fields, listCreated);
+                      let viewCreated = await this._UpdateDefaultView(table, fields, listCreated);
+                  }
 
-                listOfPromisesToFullfill.push(tableCreator);
+                } catch(ex) {
+                  console.log(ex);
+                }
             }
 
-            // wait for all deploy actions to complete before we tell the Deploy
-            // context to return control;
-            Promise.all(listOfPromisesToFullfill)
-                .then(results=> {
-                    resolve(results);
-                }, error => {
-                    reject(error);
-                });
-        });
+            resolve();
+
+        }.bind(this));
     }
 
     Seed() {
@@ -85,6 +82,99 @@ export class DataModelGenerator {
 
     }
 
+
+    _UpdateDefaultView(listName, fields, listCreated) {
+
+      return new Promise(async function (resolve, reject) {
+
+          try {
+
+            // resolve correct info
+            let firstRequest = this._getDefaultViewRequest(listName);
+            let viewResult = await PostRequest(firstRequest);
+
+            // update
+            let viewId = this._ResolveViewID(viewResult.response);
+            let updateRequest = this._getUpdateViewRequest(listName, viewId, fields);
+            let updateResult = await PostRequest(updateRequest);
+
+            resolve(updateResult.response);
+          }
+          catch (ex) {
+            console.log(ex);
+            reject(ex);
+          }
+      }.bind(this));
+    }
+
+
+    _ResolveViewID(response) {
+
+        let data = ParseStringToXml(response);
+        let idNode;
+
+        if (typeof(data.selectSingleNode) != 'undefined')
+            idNode = data.selectSingleNode('//View[@DefaultView=\'TRUE\']');
+        else
+            idNode = data.querySelector('View[DefaultView=\'TRUE\']');
+
+        let idAttribute = '';
+        if (idNode) idAttribute = idNode.getAttribute('Name');
+
+        return idAttribute;
+    }
+
+    _getUpdateViewRequest(listName, viewName, fieldNames) {
+
+      // rough configuration object
+      let params = {
+          listName: listName,
+          viewName: viewName,
+          viewFields: {
+            ViewFields: {
+              FieldRef: []
+            }
+          },
+          rowLimit: { RowLimit: 100 }
+      };
+
+      for (let fn=0;fn<fieldNames.length;fn++) {
+        params.viewFields.ViewFields.FieldRef.push({
+          '_Name': fieldNames[fn].name
+        });
+      }
+
+      return {
+          url: this._ParsePath(this._originalPath, this._GetViewService),
+          headers: new Map([
+              ['SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/UpdateView'],
+              ['Content-Type', 'text/xml']
+          ]),
+          data: this._applySoapTemplate({
+              method: 'UpdateView',
+              params: this._serializeParams(params)
+          })
+      };
+    }
+
+    _getDefaultViewRequest(listName) {
+      // rough configuration object
+      let params = {
+          listName: listName
+      };
+
+      return {
+          url: this._ParsePath(this._originalPath, this._GetViewService),
+          headers: new Map([
+              ['SOAPAction', 'http://schemas.microsoft.com/sharepoint/soap/GetView'],
+              ['Content-Type', 'text/xml']
+          ]),
+          data: this._applySoapTemplate({
+              method: 'GetView',
+              params: this._serializeParams(params)
+          })
+      };
+    }
 
     _getListExistRequest(listName) {
         // rough configuration object
@@ -150,49 +240,40 @@ export class DataModelGenerator {
      */
     _GetOrCreateList(listName, description = '') {
 
-        let existingListRequest = this._getListExistRequest(listName);
+        return new Promise(async function(resolve, reject) {
 
-        return new Promise((resolve, reject)=> {
-
-            PostRequest(existingListRequest)
-                .then(
-                (result)=> {
-                    // exists, so let's return handle
-                    resolve(result.response);
-                },
-                (error) => {
-                    // exists, so let's create
-                    let newListRequest = this._getListCreationRequest(listName, description);
-
-                    PostRequest(newListRequest)
-                        .then(
-                        (result)=> {
-                            resolve(result.response);
-                        },
-                        (error) => {
-                            reject(error);
-                        });
-                });
-        });
+            try {
+              let existingListRequest = this._getListExistRequest(listName);
+              let existingResult = await PostRequest(existingListRequest);
+              resolve(existingResult.response);
+            }
+            catch (ex) {
+              let newListRequest = this._getListCreationRequest(listName, description);
+              let creationResult = await PostRequest(newListRequest);
+              resolve(creationResult.response);
+            }
+        }.bind(this));
     }
 
-    _GetOrCreateModel(listName, modelDescription, listData) {
+    async _GetOrCreateModel(listName, modelDescription, listData) {
 
         let listOfLookups = [];
+        let fieldsAdded = 0;
         // rough configuration object
         let params = {
             listName: listName,
-            newFields: {
-                Fields: {
-                    Method: [{
-                        '_ID': 0, /* We automatically add an id field of our own, so we can push our own IDs to SharePoint. */
-                        Field: {
-                            '_Type': 'Integer',
-                            '_DisplayName': '__id',
-                            '_FromBaseType': 'TRUE'
-                        }
-                    }]
-                }
+            updateFields: {
+              Fields: {
+                  Method: [{
+                      '_ID': 0, /* We automatically add an id field of our own, so we can push our own IDs to SharePoint. */
+                      Field: {
+                          '_Type': 'Text',
+                          '_Name': 'Title',
+                          '_DisplayName': 'Title',
+                          '_Required': 'FALSE'
+                      }
+                  }]
+              }
             },
             listProperties: {
                 List: {
@@ -202,6 +283,22 @@ export class DataModelGenerator {
             }
         };
 
+        if (listData.indexOf(`StaticName="__id"`)) {
+          params.newFields = {
+              Fields: {
+                  Method: [{
+                      '_ID': 0, /* We automatically add an id field of our own, so we can push our own IDs to SharePoint. */
+                      Field: {
+                          '_Type': 'Integer',
+                          '_DisplayName': '__id',
+                          '_FromBaseType': 'TRUE',
+                          '_Hidden': 'TRUE'
+                      }
+                  }]
+              }
+          };
+        }
+
         for (let i = 1; i < modelDescription.length; i++) {
             let internalName = modelDescription[i].name;
             if (this._applicationId) internalName = this._applicationId + '_' + internalName;
@@ -209,9 +306,9 @@ export class DataModelGenerator {
 
             // handle Lookups differently
             if (modelDescription[i].type == 'Lookup' || modelDescription[i].type == 'LookupMulti') {
-                let newLookup = this._CreateLookup(listName, internalName, modelDescription[i].type, modelDescription[i].source);
-                listOfLookups.push(newLookup);
-            } else {
+                listOfLookups.push([listName, internalName, modelDescription[i].type, modelDescription[i].source, modelDescription[i].showField]);
+            }
+            else {
                 // handle primitives
 
                 var modelData = {
@@ -226,75 +323,67 @@ export class DataModelGenerator {
             }
         }
 
-        let updateListRequest = this._getListUpdateRequest(params);
+        return new Promise(async function(resolve, reject) {
 
-        return new Promise((resolve, reject)=> {
+          try {
+            // update list with settings and simple fields
+            let updateListRequest = this._getListUpdateRequest(params);
+            let updateResult = await PostRequest(updateListRequest);
 
-            if (params.newFields.Fields.Method.length <= 1) {
-                resolve('No action taken.');
-            } else {
-                PostRequest(updateListRequest)
-
-                    // end with creation of all simple field types
-                    .then((result) => {
-                        return Promise.all(listOfLookups);
-                    },
-
-                    (error) => {
-                        reject(error);
-                    })
-
-                    // end with resolving all lookup creations
-                    .then((result) => {
-                        resolve(result.response);
-                    }, (error) => {
-                        reject(result);
-                    });
+            // go add lookups
+            for (let lf=0;lf<listOfLookups.length;lf++) {
+              try {
+                let lookupResult = await this._CreateLookup(...listOfLookups[lf]);
+              }
+              catch(ex) {
+                console.error('Error creating lookup field');
+              }
             }
-        });
+            resolve(updateResult.response);
+          }
+          catch (ex) {
+            reject(ex);
+          }
+
+        }.bind(this));
     }
 
-    _CreateLookup(listName, fieldName, type, sourceName) {
 
-        return this._GetOrCreateList(sourceName)
-            .then((result)=> {
-                let listId = this._ResolveListID(result);
+    async _CreateLookup(listName, fieldName, type, sourceName, showField) {
 
-                // rough configuration object
-                let params = {
-                    listName: listName,
-                    newFields: {
-                        Fields: {
-                            Method: [{
-                                '_ID': 1,
-                                Field: {
-                                    '_Type': type,
-                                    '_DisplayName': fieldName,
-                                    '_FromBaseType': 'TRUE',
-                                    '_ShowField': 'Title',
-                                    '_List': listId,
-                                    '_Mult': type === 'LookupMulti' ? 'TRUE' : 'FALSE'
-                                }
-                            }]
+        let listResult = await this._GetOrCreateList(sourceName);
+
+        let listId = this._ResolveListID(listResult);
+
+        // rough configuration object
+        let params = {
+            listName: listName,
+            newFields: {
+                Fields: {
+                    Method: [{
+                        '_ID': 1,
+                        Field: {
+                            '_Type': type,
+                            '_DisplayName': fieldName,
+                            '_FromBaseType': 'TRUE',
+                            '_ShowField': 'Title',
+                            '_List': listId,
+                            '_Mult': type === 'LookupMulti' ? 'TRUE' : 'FALSE',
+                            '_ShowField': showField || 'ID' 
                         }
-                    }
-                };
+                    }]
+                }
+            }
+        };
 
-                let updateListRequest = this._getListUpdateRequest(params);
-
-                return new Promise((resolve, reject)=> {
-
-                    PostRequest(updateListRequest)
-                        .then(
-                        (result)=> {
-                            // TODO: rename the fields to the real
-                            resolve(result);
-                        },
-                        (error) => {
-                            reject(error);
-                        });
-                });
-            });
+        let updateListRequest = this._getListUpdateRequest(params);
+        try {
+          let updateListResult = await PostRequest(updateListRequest);
+          return updateListResult;
+        }
+        catch (ex) {
+          return '';
+        }
     }
 
 
@@ -317,6 +406,18 @@ export class DataModelGenerator {
 
 
     _applySoapTemplate(properties) {
+      return `<?xml version="1.0" encoding="utf-8"?>
+              <soap:Envelope
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+              <soap:Body>
+              <${properties.method} xmlns="http://schemas.microsoft.com/sharepoint/soap/">
+                ${properties.params}
+              </${properties.method}>
+              </soap:Body>
+              </soap:Envelope>`;
+      /*
         return _.template(
             '<?xml version="1.0" encoding="utf-8"?>' +
             '<soap:Envelope ' +
@@ -328,11 +429,15 @@ export class DataModelGenerator {
             '<%= params %>' +
             '</<%= method %>>' +
             '</soap:Body>' +
-            '</soap:Envelope>')(properties);
+            '</soap:Envelope>')(properties);*/
     }
 
     get _GetListService() {
         return '_vti_bin/Lists.asmx';
+    }
+
+    get _GetViewService() {
+        return '_vti_bin/Views.asmx';
     }
 
 
