@@ -96,15 +96,18 @@ export class SharePointDataSource extends DataSource {
      * @param {Object} options Optional: additional options to pass to new DataSource instance.
      * @returns {DataSource} New dataSource instance pointing to the given child branch.
      */
-    child(childName, options = null) {
+    child(childName, options = this.options) {
+        return SharePointDataSource.createFromChild(this._originalPath, childName, options);
+    }
+
+    static createFromChild(path, childName, options = {}){
         let childPath = '';
         if (childName.indexOf('http') !== -1) {
             childPath = childName.substring(1);
         } else {
-            childPath += this._originalPath + '/' + childName;
+            childPath += path + '/' + childName;
         }
-
-        return new SharePointDataSource(childPath, options || this.options);
+        return new SharePointDataSource(childPath, options);
     }
 
     /**
@@ -159,7 +162,7 @@ export class SharePointDataSource extends DataSource {
      */
     push(newData) {
         let pushedData = this._dataReference.set(newData);
-        let newDataReference = new SharePointDataSource(this.path()).child(`${pushedData['_temporary-identifier']}`);
+        let newDataReference = SharePointDataSource.createFromChild(this._originalPath, `${pushedData['_temporary-identifier']}`);
 
         /* We need to set the SharePoint data reference's cache to the data we just pushed, so it can immediately emit a value
          * once the newly created model subscribes to its own changes. This is needed to make Arva-ds' PrioArray.add() method work. */
