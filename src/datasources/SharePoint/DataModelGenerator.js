@@ -366,10 +366,9 @@ export class DataModelGenerator {
                             '_Type': type,
                             '_DisplayName': fieldName,
                             '_FromBaseType': 'TRUE',
-                            '_ShowField': 'Title',
                             '_List': listId,
                             '_Mult': type === 'LookupMulti' ? 'TRUE' : 'FALSE',
-                            '_ShowField': showField || 'ID' 
+                            '_ShowField': showField || 'ID'
                         }
                     }]
                 }
