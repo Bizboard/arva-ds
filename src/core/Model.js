@@ -34,7 +34,8 @@ export class Model extends PrioritisedObject {
 
         /* Retrieve dataSource from the DI context */
         let dataSource = Context.getContext().get(DataSource);
-        super();
+        /* As an option parameter, we can forward the setterCallback */
+        super(null,null,options.setterCallback ? {setterCallback: options.setterCallback} : {});
 
         /* Replace all stub data fields of any subclass of Model with databinding accessors.
          * This causes changes to be synched to and from the dataSource. */
@@ -88,7 +89,6 @@ export class Model extends PrioritisedObject {
         while (prototype.constructor.name !== 'Model') {
             /* Get all properties except the id and constructor of this model */
             let propNames = _.difference(Object.getOwnPropertyNames(prototype), ['constructor', 'id']);
-
             for (let name of propNames) {
                 let descriptor = Object.getOwnPropertyDescriptor(prototype, name);
                 if (descriptor && descriptor.get) {
@@ -97,6 +97,8 @@ export class Model extends PrioritisedObject {
                     ObjectHelper.addPropertyToObject(this, name, value, true, true, () => { this._onSetterTriggered(); });
                 }
             }
+            /* Add 'remoteId' separately so we're able to wait for remote id when needed */
+            ObjectHelper.addPropertyToObject(this, 'remoteId', {}, true, true, () => { this._onSetterTriggered(); });
 
             prototype = Object.getPrototypeOf(prototype);
         }
