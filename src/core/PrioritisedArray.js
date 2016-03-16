@@ -56,6 +56,7 @@ export class PrioritisedArray extends Array {
 
         this._options = options;
 
+
         /* Bind all local methods to the current object instance, so we can refer to "this"
          * in the methods as expected, even when they're called from event handlers.        */
         ObjectHelper.bindAllMethods(this, this);
@@ -91,6 +92,7 @@ export class PrioritisedArray extends Array {
                 this._eventEmitter.emit('value', this);
             }
         }
+
 
         /* If a snapshot is present use it, otherwise generate one by subscribing to the dataSource one time. */
         if (dataSnapshot) {
@@ -179,6 +181,7 @@ export class PrioritisedArray extends Array {
                     };
                     this._eventEmitter.on('child_changed', removeOnId);
                 }
+
 
                 if (prevSiblingId) {
                     let newPosition = this._findIndexById(prevSiblingId) + 1;
@@ -303,6 +306,7 @@ export class PrioritisedArray extends Array {
             }.bind(this));
 
         this._initialised = true;
+
     }
 
 
