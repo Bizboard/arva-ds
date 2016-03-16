@@ -48,9 +48,9 @@ export class PrioritisedArray extends Array {
         /**** Private properties ****/
         this._dataType = dataType;
         this._dataSource = dataSource;
+        /* Flag to determine when we're reordering so we don't listen to move updates */
         this._isBeingReordered = false;
         this._modelOptions = modelOptions;
-        /* Flag to determine when we're reordering so we don't listen to move updates */
         this._eventEmitter = new EventEmitter();
 
         /* Bind all local methods to the current object instance, so we can refer to "this"
@@ -84,7 +84,7 @@ export class PrioritisedArray extends Array {
         if (dataSnapshot) {
             this._buildFromSnapshot(dataSnapshot);
         } else {
-            this._buildFromDataSource(dataSource);
+            this._buildFromDataSource(dataSource, options && options.retrieveOnce);
         }
     }
 
@@ -285,10 +285,12 @@ export class PrioritisedArray extends Array {
      * @returns {void}
      * @private
      */
-    _buildFromDataSource(dataSource) {
+    _buildFromDataSource(dataSource, retrieveOnce = false) {
         dataSource.once('value', (dataSnapshot) => {
             this._buildFromSnapshot(dataSnapshot);
-            this._registerCallbacks(dataSource);
+            if(!retrieveOnce){
+                this._registerCallbacks(dataSource);
+            }
         });
     }
 
@@ -356,12 +358,12 @@ export class PrioritisedArray extends Array {
         }
 
         /*let oldModel = this[previousPosition];
-        let oldProperties = ObjectHelper.getEnumerableProperties(oldModel);
-        let newProperties = ObjectHelper.getEnumerableProperties(changedModel);
-        if (_.isEqual(oldProperties, newProperties)) {
-             The model wasn't changed, so we won't emit a changed event in the PrioritisedArray.
-            return;
-        }*/
+         let oldProperties = ObjectHelper.getEnumerableProperties(oldModel);
+         let newProperties = ObjectHelper.getEnumerableProperties(changedModel);
+         if (_.isEqual(oldProperties, newProperties)) {
+         The model wasn't changed, so we won't emit a changed event in the PrioritisedArray.
+         return;
+         }*/
 
         this.remove(previousPosition);
 
