@@ -52,6 +52,10 @@ export class PrioritisedArray extends Array {
         this._isBeingReordered = false;
         this._modelOptions = modelOptions;
         this._eventEmitter = new EventEmitter();
+        this._initialised = false;
+
+        this._options = options;
+
 
         /* Bind all local methods to the current object instance, so we can refer to "this"
          * in the methods as expected, even when they're called from event handlers.        */
@@ -79,12 +83,22 @@ export class PrioritisedArray extends Array {
 
             this._dataSource = dataSource;
         }
+        /* This flag mean that we won't continuously query the datasource for new records */
+        let retrieveOnce = options && options.retrieveOnce;
+        if (retrieveOnce) {
+            /* If we only retrieve the data once, we trigger the child_changed and value event */
+            this._modelOptions.setterCallback = (newModel) => {
+                this._eventEmitter.emit('child_changed', newModel);
+                this._eventEmitter.emit('value', this);
+            }
+        }
+
 
         /* If a snapshot is present use it, otherwise generate one by subscribing to the dataSource one time. */
         if (dataSnapshot) {
             this._buildFromSnapshot(dataSnapshot);
         } else {
-            this._buildFromDataSource(dataSource, options && options.retrieveOnce);
+            this._buildFromDataSource(dataSource, retrieveOnce);
         }
     }
 
@@ -153,6 +167,20 @@ export class PrioritisedArray extends Array {
     add(model, prevSiblingId = null) {
         if (model instanceof this._dataType) {
             if (this._findIndexById(model.id) < 0) {
+
+                /* If we're not constantly retrieving, we need to listen for the event when the id is set */
+                if(this._options.retrieveOnce && this._initialised){
+                    this._dataSource.setChildChangedCallback(this._onChildChanged);
+                    let removeOnId = (child) => {
+                        if(child.remoteId){
+                            this._dataSource.removeChildChangedCallback();
+                            child.id = child.remoteId;
+                            this._eventEmitter.off(removeOnId);
+                        }
+                    };
+                    this._eventEmitter.on('child_changed', removeOnId);
+                }
+
 
                 if (prevSiblingId) {
                     let newPosition = this._findIndexById(prevSiblingId) + 1;
@@ -275,6 +303,9 @@ export class PrioritisedArray extends Array {
                 }
 
             }.bind(this));
+
+        this._initialised = true;
+
     }
 
 

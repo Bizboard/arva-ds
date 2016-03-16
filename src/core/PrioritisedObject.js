@@ -42,7 +42,8 @@ export class PrioritisedObject extends EventEmitter {
      * @param {Snapshot} dataSnapshot Optional: dataSnapshot already containing model data, so we can skip subscribing to the full data on the dataSource.
      * @returns {PrioritisedObject} PrioritisedObject instance.
      */
-    constructor(dataSource, dataSnapshot = null) {
+    constructor(dataSource, dataSnapshot = null, options = null) {
+
         super();
 
         /**** Callbacks ****/
@@ -54,6 +55,8 @@ export class PrioritisedObject extends EventEmitter {
         this._dataSource = dataSource;
         this._priority = 0; // Priority of this object on remote dataSource
         this._isBeingWrittenByDatasource = false; // Flag to determine when dataSource is updating object
+        this.options = options;
+
 
         /* Bind all local methods to the current object instance, so we can refer to "this"
          * in the methods as expected, even when they're called from event handlers.        */
@@ -269,6 +272,9 @@ export class PrioritisedObject extends EventEmitter {
     _onSetterTriggered() {
         if (!this._isBeingWrittenByDatasource) {
             this._dataSource.setWithPriority(ObjectHelper.getEnumerableProperties(this), this._priority);
+        }
+        if (this.options && this.options.setterCallback){
+            this.options.setterCallback(this);
         }
     }
 
