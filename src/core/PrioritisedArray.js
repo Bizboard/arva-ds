@@ -173,8 +173,7 @@ export class PrioritisedArray extends Array {
                     this._dataSource.setChildChangedCallback(this._onChildChanged);
                     let removeOnId = (child) => {
                         if(child.remoteId){
-                            this._dataSource.removeChildChangedCallback();
-                            child.id = child.remoteId;
+                            this._dataSource.removeChildChangedCallback();;
                             this._eventEmitter.off(removeOnId);
                         }
                     };
