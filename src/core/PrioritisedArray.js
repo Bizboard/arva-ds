@@ -83,16 +83,17 @@ export class PrioritisedArray extends Array {
 
             this._dataSource = dataSource;
         }
-        /* This flag mean that we won't continuously query the datasource for new records */
         let retrieveOnce = options && options.retrieveOnce;
         if (retrieveOnce) {
-            /* If we only retrieve the data once, we trigger the child_changed and value event */
+            /* If we only retrieve the data once, we must turn on the listeners again when doing sets in order to
+             retrieve the changed data back
+             */
             this._modelOptions.setterCallback = (newModel) => {
                 this._eventEmitter.emit('child_changed', newModel);
                 this._eventEmitter.emit('value', this);
+
             }
         }
-
 
         /* If a snapshot is present use it, otherwise generate one by subscribing to the dataSource one time. */
         if (dataSnapshot) {
@@ -169,18 +170,16 @@ export class PrioritisedArray extends Array {
         if (model instanceof this._dataType) {
             if (this._findIndexById(model.id) < 0) {
 
-                /* If we're not constantly retrieving, we need to listen for the event when the id is set */
-                if(this._options.retrieveOnce && this._initialised){
+                if (this._options.retrieveOnce && this._initialised) {
                     this._dataSource.setChildChangedCallback(this._onChildChanged);
                     let removeOnId = (child) => {
-                        if(child.remoteId){
-                            this._dataSource.removeChildChangedCallback();;
+                        if (child.remoteId) {
+                            this._dataSource.removeChildChangedCallback();
                             this._eventEmitter.off(removeOnId);
                         }
                     };
                     this._eventEmitter.on('child_changed', removeOnId);
                 }
-
 
                 if (prevSiblingId) {
                     let newPosition = this._findIndexById(prevSiblingId) + 1;
@@ -191,7 +190,7 @@ export class PrioritisedArray extends Array {
 
                 /* If we've already received an on('value') result, this child addition is
                  * a new entry that wasn't on the dataSource before. */
-                if(this._dataSource.ready) {
+                if (this._dataSource.ready) {
                     this._eventEmitter.emit('new_child', model, prevSiblingId);
                 }
 
@@ -209,8 +208,9 @@ export class PrioritisedArray extends Array {
             console.log('Tried to append an object that is not the same type as the one this PrioritisedArray was created with.');
         }
 
+
         /* Return model so we can do this: let newModel = PrioArray.add(new Model()); newModel.someProperty = true; */
-        return  null;
+        return null;
     }
 
 
@@ -347,13 +347,14 @@ export class PrioritisedArray extends Array {
      */
     _onChildAdded(snapshot, prevSiblingId) {
         let id = snapshot.key();
-        let model = new this._dataType(id, null, {
+        let model = new this._dataType(id, null, _.extend({}, this._modelOptions, {
             dataSnapshot: snapshot,
             dataSource: this._dataSource.child(id)
-        });
+        }));
+
 
         let previousPosition = this._findIndexById(id);
-        if(previousPosition >= 0) {
+        if (previousPosition >= 0) {
             let oldModel = this[previousPosition];
             let oldProperties = ObjectHelper.getEnumerableProperties(oldModel);
             let newProperties = ObjectHelper.getEnumerableProperties(model);
@@ -380,7 +381,11 @@ export class PrioritisedArray extends Array {
      */
     _onChildChanged(snapshot, prevSiblingId) {
         let id = snapshot.key();
-        let changedModel = new this._dataType(id, null, {dataSnapshot: snapshot, dataSource: snapshot.ref()});
+        let changedModel = new this._dataType(id, null, _.extend({}, this._modelOptions, {
+            dataSnapshot: snapshot,
+            dataSource: this._dataSource.child(id)
+        }));
+
 
         let previousPosition = this._findIndexById(id);
         if (previousPosition < 0) {
